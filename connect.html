@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6f2118">
+  <meta name="description" content="Spiceblooms Naturals — real spices, real people, real stories.">
+  <title>Spiceblooms Naturals | Connect</title>
+  <style>
+    :root {
+      --cream: #f8ecd7;
+      --cream-2: #fff8eb;
+      --brown: #6f2118;
+      --brown-2: #9b3b24;
+      --green: #173f2a;
+      --gold: #c99a3d;
+      --text: #2d241d;
+      --muted: #6e6258;
+      --white: #fffdf8;
+      --shadow: 0 18px 50px rgba(73, 35, 20, .14);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(201,154,61,.15), transparent 30%),
+        radial-gradient(circle at 90% 100%, rgba(23,63,42,.10), transparent 32%),
+        var(--cream);
+    }
+
+    .page {
+      width: min(100%, 520px);
+      margin: 0 auto;
+      padding: 22px 16px 30px;
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid rgba(111,33,24,.10);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      position: relative;
+      padding: 30px 22px 26px;
+      text-align: center;
+      color: #fff;
+      background: var(--brown);
+      isolation: isolate;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: .16;
+    }
+
+    .hero::before {
+      width: 190px;
+      height: 190px;
+      background: var(--gold);
+      top: -110px;
+      right: -70px;
+    }
+
+    .hero::after {
+      width: 150px;
+      height: 150px;
+      background: #fff;
+      bottom: -100px;
+      left: -80px;
+    }
+
+    .logo-mark {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 12px;
+      border: 2px solid rgba(255,255,255,.75);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      background: rgba(255,255,255,.08);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(30px, 8vw, 42px);
+      line-height: 1;
+      letter-spacing: -.8px;
+    }
+
+    .tagline {
+      margin: 9px 0 0;
+      color: #f6dfad;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+    }
+
+    .intro {
+      margin: 18px auto 0;
+      max-width: 390px;
+      line-height: 1.55;
+      font-size: 14px;
+      color: rgba(255,255,255,.88);
+    }
+
+    .links {
+      padding: 22px 18px 18px;
+    }
+
+    .links-title {
+      margin: 0 0 14px;
+      text-align: center;
+      color: var(--green);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+    }
+
+    .link {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-height: 62px;
+      margin: 11px 0;
+      padding: 10px 14px;
+      color: var(--text);
+      text-decoration: none;
+      background: var(--cream-2);
+      border: 1px solid rgba(111,33,24,.11);
+      border-radius: 17px;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .link:active { transform: scale(.985); }
+
+    @media (hover:hover) {
+      .link:hover {
+        transform: translateY(-2px);
+        border-color: rgba(111,33,24,.25);
+        box-shadow: 0 8px 20px rgba(73,35,20,.09);
+      }
+    }
+
+    .icon {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      background: var(--brown);
+    }
+
+    .website .icon { background: var(--green); }
+    .youtube .icon { background: #b92c20; }
+    .instagram .icon { background: #8b3b35; }
+    .x .icon { background: #222; }
+
+    .link-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .link-name {
+      display: block;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .link-url {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .arrow {
+      color: var(--brown);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .story {
+      margin: 4px 18px 22px;
+      padding: 18px;
+      text-align: center;
+      border-radius: 18px;
+      background: #f1e2c7;
+    }
+
+    .story strong {
+      display: block;
+      color: var(--green);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+    }
+
+    .story span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    footer {
+      padding: 0 18px 22px;
+      text-align: center;
+      color: #8a7b6d;
+      font-size: 10px;
+      letter-spacing: .4px;
+    }
+
+    @media (max-width: 360px) {
+      .page { padding: 10px 10px 20px; }
+      .hero { padding: 25px 17px 23px; }
+      .links { padding: 18px 12px 14px; }
+      .link { min-height: 58px; padding: 9px 11px; }
+      .link-url { font-size: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .link { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="card">
+
+      <header class="hero">
+        <!-- Replace this simple mark with the official Spiceblooms logo if needed. -->
+        <div class="logo-mark" aria-hidden="true">✦</div>
+        <h1>Spiceblooms</h1>
+        <div class="tagline">Naturals · Goodness from our soil</div>
+        <p class="intro">
+          Real spices, real people, real stories. Explore Spiceblooms Naturals
+          and stay connected with us.
+        </p>
+      </header>
+
+      <section class="links" aria-label="Spiceblooms links">
+        <h2 class="links-title">Connect With Us</h2>
+
+        <a class="link website" href="https://www.spiceblooms.in/" target="_blank" rel="noopener noreferrer">
+          <span class="icon">W</span>
+          <span class="link-copy">
+            <span class="link-name">Visit Our Website</span>
+            <span class="link-url">spiceblooms.in</span>
+          </span>
+          <span class="arrow">›</span>
+        </a>
+
+        <a class="link instagram" href="https://www.instagram.com/spiceblooms_naturals/" target="_blank" rel="noopener noreferrer">
+          <span class="icon">◎</span>
+          <span class="link-copy">
+            <span class="link-name">Instagram</span>
+            <span class="link-url">@spiceblooms_naturals</span>
+          </span>
+          <span class="arrow">›</span>
+        </a>
+
+        <a class="link youtube" href="https://youtube.com/@spicebloomsbiz" target="_blank" rel="noopener noreferrer">
+          <span class="icon">▶</span>
+          <span class="link-copy">
+            <span class="link-name">YouTube</span>
+            <span class="link-url">@spicebloomsbiz</span>
+          </span>
+          <span class="arrow">›</span>
+        </a>
+
+        <a class="link x" href="https://x.com/spiceblooms" target="_blank" rel="noopener noreferrer">
+          <span class="icon">𝕏</span>
+          <span class="link-copy">
+            <span class="link-name">X</span>
+            <span class="link-url">@spiceblooms</span>
+          </span>
+          <span class="arrow">›</span>
+        </a>
+      </section>
+
+      <div class="story">
+        <strong>Scan. Discover. Enjoy.</strong>
+        <span>Thank you for choosing Spiceblooms Naturals.</span>
+      </div>
+
+      <footer>© Spiceblooms Naturals</footer>
+    </section>
+  </main>
+</body>
+</html>
