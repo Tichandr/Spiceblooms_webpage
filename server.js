@@ -17,9 +17,19 @@ const server = http.createServer((req, res) => {
     ".html": "text/html",
     ".js": "text/javascript",
     ".css": "text/css",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".mov": "video/quicktime",
   };
 
   const contentType = mimeTypes[extname] || "application/octet-stream";
+  const isText = contentType.startsWith("text/") || contentType.includes("javascript") || contentType.includes("json") || contentType.includes("svg");
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
@@ -34,9 +44,8 @@ const server = http.createServer((req, res) => {
         res.end(`Server Error: ${error.code}`);
       }
     } else {
-      // Serve the file with the correct Content-Type
       res.writeHead(200, { "Content-Type": contentType });
-      res.end(content, "utf-8");
+      res.end(content, isText ? "utf-8" : undefined);
     }
   });
 });
