@@ -50,6 +50,7 @@ const server = http.createServer((req, res) => {
 
   const extname = path.extname(filePath).toLowerCase();
   const contentType = mimeTypes[extname] || "application/octet-stream";
+  const isText = contentType.startsWith("text/") || contentType.includes("javascript") || contentType.includes("json") || contentType.includes("svg");
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
@@ -64,7 +65,7 @@ const server = http.createServer((req, res) => {
       }
     } else {
       res.writeHead(200, { "Content-Type": contentType });
-      res.end(content);
+      res.end(content, isText ? "utf-8" : undefined);
     }
   });
 });
