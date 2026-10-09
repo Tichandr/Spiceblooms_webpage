@@ -69,12 +69,26 @@
         }
 
         /* ============ HERO ============ */
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
         .ex-hero {
             position: relative;
             color: #fff;
-            padding: 120px 1.25rem 100px;
+            padding: 88px 1.25rem 72px;
             text-align: center;
             overflow: hidden;
+            margin-top: 76px;
+        }
+
+        @media (min-width: 768px) {
+            .ex-hero {
+                padding: 120px 1.25rem 100px;
+                margin-top: 96px;
+            }
         }
 
         .ex-badge {
@@ -584,31 +598,28 @@
 <body class="font-body text-dark">
 
     <!-- Navigation (matches index.html sticky navbar) -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 transition-all duration-300"
+    <nav class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/25 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)] transition-all duration-300"
         id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-2">
-                    <a href="index.html" class="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <img src="assets/Spice-logo.png" alt="SpiceBlooms Logo" class="w-26 h-26">
-                    </a>
-                </div>
+            <div class="flex justify-between items-center h-16 md:h-24">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Spiceblooms Naturals home">
+                    <img src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872" class="h-12 md:h-[84px] w-auto object-contain">
+                </a>
 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="index.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
                     <a href="index.html#about"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
-                    <a href="index.html#services"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Services</a>
                     <a href="products.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
                     <a href="exports.html" class="nav-active transition-colors duration-200">Exports</a>
                     <a href="index.html#contact"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
+                    <button type="button" data-sign-out class="hidden px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors duration-200">Sign out</button>
                 </div>
 
-                <button class="md:hidden" id="mobile-menu-button" aria-label="Toggle menu">
+                <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
@@ -619,19 +630,19 @@
 
         <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
                 <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
                 <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
-                <a href="index.html#services" class="block px-3 py-2 text-gray-700 hover:text-primary">Services</a>
                 <a href="products.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Products</a>
                 <a href="exports.html" class="block px-3 py-2 nav-active">Exports</a>
                 <a href="index.html#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
     </nav>
 
     <!-- Hero -->
-    <section class="ex-hero ex-night-gradient" style="margin-top: 64px;">
+    <section class="ex-hero ex-night-gradient">
         <div style="max-width: 1100px; margin: 0 auto;">
             <span class="ex-badge">Now Exporting Globally from India</span>
             <h1>Premium Indian Spices for the <span class="gold">World</span></h1>
@@ -923,7 +934,7 @@
     <!-- Final CTA -->
     <section class="ex-final-cta ex-night-gradient">
         <h2>Ready to Import Premium Indian Spices?</h2>
-        <p>Contact us for bulk pricing, MOQ details, and a free sample kit — shipped internationally.</p>
+        <p>Contact us for bulk pricing, MOQ details, and a free sample kit shipped internationally.</p>
         <div class="ex-cta-row">
             <a class="ex-cta-primary" href="mailto:spicebloomsenterprise@gmail.com?subject=Export%20Enquiry">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -988,18 +999,6 @@
                         <li><a href="#" class="hover:text-white transition-colors">Spice Blends</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Handmade in small batches</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">FSSAI Licensed</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-xl font-bold mb-6">Services</h3>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Home-Based, Hygienic
-                                Manufacturing</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Custom Product Packaging</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Fast Local Delivery &amp; Pan-India
-                                Shipping</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Retail &amp; Bulk Supply</a></li>
                     </ul>
                 </div>
 
@@ -1087,6 +1086,7 @@
             }
         })();
     </script>
+    <script src="auth.js"></script>
 </body>
 
 </html>

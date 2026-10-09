@@ -22,16 +22,12 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// Navbar background change on scroll
+// Keep the glass navbar; only deepen frost slightly on scroll
 const navbar = document.getElementById("navbar");
 window.addEventListener("scroll", () => {
-  if (window.scrollY > 50) {
-    navbar.classList.add("bg-white/95");
-    navbar.classList.remove("bg-white/90");
-  } else {
-    navbar.classList.add("bg-white/90");
-    navbar.classList.remove("bg-white/95");
-  }
+  if (!navbar) return;
+  navbar.classList.toggle("bg-white/40", window.scrollY > 50);
+  navbar.classList.toggle("bg-white/25", window.scrollY <= 50);
 });
 
 // Counter animation
@@ -52,7 +48,8 @@ const animateCounters = () => {
 };
 
 // Intersection Observer for counter animation
-const statsSection = document.querySelector("[data-count]").closest("section");
+const statsEl = document.querySelector("[data-count]");
+const statsSection = statsEl ? statsEl.closest("section") : null;
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
@@ -166,3 +163,26 @@ const testimonialSlider = () => {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', testimonialSlider);
+
+(function () {
+  const slides = document.querySelectorAll('.hero-combo-slide');
+  if (slides.length < 2) return;
+
+  const badge = document.querySelector('[data-hero-badge]');
+  const title = document.querySelector('[data-hero-title]');
+
+  function show(i) {
+    slides.forEach((slide, n) => slide.classList.toggle('is-active', n === i));
+    const active = slides[i];
+    if (badge && active.dataset.pack) badge.textContent = active.dataset.pack;
+    if (title && active.dataset.title) title.textContent = active.dataset.title;
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let index = 0;
+  setInterval(() => {
+    index = (index + 1) % slides.length;
+    show(index);
+  }, 4000);
+})();

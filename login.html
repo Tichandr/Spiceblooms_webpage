@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1B3D2F">
+  <meta name="description" content="Sign in or sign up to Spiceblooms Naturals with your mobile number.">
+  <title>Spiceblooms Naturals | Sign in</title>
+  <link rel="preload" as="image" href="/assets/new-logo-naturals.png" type="image/png">
+  <link rel="preload" as="image" href="assets/new_items/21Garammasala.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #1B3D2F;
+      --green-deep: #163328;
+      --gold: #C9A24A;
+      --ink: #1A2E24;
+      --muted: #6E6A64;
+      --line: #E6DFD4;
+      --cream: #F6EFE4;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "DM Sans", sans-serif;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(340px, 0.92fr);
+      align-items: stretch;
+      gap: 28px;
+      height: 100vh;
+      min-height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .stage,
+    .auth,
+    .auth-box {
+      min-height: 0;
+      height: 100%;
+    }
+
+    .stage,
+    .auth-box {
+      border-radius: 32px;
+    }
+
+    .stage {
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .stage {
+      position: relative;
+      background: #1a1612;
+      box-shadow: 0 16px 40px rgba(80, 58, 32, 0.12);
+    }
+
+    .slides {
+      position: absolute;
+      inset: 0;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 28%;
+      opacity: 0;
+      transform: scale(1.04);
+      transition: opacity 0.9s ease;
+    }
+
+    .slide.is-active {
+      opacity: 1;
+      animation: ken 7.2s ease-out forwards;
+    }
+
+    @keyframes ken {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    .stage-shade {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12, 10, 8, 0.08) 0%, rgba(12, 10, 8, 0.12) 42%, rgba(12, 10, 8, 0.78) 100%);
+      pointer-events: none;
+    }
+
+    .stage-copy {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tags span {
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      background: rgba(28, 22, 16, 0.48);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .quote {
+      width: 100%;
+      max-width: 520px;
+      padding: 22px 24px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background: rgba(22, 18, 14, 0.58);
+      backdrop-filter: blur(18px);
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .quote.is-swap {
+      animation: copy-in 0.55s ease;
+    }
+
+    @keyframes copy-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .quote-text {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(18px, 2.1vw, 24px);
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .quote-name {
+      margin: 16px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .quote-role {
+      margin: 2px 0 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+    }
+
+    .progress {
+      display: block;
+      width: 100%;
+      height: 3px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.18);
+      overflow: hidden;
+      appearance: none;
+    }
+
+    .progress::-webkit-progress-bar { background: transparent; }
+    .progress::-webkit-progress-value { background: var(--gold); }
+    .progress::-moz-progress-bar { background: var(--gold); }
+
+    .dots {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .dots button {
+      width: 7px;
+      height: 7px;
+      padding: 0;
+      border: 0;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.38);
+      cursor: pointer;
+    }
+
+    .dots button.is-on {
+      width: 18px;
+      background: #fff;
+    }
+
+    .auth {
+      display: flex;
+      align-items: stretch;
+      padding: 0;
+      background: transparent;
+    }
+
+    .auth-box {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 28px 36px 32px;
+      background: #fff;
+      border: 1px solid rgba(27, 61, 47, 0.08);
+      box-shadow: 0 16px 40px rgba(80, 58, 32, 0.08);
+    }
+
+    .auth-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: block;
+      width: 132px;
+      height: auto;
+      background: transparent;
+    }
+
+    .signup-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--green);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .signup-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .signup-btn.is-active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .auth-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      max-width: 400px;
+      flex: 1;
+      min-height: 0;
+      margin: 28px auto 8px;
+      padding: 44px 32px;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow:
+        0 14px 36px rgba(62, 42, 22, 0.14),
+        0 2px 8px rgba(62, 42, 22, 0.06);
+    }
+
+    .auth-main h1 {
+      margin: 0 0 8px;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(32px, 4vw, 42px);
+      font-weight: 700;
+      color: #1A1A1A;
+    }
+
+    .lead {
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .phone-row {
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .phone-row:focus-within {
+      border-color: #c8b48a;
+      box-shadow: 0 0 0 3px rgba(201, 162, 74, .16);
+    }
+
+    .country {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px 0 16px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .flag {
+      width: 18px;
+      height: 12px;
+      display: block;
+      border-radius: 2px;
+    }
+
+    .phone-row input {
+      flex: 1;
+      min-width: 0;
+      padding: 15px 18px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .phone-row input::placeholder { color: #A8A29A; }
+
+    .name-block {
+      margin-top: 12px;
+    }
+
+    .text-row {
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .text-row:focus-within {
+      border-color: #c8b48a;
+      box-shadow: 0 0 0 3px rgba(201, 162, 74, .16);
+    }
+
+    .text-row input {
+      flex: 1;
+      min-width: 0;
+      padding: 15px 18px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .text-row input::placeholder { color: #A8A29A; }
+
+    .error {
+      min-height: 18px;
+      margin: 8px 2px 0;
+      color: #9b2c2c;
+      font-size: 12px;
+    }
+
+    .send {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 8px;
+      padding: 15px 22px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--green);
+      color: #fff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .send:hover { background: var(--green-deep); }
+    .send svg { width: 18px; height: 18px; }
+
+    .otp-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .otp-row input {
+      width: 100%;
+      height: 54px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      outline: none;
+    }
+
+    .otp-row input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(27, 61, 47, .12);
+    }
+
+    .resend {
+      display: block;
+      margin: 14px auto 0;
+      border: 0;
+      background: none;
+      color: var(--green);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .note {
+      margin: 22px 0 0;
+      color: #8A847C;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .hidden { display: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide.is-active { animation: none; transform: none; }
+      .quote.is-swap { animation: none; }
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        gap: 20px;
+        padding: 16px;
+      }
+      .stage,
+      .auth,
+      .auth-box { height: auto; }
+      .stage { height: 52vh; min-height: 340px; }
+      .stage-copy { left: 14px; right: 14px; bottom: 14px; gap: 8px; }
+      .quote { padding: 14px 14px 12px; }
+      .quote-text { font-size: 15px; }
+      .kicker { margin-bottom: 6px; }
+      .quote-name { margin-top: 10px; }
+      .progress { margin-top: 10px; }
+      .auth-box { padding: 22px 18px 24px; }
+      .auth-main {
+        flex: none;
+        margin: 24px auto 8px;
+        padding: 32px 22px 28px;
+        min-height: 380px;
+      }
+      .logo { width: 108px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="stage" aria-label="Spiceblooms product stories" id="showcase">
+      <div class="slides">
+        <img class="slide is-active" id="slide-a" alt="">
+        <img class="slide" id="slide-b" alt="">
+      </div>
+      <div class="stage-shade" aria-hidden="true"></div>
+      <div class="dots" id="product-dots"></div>
+      <div class="stage-copy">
+        <div class="tags" id="product-tags"></div>
+        <article class="quote" id="product-quote">
+          <p class="kicker" id="product-kicker">Benefits</p>
+          <p class="quote-text" id="product-copy"></p>
+          <p class="quote-name" id="product-name"></p>
+          <p class="quote-role" id="product-role">Spiceblooms Naturals</p>
+          <progress class="progress" id="product-progress" max="100" value="0"></progress>
+        </article>
+      </div>
+    </section>
+
+    <aside class="auth">
+      <div class="auth-box">
+      <header class="auth-top">
+        <a href="index.html">
+          <img class="logo" src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872">
+        </a>
+        <button class="signup-btn" type="button" id="mode-btn" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5 19.2c1.4-3.2 3.8-4.7 7-4.7s5.6 1.5 7 4.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span id="mode-label">Sign up</span>
+        </button>
+      </header>
+
+      <div class="auth-main">
+        <h1 id="auth-title">Welcome back!</h1>
+        <p class="lead" id="auth-lead">Enter your mobile number to continue to Spiceblooms Naturals.</p>
+
+        <form id="auth-form" novalidate>
+          <div id="step-number">
+            <div class="phone-row">
+              <span class="country">
+                <svg class="flag" viewBox="0 0 18 12" aria-hidden="true">
+                  <rect width="18" height="4" fill="#FF9933"/>
+                  <rect y="4" width="18" height="4" fill="#fff"/>
+                  <rect y="8" width="18" height="4" fill="#138808"/>
+                  <circle cx="9" cy="6" r="1.35" fill="#000080"/>
+                </svg>
+                +91
+              </span>
+              <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="Mobile number" aria-label="Mobile number">
+            </div>
+            <div id="name-block" class="name-block hidden">
+              <div class="text-row">
+                <input id="full-name" type="text" autocomplete="name" maxlength="60" placeholder="Full name" aria-label="Full name">
+              </div>
+              <p class="error" id="name-error"></p>
+            </div>
+            <p class="error" id="phone-error"></p>
+            <button class="send" type="submit">
+              Get OTP
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div id="step-otp" class="hidden">
+            <div class="otp-row" id="otp-inputs">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 1">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
+            </div>
+            <p class="error" id="otp-error"></p>
+            <button class="send" type="submit">
+              Verify OTP
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="resend" type="button" id="resend">Resend OTP</button>
+          </div>
+        </form>
+
+        <p class="note">Mobile number only. No Google or Apple sign-in.</p>
+      </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    const PRODUCTS = [
+      {
+        name: "21 Garam Masala",
+        role: "Slow-roasted spice blend",
+        image: "assets/new_items/21Garammasala.png",
+        benefitTags: ["21 spices", "Slow roasted"],
+        benefit: "Twenty-one timeless spices, slow-roasted and finely ground, bring authentic aroma and warmth to every dish.",
+        useTags: ["Curries", "Biryani", "Meats"],
+        use: "Finish dals, curries, and biryanis with a pinch, or dust over grilled meats just before serving."
+      },
+      {
+        name: "Sambar Powder",
+        role: "Authentic Andhra recipe",
+        image: "assets/new_items/sambar.jpg",
+        benefitTags: ["Andhra recipe", "Fresh ground"],
+        benefit: "Handpicked lentils, spices, and herbs roasted to lock in the rich taste and soul of South Indian cooking.",
+        useTags: ["Sambar", "Family meals"],
+        use: "Stir a spoon into simmering dal and vegetables for restaurant-style sambar at the family table."
+      },
+      {
+        name: "Moringa Powder",
+        role: "Nature's superfood",
+        image: "assets/new_items/Moringa.png",
+        benefitTags: ["Vitamins", "Antioxidants"],
+        benefit: "Fine moringa leaves, packed with vitamins, minerals, and antioxidants for a clean daily health boost.",
+        useTags: ["Smoothies", "Juices", "Meals"],
+        use: "Blend a teaspoon into smoothies and juices, or sprinkle over dals and everyday meals."
+      },
+      {
+        name: "Royya Karam",
+        role: "Coastal Andhra chilli mix",
+        image: "assets/new_items/Royyakaram.jpg",
+        benefitTags: ["Prawn flavour", "Traditional"],
+        benefit: "A traditional spicy prawn-flavoured chilli mix that carries the heat and depth of Andhra’s coast.",
+        useTags: ["Hot rice", "Snacks"],
+        use: "Mix with hot rice and ghee, or serve as a punchy side with snacks and tiffins."
+      },
+      {
+        name: "Idli Karam Podi",
+        role: "Breakfast companion",
+        image: "assets/new_items/idli.jpg",
+        benefitTags: ["Lentil blend", "Andhra heat"],
+        benefit: "A balanced roast of lentils and spices made for the classic taste of an Andhra breakfast.",
+        useTags: ["Idli", "Dosa", "Ghee"],
+        use: "Mix with a little ghee or oil and serve with hot idlis and crispy dosas."
+      },
+      {
+        name: "Karivepaku Podi",
+        role: "Aromatic curry-leaf blast",
+        image: "assets/new_items/karivepaku.png",
+        benefitTags: ["Digestion", "Hair health"],
+        benefit: "Fresh curry leaves and secret spices — delicious, and traditionally used for digestion and hair health.",
+        useTags: ["Hot rice", "Ghee"],
+        use: "Pair with hot rice and ghee for a simple, soul-satisfying meal."
+      },
+      {
+        name: "Rasam Powder",
+        role: "Tangy & peppery delight",
+        image: "assets/new_items/rasampowder.jpg",
+        benefitTags: ["Peppery", "Comforting"],
+        benefit: "Pepper, cumin, and special lentils create a tangy, aromatic rasam that warms the soul.",
+        useTags: ["Tomato rasam", "Tamarind"],
+        use: "Add to simmering tomato or tamarind water and finish with a tadka for a comforting bowl."
+      },
+      {
+        name: "Moringa Instant Rice Mix",
+        role: "Wholesome one-pot meal",
+        image: "assets/products/instant-rice-mix.jpg",
+        benefitTags: ["Moringa", "No fuss"],
+        benefit: "A wholesome rice mix with moringa goodness — nourishing flavour without a long cook.",
+        useTags: ["Quick lunch", "Travel"],
+        use: "Cook as a quick one-pot meal for busy weekdays, tiffins, and travel days."
+      },
+      {
+        name: "Turmeric Powder",
+        role: "Bright colour & strong aroma",
+        image: "assets/Naturals/Turmeric%20powder.png",
+        benefitTags: ["Immunity", "Digestion"],
+        benefit: "Hand-ground in small batches with no added colour, preservatives, or starch — supports immunity and digestion.",
+        useTags: ["Haldi doodh", "Curries"],
+        use: "Stir into curries, dals, and golden milk for colour, aroma, and everyday wellness."
+      }
+    ];
+
+    const HOLD_MS = 6500;
+    const slideA = document.getElementById("slide-a");
+    const slideB = document.getElementById("slide-b");
+    const tagsEl = document.getElementById("product-tags");
+    const kickerEl = document.getElementById("product-kicker");
+    const copyEl = document.getElementById("product-copy");
+    const nameEl = document.getElementById("product-name");
+    const roleEl = document.getElementById("product-role");
+    const quoteEl = document.getElementById("product-quote");
+    const dotsEl = document.getElementById("product-dots");
+    const progressEl = document.getElementById("product-progress");
+    const showcase = document.getElementById("showcase");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let index = 0;
+    let phase = "benefit";
+    let usingA = true;
+    let startedAt = 0;
+    let paused = false;
+    let pauseOffset = 0;
+    let raf = 0;
+
+    const product = () => PRODUCTS[index];
+
+    const setTags = (tags) => {
+      tagsEl.replaceChildren(...tags.map((label) => {
+        const span = document.createElement("span");
+        span.textContent = label;
+        return span;
+      }));
+    };
+
+    const setCopy = () => {
+      const item = product();
+      const isBenefit = phase === "benefit";
+      kickerEl.textContent = isBenefit ? "Benefits" : "How to use";
+      copyEl.textContent = isBenefit ? item.benefit : item.use;
+      nameEl.textContent = item.name;
+      roleEl.textContent = item.role;
+      setTags(isBenefit ? item.benefitTags : item.useTags);
+      quoteEl.classList.remove("is-swap");
+      void quoteEl.offsetWidth;
+      quoteEl.classList.add("is-swap");
+    };
+
+    const setImage = (src, alt, fade) => {
+      const incoming = usingA ? slideB : slideA;
+      const outgoing = usingA ? slideA : slideB;
+      incoming.src = src;
+      incoming.alt = alt;
+      incoming.classList.remove("is-active");
+      void incoming.offsetWidth;
+      if (fade) {
+        incoming.classList.add("is-active");
+        outgoing.classList.remove("is-active");
+        usingA = !usingA;
+      } else {
+        incoming.classList.add("is-active");
+        outgoing.classList.remove("is-active");
+        usingA = !usingA;
+      }
+    };
+
+    const setDots = () => {
+      [...dotsEl.children].forEach((dot, i) => {
+        dot.classList.toggle("is-on", i === index);
+        dot.setAttribute("aria-pressed", i === index ? "true" : "false");
+      });
+    };
+
+    const show = (nextIndex, nextPhase, fadeImage) => {
+      index = nextIndex;
+      phase = nextPhase;
+      const item = product();
+      if (fadeImage) setImage(item.image, item.name, true);
+      setCopy();
+      setDots();
+      startedAt = performance.now();
+      pauseOffset = 0;
+      progressEl.value = 0;
+    };
+
+    const advance = () => {
+      if (phase === "benefit") {
+        show(index, "use", false);
+        return;
+      }
+      show((index + 1) % PRODUCTS.length, "benefit", true);
+    };
+
+    const tickProgress = (now) => {
+      if (!paused) {
+        const elapsed = now - startedAt - pauseOffset;
+        progressEl.value = Math.min(100, (elapsed / HOLD_MS) * 100);
+        if (elapsed >= HOLD_MS) advance();
+      }
+      raf = requestAnimationFrame(tickProgress);
+    };
+
+    dotsEl.replaceChildren(...PRODUCTS.map((item, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("aria-label", "Show " + item.name);
+      btn.addEventListener("click", () => show(i, "benefit", true));
+      return btn;
+    }));
+
+    PRODUCTS.forEach((item) => { const img = new Image(); img.src = item.image; });
+
+    slideA.src = PRODUCTS[0].image;
+    slideA.alt = PRODUCTS[0].name;
+    setCopy();
+    setDots();
+    startedAt = performance.now();
+    raf = requestAnimationFrame(tickProgress);
+
+    showcase.addEventListener("mouseenter", () => {
+      paused = true;
+      pauseOffset = performance.now() - startedAt - pauseOffset;
+    });
+    showcase.addEventListener("mouseleave", () => {
+      paused = false;
+      startedAt = performance.now() - pauseOffset;
+      pauseOffset = 0;
+    });
+
+    if (reduceMotion) {
+      cancelAnimationFrame(raf);
+      progressEl.hidden = true;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const nextRaw = params.get("next") || "";
+    const fromCheckout = nextRaw.startsWith("cart.html");
+    const safeNext = /^(cart|index|products|exports|catalouge)\.html(\?continue=pay)?$/.test(nextRaw)
+      ? nextRaw
+      : "index.html";
+
+    if (window.SpicebloomsAuth && window.SpicebloomsAuth.get()) {
+      window.location.replace(safeNext);
+    }
+
+    const title = document.getElementById("auth-title");
+    const lead = document.getElementById("auth-lead");
+    const modeBtn = document.getElementById("mode-btn");
+    const form = document.getElementById("auth-form");
+    const phone = document.getElementById("phone");
+    const phoneError = document.getElementById("phone-error");
+    const nameBlock = document.getElementById("name-block");
+    const fullName = document.getElementById("full-name");
+    const nameError = document.getElementById("name-error");
+    const otpError = document.getElementById("otp-error");
+    const stepNumber = document.getElementById("step-number");
+    const stepOtp = document.getElementById("step-otp");
+    const otpInputs = [...document.querySelectorAll("#otp-inputs input")];
+    let mode = "signin";
+    let step = 1;
+    let savedPhone = "";
+    let savedName = "";
+
+    const setMode = (next) => {
+      mode = next;
+      const signup = mode === "signup";
+      modeBtn.classList.toggle("is-active", signup);
+      modeBtn.setAttribute("aria-pressed", signup ? "true" : "false");
+      document.getElementById("mode-label").textContent = signup ? "Sign in" : "Sign up";
+      title.textContent = signup ? "Create account" : "Welcome back!";
+      lead.textContent = fromCheckout
+        ? (signup
+          ? "Create an account so we can attach this order to your details."
+          : "Sign in or sign up to continue to payment.")
+        : (signup
+          ? "Enter your mobile number and full name to create your account."
+          : "Enter your mobile number to continue to Spiceblooms Naturals.");
+      nameBlock.classList.toggle("hidden", !signup);
+      fullName.required = signup;
+      step = 1;
+      stepNumber.classList.remove("hidden");
+      stepOtp.classList.add("hidden");
+      phoneError.textContent = "";
+      nameError.textContent = "";
+      otpError.textContent = "";
+    };
+
+    modeBtn.addEventListener("click", () => setMode(mode === "signin" ? "signup" : "signin"));
+    if (params.get("mode") === "signup") setMode("signup");
+    else if (fromCheckout) setMode("signin");
+
+    phone.addEventListener("input", () => {
+      phone.value = phone.value.replace(/\D/g, "").slice(0, 10);
+      phoneError.textContent = "";
+    });
+
+    fullName.addEventListener("input", () => {
+      nameError.textContent = "";
+    });
+
+    otpInputs.forEach((input, digitIndex) => {
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/\D/g, "").slice(0, 1);
+        otpError.textContent = "";
+        if (input.value && otpInputs[digitIndex + 1]) otpInputs[digitIndex + 1].focus();
+      });
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Backspace" && !input.value && otpInputs[digitIndex - 1]) {
+          otpInputs[digitIndex - 1].focus();
+        }
+      });
+      input.addEventListener("paste", (event) => {
+        event.preventDefault();
+        const text = (event.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+        text.split("").forEach((digit, i) => {
+          if (otpInputs[i]) otpInputs[i].value = digit;
+        });
+        otpInputs[Math.min(text.length, 5)].focus();
+      });
+    });
+
+    const isValidName = (value) => /^[A-Za-z][A-Za-z .'-]{1,59}$/.test(value);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (step === 1) {
+        if (!/^[6-9]\d{9}$/.test(phone.value)) {
+          phoneError.textContent = "Enter a valid 10-digit Indian mobile number.";
+          phone.focus();
+          return;
+        }
+        savedName = fullName.value.trim().replace(/\s+/g, " ");
+        if (mode === "signup" && !isValidName(savedName)) {
+          nameError.textContent = "Enter your full name to continue.";
+          fullName.focus();
+          return;
+        }
+        if (mode !== "signup") savedName = "";
+        savedPhone = phone.value;
+        step = 2;
+        stepNumber.classList.add("hidden");
+        stepOtp.classList.remove("hidden");
+        title.textContent = "Verify OTP";
+        lead.textContent = "Enter the 6-digit code sent to +91 " + savedPhone;
+        otpInputs[0].focus();
+        return;
+      }
+
+      const code = otpInputs.map((input) => input.value).join("");
+      if (code.length !== 6) {
+        otpError.textContent = "Enter the 6-digit OTP to continue.";
+        return;
+      }
+      title.textContent = mode === "signup" ? "Account created" : "Welcome back";
+      lead.textContent = fromCheckout
+        ? "Taking you back to checkout…"
+        : "Taking you to Spiceblooms Naturals…";
+      stepOtp.classList.add("hidden");
+      window.SpicebloomsAuth.set({
+        phone: savedPhone,
+        name: savedName || undefined,
+        mode: mode,
+        at: Date.now()
+      });
+      window.setTimeout(() => { window.location.href = safeNext; }, 900);
+    });
+
+    document.getElementById("resend").addEventListener("click", () => {
+      otpInputs.forEach((input) => { input.value = ""; });
+      otpError.textContent = "";
+      lead.textContent = "A new OTP was sent to +91 " + savedPhone;
+      otpInputs[0].focus();
+    });
+  </script>
+</body>
+</html>
