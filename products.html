@@ -54,6 +54,11 @@
             transition: all 0.3s ease;
         }
 
+        .product-image.packshot {
+            object-fit: contain;
+            background: #fff8f2;
+        }
+
         .product-card:hover .product-image {
             transform: scale(1.05);
         }
@@ -78,6 +83,894 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        .cat-section {
+            background: #FFF8F2;
+            scroll-margin-top: 140px;
+        }
+
+        #all-products,
+        #combos,
+        #wishlist {
+            scroll-margin-top: 140px;
+        }
+
+        .cat-kicker {
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #FF6B35;
+        }
+
+        .cat-title {
+            font-family: Inter, system-ui, sans-serif;
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700;
+            line-height: 1.15;
+            color: #2D2D2D;
+        }
+
+        .cat-viewall {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 20px;
+            border: 1px solid rgba(255, 107, 53, 0.28);
+            border-radius: 999px;
+            background: #fff;
+            color: #FF6B35;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .cat-viewall:hover {
+            background: #FFF1E8;
+            border-color: #FF6B35;
+        }
+
+        .cat-viewall svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .combo-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .combo-filter {
+            padding: 8px 16px;
+            border: 1px solid rgba(45, 45, 45, 0.1);
+            border-radius: 999px;
+            background: #fff;
+            color: #4B5563;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .combo-filter.is-active {
+            background: #FF6B35;
+            border-color: #FF6B35;
+            color: #fff;
+        }
+
+        .combo-group[hidden] {
+            display: none;
+        }
+
+        .combo-group + .combo-group {
+            margin-top: 28px;
+        }
+
+        .combo-group-label {
+            margin: 0 0 12px;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9CA3AF;
+        }
+
+        .combo-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .combo-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid rgba(45, 45, 45, 0.06);
+            border-radius: 24px;
+            box-shadow: 0 10px 28px rgba(45, 45, 45, 0.05);
+            overflow: hidden;
+        }
+
+        .combo-card[hidden] {
+            display: none;
+        }
+
+        .combo-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 18px 0;
+        }
+
+        .combo-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #FFF1E8;
+            color: #FF6B35;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .combo-card h3 {
+            margin: 10px 18px 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #2D2D2D;
+        }
+
+        .combo-stack {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 16px 16px 8px;
+        }
+
+        .combo-stack img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            background: #fff8f2;
+            border: 1px solid rgba(45, 45, 45, 0.06);
+            border-radius: 16px;
+        }
+
+        .combo-stack img.is-photo {
+            object-fit: cover;
+            background: #111;
+        }
+
+        .combo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 4px 18px 14px;
+            margin: 0;
+        }
+
+        .combo-list li {
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+            font-size: 13px;
+            line-height: 1.35;
+            color: #4B5563;
+            list-style: none;
+        }
+
+        .combo-list img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            background: #fff8f2;
+            border-radius: 10px;
+        }
+
+        .combo-list img.is-photo {
+            object-fit: cover;
+        }
+
+        .combo-list strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2D2D2D;
+            overflow-wrap: anywhere;
+        }
+
+        .combo-list .combo-item-price {
+            font-weight: 600;
+            color: #6B7280;
+            white-space: nowrap;
+        }
+
+        .combo-foot {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto;
+            padding: 14px 18px 18px;
+            border-top: 1px solid rgba(45, 45, 45, 0.06);
+        }
+
+        .combo-total {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .combo-total span {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #9CA3AF;
+        }
+
+        .combo-total strong {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #FF6B35;
+            line-height: 1.1;
+        }
+
+        .combo-add {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .combo-add:hover {
+            background: #e85d2c;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .combo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .combo-stack img {
+                width: 84px;
+                height: 84px;
+            }
+        }
+
+        @media (min-width: 1100px) {
+            .combo-grid-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .combo-grid-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: calc((200% - 18px) / 3);
+                max-width: 100%;
+            }
+        }
+
+        .product-card {
+            cursor: pointer;
+        }
+
+        .product-search-bar {
+            background: #fff;
+            border-bottom: 1px solid rgba(45, 45, 45, 0.06);
+        }
+
+        .product-search-tools {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .product-search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 640px;
+            margin: 0;
+            padding: 6px 6px 6px 16px;
+            background: #FFF8F2;
+            border: 1px solid rgba(255, 107, 53, 0.18);
+            border-radius: 999px;
+        }
+
+        .product-search-form:focus-within {
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.12);
+        }
+
+        .product-search-form svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            color: #FF6B35;
+        }
+
+        .product-search-form input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            background: transparent;
+            outline: none;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 15px;
+            color: #2D2D2D;
+        }
+
+        .product-search-form button {
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .search-empty {
+            margin: 0 auto 8px;
+            max-width: 640px;
+            text-align: center;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        body.product-open .products-hero,
+        body.product-open #combos,
+        body.product-open #all-products,
+        body.product-open #wishlist,
+        body.product-open .product-search-bar,
+        body.wishlist-open .products-hero,
+        body.wishlist-open #combos,
+        body.wishlist-open #all-products,
+        body.wishlist-open #product-detail,
+        body.wishlist-open .product-search-bar {
+            display: none;
+        }
+
+        body.product-open .pd-section,
+        body.wishlist-open #wishlist {
+            padding-top: 120px;
+        }
+
+        @media (min-width: 768px) {
+            body.product-open .pd-section,
+            body.wishlist-open #wishlist {
+                padding-top: 148px;
+            }
+        }
+
+        #product-detail[hidden] {
+            display: none !important;
+        }
+
+        .pd-section {
+            background: #FFF8F2;
+            padding: 28px 0 72px;
+        }
+
+        .pd-crumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .pd-crumb a {
+            color: #FF6B35;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .pd-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+            background: #fff;
+            border: 1px solid rgba(45, 45, 45, 0.06);
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 16px 40px rgba(45, 45, 45, 0.06);
+        }
+
+        .pd-media {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            padding: 16px;
+            background: #fff8f2;
+            border-radius: 22px;
+        }
+
+        .pd-media img {
+            width: 100%;
+            max-width: 420px;
+            max-height: 420px;
+            object-fit: contain;
+        }
+
+        .pd-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .pd-badge {
+            display: inline-flex;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .pd-info h1 {
+            margin: 12px 0 10px;
+            font-size: clamp(26px, 4vw, 36px);
+            font-weight: 800;
+            line-height: 1.2;
+            color: #2D2D2D;
+        }
+
+        .pd-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .pd-mrp {
+            color: #9CA3AF;
+            text-decoration: line-through;
+            font-size: 16px;
+        }
+
+        .pd-price {
+            color: #FF6B35;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .pd-desc {
+            color: #4B5563;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .pd-points {
+            margin: 0 0 22px;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+        .pd-points li {
+            position: relative;
+            padding-left: 22px;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .pd-points li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FF6B35;
+        }
+
+        .pd-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pd-qty {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid rgba(45, 45, 45, 0.12);
+            border-radius: 999px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .pd-qty button {
+            width: 42px;
+            height: 44px;
+            border: 0;
+            background: transparent;
+            font-size: 20px;
+            font-weight: 700;
+            color: #2D2D2D;
+            cursor: pointer;
+        }
+
+        .pd-qty input {
+            width: 48px;
+            height: 44px;
+            border: 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: #2D2D2D;
+            outline: none;
+        }
+
+        .pd-add {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 12px 28px;
+            border: 0;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .pd-add:hover {
+            background: #e85d2c;
+        }
+
+        .pd-cart-link {
+            color: #FF6B35;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .pd-related {
+            margin-top: 40px;
+        }
+
+        .pd-related h2 {
+            margin: 0 0 18px;
+            font-size: 24px;
+            font-weight: 800;
+            color: #2D2D2D;
+        }
+
+        .pd-related-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .pd-related-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid rgba(45, 45, 45, 0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 8px 22px rgba(45, 45, 45, 0.04);
+        }
+
+        .pd-related-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            background: #fff8f2;
+        }
+
+        .pd-related-card div {
+            padding: 12px 14px 16px;
+        }
+
+        .pd-related-card strong {
+            display: block;
+            font-size: 14px;
+            line-height: 1.35;
+            color: #2D2D2D;
+        }
+
+        .pd-related-card span {
+            display: block;
+            margin-top: 6px;
+            color: #FF6B35;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .cart-toast {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 80;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #2D2D2D;
+            color: #fff;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cart-toast[hidden] {
+            display: none;
+        }
+
+        .cart-toast a {
+            color: #FFB800;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .fav-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 6;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 14px rgba(45, 45, 45, 0.12);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #9CA3AF;
+        }
+
+        .fav-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .fav-btn.is-active {
+            color: #FF6B35;
+        }
+
+        .fav-btn.is-active svg {
+            fill: #FF6B35;
+            stroke: #FF6B35;
+        }
+
+        .fav-btn-inline {
+            position: relative;
+            top: auto;
+            left: auto;
+            flex-shrink: 0;
+        }
+
+        .wishlist-jump {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 107, 53, 0.18);
+            background: #FFF8F2;
+            color: #2D2D2D;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .wishlist-jump svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #FF6B35;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .wishlist-count {
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wishlist-count[hidden] {
+            display: none;
+        }
+
+        #wishlist {
+            background: #FFF8F2;
+            padding: 28px 0 72px;
+        }
+
+        #wishlist[hidden] {
+            display: none !important;
+        }
+
+        .wishlist-empty {
+            margin: 28px 0 0;
+            color: #6B7280;
+            font-size: 16px;
+        }
+
+        .wishlist-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            margin-top: 28px;
+            padding: 12px 22px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 107, 53, 0.28);
+            background: #fff;
+            color: #FF6B35;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .wishlist-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid rgba(45, 45, 45, 0.06);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 8px 22px rgba(45, 45, 45, 0.04);
+        }
+
+        .wishlist-card img {
+            width: 100%;
+            height: 170px;
+            object-fit: contain;
+            background: #fff8f2;
+        }
+
+        .wishlist-card .wishlist-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 14px 16px 16px;
+            flex: 1;
+        }
+
+        .wishlist-card strong {
+            font-size: 16px;
+            line-height: 1.35;
+            color: #2D2D2D;
+        }
+
+        .wishlist-card .wishlist-price {
+            color: #FF6B35;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .wishlist-add {
+            margin-top: auto;
+            min-height: 42px;
+            border: 0;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .wishlist-add:hover {
+            background: #e85d2c;
+        }
+
+        @media (min-width: 700px) {
+            .wishlist-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .wishlist-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 900px) {
+            .pd-layout {
+                grid-template-columns: 1.05fr 1fr;
+                padding: 28px;
+                gap: 36px;
+                align-items: start;
+            }
+
+            .pd-related-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .pd-related-card img {
+                height: 170px;
+            }
+        }
     </style>
 
 
@@ -86,22 +979,18 @@
 <body class="font-body text-dark scroll-smooth bg-light">
     <!-- Navigation -->
     <nav
-        class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 transition-all duration-300">
+        class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/25 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)] transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <img src="assets/Spice-logo.png" alt="spice Blooms Logo" class="w-10 h-10">
-                    </div>
-                </div>
+            <div class="flex justify-between items-center h-16 md:h-24">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Spiceblooms Naturals home">
+                    <img src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872" class="h-12 md:h-[84px] w-auto object-contain">
+                </a>
 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="index.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
                     <a href="index.html#about"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
-                    <a href="index.html#services"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Services</a>
                     <a href="products.html" class="text-primary font-semibold">Products</a>
                     <a href="catalouge.html" class="text-primary font-semibold">Catalogue</a>
                     <a href="index.html#contact"
@@ -117,9 +1006,10 @@
                             class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
                             style="display: none;">0</span>
                     </a>
+                    <button type="button" data-sign-out class="hidden px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors duration-200">Sign out</button>
                 </div>
 
-                <button class="md:hidden" id="mobile-menu-button">
+                <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
@@ -130,26 +1020,26 @@
 
         <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
                 <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
                 <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
-                <a href="index.html#services" class="block px-3 py-2 text-gray-700 hover:text-primary">Services</a>
                 <a href="products.html" class="block px-3 py-2 text-primary font-semibold">Products</a>
                 <a href="catalouge.html" class="block px-3 py-2 text-primary font-semibold">Catalogue</a>
                 <a href="cart.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Cart</a>
                 <a href="index.html#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="pt-24 pb-16 gradient-bg relative overflow-hidden">
+    <section class="products-hero pt-32 md:pt-44 pb-12 md:pb-20 gradient-bg relative overflow-hidden">
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 sm:mb-6 break-words">
                 Our <span class="text-accent">Premium</span> Products
             </h1>
-            <p class="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+            <p class="text-base sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
                 Discover our carefully curated collection of premium spices, each selected for their exceptional
                 quality,
                 authentic flavor, and sustainable sourcing practices.
@@ -157,18 +1047,407 @@
         </div>
     </section>
 
-    <!-- Products Grid Image -->
+    <div class="product-search-bar sticky top-[76px] md:top-[104px] z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="product-search-tools">
+            <form class="product-search-form" id="product-search-form" role="search">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle>
+                    <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+                <input id="product-search" type="search" placeholder="Search for podi, masala, rice mix..." autocomplete="off">
+                <button type="submit">Search</button>
+            </form>
+            <a class="wishlist-jump" href="#wishlist" data-wishlist-jump>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Wishlist
+                <span class="wishlist-count" data-wishlist-count hidden>0</span>
+            </a>
+            </div>
+            <p class="search-empty" id="search-empty" hidden>No products match your search.</p>
+        </div>
+    </div>
+
+    <section id="product-detail" class="pd-section" hidden>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="pd-crumb" aria-label="Breadcrumb">
+                <a href="products.html" data-pd-back>Products</a>
+                <span>/</span>
+                <span data-pd-crumb></span>
+            </nav>
+            <div class="pd-layout">
+                <div class="pd-media">
+                    <img data-pd-image alt="">
+                </div>
+                <div class="pd-info">
+                    <div class="pd-head">
+                        <span class="pd-badge" data-pd-badge></span>
+                        <button type="button" class="fav-btn fav-btn-inline" data-fav-toggle="" data-pd-fav aria-label="Add to wishlist" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <h1 data-pd-title></h1>
+                    <div class="pd-price-row">
+                        <span class="pd-mrp" data-pd-mrp hidden></span>
+                        <strong class="pd-price" data-pd-price></strong>
+                    </div>
+                    <p class="pd-desc" data-pd-desc></p>
+                    <ul class="pd-points" data-pd-points></ul>
+                    <div class="pd-actions">
+                        <div class="pd-qty">
+                            <button type="button" data-pd-qty-minus aria-label="Decrease quantity">-</button>
+                            <input data-pd-qty type="number" min="1" value="1" aria-label="Quantity">
+                            <button type="button" data-pd-qty-plus aria-label="Increase quantity">+</button>
+                        </div>
+                        <button type="button" class="pd-add" data-pd-add>Add to Cart</button>
+                        <a class="pd-cart-link" href="cart.html">Go to cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="pd-related">
+                <h2>Other products</h2>
+                <div class="pd-related-grid" data-pd-related></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="wishlist" hidden>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="pd-crumb" aria-label="Breadcrumb">
+                <a href="products.html" data-wishlist-back>Products</a>
+                <span>/</span>
+                <span>Wishlist</span>
+            </nav>
+            <p class="cat-kicker mb-3">Saved for later</p>
+            <h2 class="cat-title">Wishlist</h2>
+            <p class="mt-3 max-w-xl text-sm sm:text-base text-gray-500">Products at you heart stay here. Add them to cart whenever you are ready.</p>
+            <p class="wishlist-empty" data-wishlist-empty hidden>You have not saved any products yet. Tap the heart on a product, then come back here.</p>
+            <div class="wishlist-grid" data-wishlist-grid></div>
+            <a class="wishlist-back" href="products.html" data-wishlist-back>Back to products</a>
+        </div>
+    </section>
+
+    <!-- Pre-selected combos -->
+    <section id="combos" class="cat-section py-16 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-8">
+                <div>
+                    <p class="cat-kicker mb-3">Ready-made packs</p>
+                    <h2 class="cat-title">Spice Combos</h2>
+                    <p class="mt-3 max-w-xl text-sm sm:text-base text-gray-500">Pre-selected 3-packs and 2-packs. Each total is the sum of the products inside. No extra fees.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div class="combo-filters" role="tablist" aria-label="Filter combos by pack size">
+                        <button type="button" class="combo-filter is-active" data-combo-filter="all">All</button>
+                        <button type="button" class="combo-filter" data-combo-filter="3">3-Pack</button>
+                        <button type="button" class="combo-filter" data-combo-filter="2">2-Pack</button>
+                    </div>
+                    <a class="cat-viewall self-start sm:self-auto" href="#all-products">
+                        View all products
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="combo-group" data-combo-group="3">
+            <p class="combo-group-label">3-Pack combos</p>
+            <div class="combo-grid combo-grid-3">
+                <article class="combo-card" data-pack="3" data-search="coastal kitchen royya karam chicken powder 21 garam masala">
+                    <div class="combo-top">
+                        <span class="combo-badge">3-Pack</span>
+                    </div>
+                    <h3>Coastal Kitchen</h3>
+                    <div class="combo-stack">
+                        <img src="assets/Naturals/Roya%20Karma.png" alt="">
+                        <img src="assets/Naturals/Chicken%20powder.png" alt="">
+                        <img src="assets/Naturals/21%20Garam%20Masala%20Powder.png" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img src="assets/Naturals/Roya%20Karma.png" alt="">
+                            <strong>Royya Karam Traditional Prawn Chilli Mix</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img src="assets/Naturals/Chicken%20powder.png" alt="">
+                            <strong>Chicken Powder Instant Rice Mix</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img src="assets/Naturals/21%20Garam%20Masala%20Powder.png" alt="">
+                            <strong>21 Garam Masala Tradition in Every Pinch</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199 + 199</span>
+                            <strong>Rs 597/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Spiceblooms Naturals Chicken Powder Instant Rice Mix","price":199,"image":"assets/Naturals/Chicken%20powder.png"},{"name":"Madhuri Spices 21 Garam Masala Tradition in Every Pinch","price":199,"image":"assets/Naturals/21%20Garam%20Masala%20Powder.png"}]'>Add combo</button>
+                    </div>
+                </article>
+
+                <article class="combo-card" data-pack="3" data-search="andhra heat royya karam masala karam idli karam podi">
+                    <div class="combo-top">
+                        <span class="combo-badge">3-Pack</span>
+                    </div>
+                    <h3>Andhra Heat</h3>
+                    <div class="combo-stack">
+                        <img src="assets/Naturals/Roya%20Karma.png" alt="">
+                        <img class="is-photo" src="assets/products/masala-karam.png" alt="">
+                        <img class="is-photo" src="assets/new_items/idli.jpg" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img src="assets/Naturals/Roya%20Karma.png" alt="">
+                            <strong>Royya Karam Traditional Prawn Chilli Mix</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img class="is-photo" src="assets/products/masala-karam.png" alt="">
+                            <strong>Masala Karam</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img class="is-photo" src="assets/new_items/idli.jpg" alt="">
+                            <strong>Idli Karam Podi Perfect Breakfast Companion</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199 + 199</span>
+                            <strong>Rs 597/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Masala Karam","price":199,"image":"assets/products/masala-karam.png"},{"name":"Madhuri Spices Idli Karam Podi","price":199,"image":"assets/new_items/idli.jpg"}]'>Add combo</button>
+                    </div>
+                </article>
+
+                <article class="combo-card" data-pack="3" data-search="everyday podi trio kandi pesara dhanya dhanaya">
+                    <div class="combo-top">
+                        <span class="combo-badge">3-Pack</span>
+                    </div>
+                    <h3>Everyday Podi Trio</h3>
+                    <div class="combo-stack">
+                        <img src="assets/Naturals/Kandi%20Podi.png" alt="">
+                        <img src="assets/Naturals/Pesara%20Podi.png" alt="">
+                        <img src="assets/Naturals/Dhanya%20podi.png" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img src="assets/Naturals/Kandi%20Podi.png" alt="">
+                            <strong>Kandi Podi</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img src="assets/Naturals/Pesara%20Podi.png" alt="">
+                            <strong>Pesara Podi</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img src="assets/Naturals/Dhanya%20podi.png" alt="">
+                            <strong>Dhanaya Podi</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199 + 199</span>
+                            <strong>Rs 597/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Kandi Podi","price":199,"image":"assets/Naturals/Kandi%20Podi.png"},{"name":"Pesara Podi","price":199,"image":"assets/Naturals/Pesara%20Podi.png"},{"name":"Dhanaya Podi","price":199,"image":"assets/Naturals/Dhanya%20podi.png"}]'>Add combo</button>
+                    </div>
+                </article>
+            </div>
+            </div>
+
+            <div class="combo-group" data-combo-group="2">
+            <p class="combo-group-label">2-Pack combos</p>
+            <div class="combo-grid combo-grid-2">
+                <article class="combo-card" data-pack="2" data-search="wellness pair moringa abc health drink">
+                    <div class="combo-top">
+                        <span class="combo-badge">2-Pack</span>
+                    </div>
+                    <h3>Wellness Pair</h3>
+                    <div class="combo-stack">
+                        <img src="assets/Naturals/Moringa%20Instant%20Rice%20Mix.png" alt="">
+                        <img src="assets/Naturals/ABC%20Health%20Drink.png" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img src="assets/Naturals/Moringa%20Instant%20Rice%20Mix.png" alt="">
+                            <strong>Moringa Instant Rice Mix</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img src="assets/Naturals/ABC%20Health%20Drink.png" alt="">
+                            <strong>ABC Health Drink</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199</span>
+                            <strong>Rs 398/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Spiceblooms Naturals Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"},{"name":"Spiceblooms Naturals ABC Health Drink","price":199,"image":"assets/Naturals/ABC%20Health%20Drink.png"}]'>Add combo</button>
+                    </div>
+                </article>
+
+                <article class="combo-card" data-pack="2" data-search="kitchen staples turmeric masala karam">
+                    <div class="combo-top">
+                        <span class="combo-badge">2-Pack</span>
+                    </div>
+                    <h3>Kitchen Staples</h3>
+                    <div class="combo-stack">
+                        <img src="assets/Naturals/Turmeric%20powder.png" alt="">
+                        <img class="is-photo" src="assets/products/masala-karam.png" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img src="assets/Naturals/Turmeric%20powder.png" alt="">
+                            <strong>Turmeric Powder</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img class="is-photo" src="assets/products/masala-karam.png" alt="">
+                            <strong>Masala Karam</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199</span>
+                            <strong>Rs 398/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Turmeric Powder","price":199,"image":"assets/Naturals/Turmeric%20powder.png"},{"name":"Masala Karam","price":199,"image":"assets/products/masala-karam.png"}]'>Add combo</button>
+                    </div>
+                </article>
+
+                <article class="combo-card" data-pack="2" data-search="comfort bowl rasam karivepaku curry leaf">
+                    <div class="combo-top">
+                        <span class="combo-badge">2-Pack</span>
+                    </div>
+                    <h3>Comfort Bowl</h3>
+                    <div class="combo-stack">
+                        <img class="is-photo" src="assets/new_items/rasampowder.jpg" alt="">
+                        <img src="assets/Naturals/Karivepaku%20podi.png" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img class="is-photo" src="assets/new_items/rasampowder.jpg" alt="">
+                            <strong>Rasam Powder Tangy &amp; Peppery Delight</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img src="assets/Naturals/Karivepaku%20podi.png" alt="">
+                            <strong>Karivepaku Podi Aromatic Curry Leaf Blast</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199</span>
+                            <strong>Rs 398/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Rasam Powder","price":199,"image":"assets/new_items/rasampowder.jpg"},{"name":"Madhuri Spices Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}]'>Add combo</button>
+                    </div>
+                </article>
+
+                <article class="combo-card" data-pack="2" data-search="breakfast table idli karam sambar powder">
+                    <div class="combo-top">
+                        <span class="combo-badge">2-Pack</span>
+                    </div>
+                    <h3>Breakfast Table</h3>
+                    <div class="combo-stack">
+                        <img class="is-photo" src="assets/new_items/idli.jpg" alt="">
+                        <img class="is-photo" src="assets/new_items/sambar.jpg" alt="">
+                    </div>
+                    <ul class="combo-list">
+                        <li>
+                            <img class="is-photo" src="assets/new_items/idli.jpg" alt="">
+                            <strong>Idli Karam Podi Perfect Breakfast Companion</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                        <li>
+                            <img class="is-photo" src="assets/new_items/sambar.jpg" alt="">
+                            <strong>Sambar Powder Authentic Andhra Taste</strong>
+                            <span class="combo-item-price">Rs 199</span>
+                        </li>
+                    </ul>
+                    <div class="combo-foot">
+                        <div class="combo-total">
+                            <span>199 + 199</span>
+                            <strong>Rs 398/-</strong>
+                        </div>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Idli Karam Podi","price":199,"image":"assets/new_items/idli.jpg"},{"name":"Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon","price":199,"image":"assets/new_items/sambar.jpg"}]'>Add combo</button>
+                    </div>
+                </article>
+            </div>
+            </div>
+        </div>
+    </section>
 
 
     <!-- Products Grid -->
-    <section class="py-20 bg-white">
+    <section id="all-products" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Product 1 -->
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <!-- Product Card Moringa Instant Rice Mix -->
+                <div data-product-id="moringa" data-search="moringa instant rice mix spiceblooms naturals"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
-                        <img src="assets/Img-1.jpeg" alt="Premium Spice Product 1"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/Moringa%20Instant%20Rice%20Mix.png" alt="Moringa Instant Rice Mix"
+                            class="product-image packshot w-full h-64">
+                        <div class="absolute top-4 right-4">
+                            <span
+                                class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">New</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-dark mb-2">Spiceblooms Naturals Moringa Instant Rice Mix</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3" id="desc-moringa-rice">
+                            A wholesome one-pot rice mix with moringa goodness   nourishing flavour without a long cook.
+                            Mix instantly with hot rice for busy weekdays, tiffins, and travel days. Natural ingredients,
+                            no added preservatives, and authentic homestyle taste.
+                        </p>
+                        <button class="text-primary font-medium text-sm hover:underline self-start"
+                            onclick="toggleReadMore('desc-moringa-rice', this)">
+                            Read more
+                        </button>
+                        <div class="mt-auto">
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold text-primary">Rs 199/-</span>
+                            </div>
+                            <div class="mt-4 flex gap-2">
+                                <button type="button"
+                                    onclick="addToCart('Spiceblooms Naturals Moringa Instant Rice Mix', 199, 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png')"
+                                    class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 1 -->
+                <div data-product-id="dhanya" data-search="dhanaya dhanya podi coriander"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="relative overflow-hidden">
+                        <img src="assets/Naturals/Dhanya%20podi.png" alt="Dhanya Podi"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -184,7 +1463,7 @@
                             <span class="text-2xl font-bold text-primary">Rs 199/-</span>
                         </div>
                         <div class="mt-4 flex gap-2">
-                            <button type="button" onclick="addToCart('Dhanaya Podi', 199, 'assets/Img-1.jpeg')"
+                            <button type="button" onclick="addToCart('Dhanaya Podi', 199, 'assets/Naturals/Dhanya%20podi.png')"
                                 class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -198,10 +1477,11 @@
                 </div>
 
                 <!-- Product 2 -->
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <div data-product-id="pesara" data-search="pesara podi moong dal"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                     <div class="relative overflow-hidden">
-                        <img src="assets/Img-2.jpeg.jpeg" alt="Premium Spice Product 2"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/Pesara%20Podi.png" alt="Pesara Podi"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -217,7 +1497,7 @@
                             <span class="text-2xl font-bold text-primary">Rs 199/-</span>
                         </div>
                         <div class="mt-4 flex gap-2">
-                            <button type="button" onclick="addToCart('Pesara Podi', 199, 'assets/Img-2.jpeg.jpeg')"
+                            <button type="button" onclick="addToCart('Pesara Podi', 199, 'assets/Naturals/Pesara%20Podi.png')"
                                 class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -231,10 +1511,11 @@
                 </div>
 
                 <!-- Product 3 -->
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <div data-product-id="turmeric" data-search="turmeric powder"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                     <div class="relative overflow-hidden">
-                        <img src="assets/Img-3.jpeg.jpeg" alt="Premium Spice Product 3"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/Turmeric%20powder.png" alt="Turmeric Powder"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-accent text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -249,7 +1530,7 @@
                             <span class="text-2xl font-bold text-primary">Rs 199/-</span>
                         </div>
                         <div class="mt-4 flex gap-2">
-                            <button type="button" onclick="addToCart('Turmeric Powder', 199, 'assets/Img-3.jpeg.jpeg')"
+                            <button type="button" onclick="addToCart('Turmeric Powder', 199, 'assets/Naturals/Turmeric%20powder.png')"
                                 class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -262,10 +1543,11 @@
                     </div>
                 </div>
                 <!-- Product 4 -->
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <div data-product-id="kandi" data-search="kandi podi toor dal"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                     <div class="relative overflow-hidden">
-                        <img src="assets/Img-4.jpeg.jpeg" alt="Premium Spice Product 4"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/Kandi%20Podi.png" alt="Kandi Podi"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -280,7 +1562,7 @@
                             <span class="text-2xl font-bold text-primary">Rs 199/-</span>
                         </div>
                         <div class="mt-4 flex gap-2">
-                            <button type="button" onclick="addToCart('Kandi Podi', 199, 'assets/Img-4.jpeg.jpeg')"
+                            <button type="button" onclick="addToCart('Kandi Podi', 199, 'assets/Naturals/Kandi%20Podi.png')"
                                 class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -294,10 +1576,11 @@
                 </div>
 
                 <!-- Product 5 -->
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                <div data-product-id="masala-karam" data-search="masala karam andhra chilli"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                     <div class="relative overflow-hidden">
-                        <img src="assets/Img-5.jpeg.jpeg" alt="Premium Spice Product 5"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/products/masala-karam.png" alt="Masala Karam"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -313,7 +1596,7 @@
                             <span class="text-2xl font-bold text-primary">Rs 199/-</span>
                         </div>
                         <div class="mt-4 flex gap-2">
-                            <button type="button" onclick="addToCart('Masala Karam', 199, 'assets/Img-5.jpeg.jpeg')"
+                            <button type="button" onclick="addToCart('Masala Karam', 199, 'assets/products/masala-karam.png')"
                                 class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -327,11 +1610,11 @@
                 </div>
 
                 <!-- Product Card 6 G21 Masala-->
-                <div
+                <div data-product-id="garam-21" data-search="21 garam masala tradition pinch"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
-                        <img src="assets/new_items/21Garammasala.png" alt="21 Garam Masala"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/21%20Garam%20Masala%20Powder.png" alt="21 Garam Masala Powder"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -339,13 +1622,13 @@
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <h3 class="text-xl font-bold text-dark mb-2">
-                            Madhuri Spices 21 Garam Masala Tradition in Every Pinch
+                           Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch
                         </h3>
 
                         <!-- Description with Read More -->
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-1">
                             For generations, Indian kitchens have trusted garam masala for depth and warmth. At Madhuri
-                            Spices, our 21 Garam Masala blends 21 timeless spices—slow-roasted and finely ground—to
+                            Spices, our 21 Garam Masala blends 21 timeless spices slow-roasted and finely ground to
                             bring authentic aroma and taste to every dish, from curries and dals to biryanis and meats.
                         </p>
                         <button class="text-primary font-medium text-sm hover:underline self-start"
@@ -359,7 +1642,7 @@
                             </div>
                             <div class="mt-4 flex gap-2">
                                 <button type="button"
-                                    onclick="addToCart('Madhuri Spices 21 Garam Masala Tradition in Every Pinch', 199, 'assets/new_items/21Garammasala.png')"
+                                    onclick="addToCart('Madhuri Spices 21 Garam Masala Tradition in Every Pinch', 199, 'assets/Naturals/21%20Garam%20Masala%20Powder.png')"
                                     class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -374,7 +1657,7 @@
                 </div>
 
                 <!-- Product Card 7 Sambar-->
-                <div
+                <div data-product-id="sambar" data-search="sambar powder authentic andhra"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
                         <img src="assets/new_items/sambar.jpg"
@@ -387,13 +1670,13 @@
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <h3 class="text-xl font-bold text-dark mb-2">
-                            Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon
+                           Spiceblooms Naturals Sambar Powder Authentic Andhra Taste in Every Spoon
                         </h3>
 
                         <!-- Description with Read More -->
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-2">
                             Sambar is not just food it’s a tradition that brings families together around the dining
-                            table. With Madhuri Spices Sambar Powder, you can now prepare restaurant-style aromatic,
+                            table. WithSpiceblooms Naturals Sambar Powder, you can now prepare restaurant-style aromatic,
                             flavorful sambar right in your kitchen.
                             Crafted using a time-honored Andhra recipe, our sambar powder is a blend of handpicked
                             lentils, spices, and herbs, roasted to perfection and ground fresh to lock in flavor. Every
@@ -426,55 +1709,12 @@
                 </div>
 
 
-                <!-- Product Card 8 Moringa-->
-                <div
-                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
-                    <div class="relative overflow-hidden">
-                        <img src="assets/new_items/Moringa.png" alt="Moringa Powder"
-                            class="product-image w-full h-64 object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span
-                                class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
-                        </div>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Moringa Powder - Nature's Superfood
-                        </h3>
-                        <p class="text-gray-600 mb-4 line-clamp-3" id="desc-moringa">
-                            Experience the power of nature with Madhuri Spices Moringa Powder. Sourced from the finest
-                            moringa leaves, our powder is rich in vitamins, minerals, and antioxidants. It's a perfect
-                            addition to your smoothies, juices, or daily meals for a healthy boost.
-                        </p>
-                        <button class="text-primary font-medium text-sm hover:underline self-start"
-                            onclick="toggleReadMore('desc-moringa', this)">
-                            Read more
-                        </button>
-                        <div class="mt-auto">
-                            <div class="flex items-center justify-between">
-                                <span class="text-2xl font-bold text-primary">Rs 199/-</span>
-                            </div>
-                            <div class="mt-4 flex gap-2">
-                                <button type="button"
-                                    onclick="addToCart('Madhuri Spices Moringa Powder', 199, 'assets/new_items/Moringa.png')"
-                                    class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                                        </path>
-                                    </svg>
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Product Card 9 Royya Karam-->
-                <div
+                <div data-product-id="royya" data-search="royya karam prawn chilli mix"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
-                        <img src="assets/new_items/Royyakaram.jpg" alt="Royya Karam"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/Roya%20Karma.png" alt="Royya Karam Prawn Rice Mix"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
@@ -484,7 +1724,7 @@
                         <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Royya Karam - Traditional Prawn
                             Chilli Mix</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-royya">
-                            Bring the authentic taste of Andhra's coastal cuisine to your home with Madhuri Spices Royya
+                            Bring the authentic taste of Andhra's coastal cuisine to your home withSpiceblooms Naturals Royya
                             Karam. This spicy prawn-flavored chilli mix is a traditional recipe, perfect for adding a
                             burst of flavor to your rice or as a side with your favorite snacks.
                         </p>
@@ -494,11 +1734,11 @@
                         </button>
                         <div class="mt-auto">
                             <div class="flex items-center justify-between">
-                                <span class="text-2xl font-bold text-primary">Rs 249/-</span>
+                                <span class="text-2xl font-bold text-primary">Rs 199/-</span>
                             </div>
                             <div class="mt-4 flex gap-2">
                                 <button type="button"
-                                    onclick="addToCart('Madhuri Spices Royya Karam', 249, 'assets/new_items/Royyakaram.jpg')"
+                                    onclick="addToCart('Madhuri Spices Royya Karam', 199, 'assets/Naturals/Roya%20Karma.png')"
                                     class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -513,7 +1753,7 @@
                 </div>
 
                 <!-- Product Card 10 Idli Podi-->
-                <div
+                <div data-product-id="idli" data-search="idli karam podi breakfast dosa"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
                         <img src="assets/new_items/idli.jpg" alt="Idli Karam Podi"
@@ -524,10 +1764,10 @@
                         </div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Idli Karam Podi - Perfect Breakfast
+                        <h3 class="text-xl font-bold text-dark mb-2">Spiceblooms Naturals Idli Karam Podi - Perfect Breakfast
                             Companion</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-idli">
-                            Elevate your breakfast with Madhuri Spices Idli Karam Podi. Made with a perfect blend of
+                            Elevate your breakfast withSpiceblooms Naturals Idli Karam Podi. Made with a perfect blend of
                             lentils and spices, this podi is the ultimate companion for hot idlis and crispy dosas. Just
                             add a little ghee or oil and enjoy the classic taste of Andhra.
                         </p>
@@ -556,21 +1796,21 @@
                 </div>
 
                 <!-- Product Card 11 Karivepaku-->
-                <div
+                <div data-product-id="karivepaku" data-search="karivepaku podi curry leaf"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
-                        <img src="assets/new_items/karivepaku.png" alt="Karivepaku Podi"
-                            class="product-image w-full h-64 object-cover">
+                        <img src="assets/Naturals/Karivepaku%20podi.png" alt="Karivepaku Podi"
+                            class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
                                 class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Premium</span>
                         </div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Karivepaku Podi - Aromatic Curry
+                        <h3 class="text-xl font-bold text-dark mb-2">Spiceblooms Naturals Karivepaku Podi - Aromatic Curry
                             Leaf Blast</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-karivepaku">
-                            Savor the aromatic goodness of curry leaves with Madhuri Spices Karivepaku Podi. Handcrafted
+                            Savor the aromatic goodness of curry leaves withSpiceblooms Naturals Karivepaku Podi. Handcrafted
                             with fresh curry leaves and secret spices, this podi is not only delicious but also great
                             for hair health and digestion. Pair it with hot rice and ghee for a simple yet
                             soul-satisfying meal.
@@ -585,7 +1825,7 @@
                             </div>
                             <div class="mt-4 flex gap-2">
                                 <button type="button"
-                                    onclick="addToCart('Madhuri Spices Karivepaku Podi', 199, 'assets/new_items/karivepaku.png')"
+                                    onclick="addToCart('Madhuri Spices Karivepaku Podi', 199, 'assets/Naturals/Karivepaku%20podi.png')"
                                     class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -602,7 +1842,7 @@
 
 
                 <!-- Product Card 13 Rasam Powder-->
-                <div
+                <div data-product-id="rasam" data-search="rasam powder tangy peppery"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
                         <img src="assets/new_items/rasampowder.jpg" alt="Rasam Powder"
@@ -616,7 +1856,7 @@
                         <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Rasam Powder - Tangy & Peppery
                             Delight</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-rasam">
-                            Warm your soul with the authentic taste of Andhra rasam using Madhuri Spices Rasam Powder.
+                            Warm your soul with the authentic taste of Andhra rasam usingSpiceblooms Naturals Rasam Powder.
                             Our blend of pepper, cumin, and special lentils creates a tangy, peppery, and incredibly
                             aromatic rasam that’s perfect for a comforting meal. Just add to your tomato or tamarind
                             water and enjoy.
@@ -632,6 +1872,90 @@
                             <div class="mt-4 flex gap-2">
                                 <button type="button"
                                     onclick="addToCart('Madhuri Spices Rasam Powder', 199, 'assets/new_items/rasampowder.jpg')"
+                                    class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card Chicken Powder -->
+                <div data-product-id="chicken" data-search="chicken powder instant rice mix"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
+                    <div class="relative overflow-hidden">
+                        <img src="assets/Naturals/Chicken%20powder.png" alt="Chicken Powder Instant Rice Mix"
+                            class="product-image packshot w-full h-64">
+                        <div class="absolute top-4 right-4">
+                            <span
+                                class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">New</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-dark mb-2">Spiceblooms Naturals Chicken Powder Instant Rice Mix</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3" id="desc-chicken">
+                            A savoury chicken-flavoured instant rice mix with authentic homestyle taste. Mix 2–3 spoons
+                            with hot steamed rice and a spoon of ghee for a quick weekday meal or tiffin. Made with
+                            natural ingredients and no added preservatives.
+                        </p>
+                        <button class="text-primary font-medium text-sm hover:underline self-start"
+                            onclick="toggleReadMore('desc-chicken', this)">
+                            Read more
+                        </button>
+                        <div class="mt-auto">
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold text-primary">Rs 199/-</span>
+                            </div>
+                            <div class="mt-4 flex gap-2">
+                                <button type="button"
+                                    onclick="addToCart('Spiceblooms Naturals Chicken Powder Instant Rice Mix', 199, 'assets/Naturals/Chicken%20powder.png')"
+                                    class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card ABC Health Drink -->
+                <div data-product-id="abc" data-search="abc health drink almonds beetroot carrot"
+                    class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
+                    <div class="relative overflow-hidden">
+                        <img src="assets/Naturals/ABC%20Health%20Drink.png" alt="ABC Health Drink"
+                            class="product-image packshot w-full h-64">
+                        <div class="absolute top-4 right-4">
+                            <span
+                                class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">New</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-dark mb-2">Spiceblooms Naturals ABC Health Drink</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3" id="desc-abc">
+                            A nourishing almonds, beetroot, and carrot health drink you can mix instantly with hot milk.
+                            Made with natural ingredients and no added preservatives, it is a simple everyday cup for
+                            wholesome energy and authentic homemade goodness.
+                        </p>
+                        <button class="text-primary font-medium text-sm hover:underline self-start"
+                            onclick="toggleReadMore('desc-abc', this)">
+                            Read more
+                        </button>
+                        <div class="mt-auto">
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold text-primary">Rs 199/-</span>
+                            </div>
+                            <div class="mt-4 flex gap-2">
+                                <button type="button"
+                                    onclick="addToCart('Spiceblooms Naturals ABC Health Drink', 199, 'assets/Naturals/ABC%20Health%20Drink.png')"
                                     class="flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -723,18 +2047,6 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xl font-bold mb-6">Services</h3>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Home-Based, Hygienic
-                                Manufacturing</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Custom Product Packaging</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Fast Local Delivery & Pan-India
-                                Shipping</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Retail & Bulk Supply</a></li>
-                    </ul>
-                </div>
-
-                <div>
                     <h3 class="text-xl font-bold mb-6">Contact</h3>
                     <ul class="space-y-3 text-gray-400">
                         <li class="flex items-start space-x-2">
@@ -782,7 +2094,10 @@
         </div>
     </footer>
 
-
+    <div id="cart-toast" class="cart-toast" hidden>
+        <span>Added to cart.</span>
+        <a href="cart.html">View cart</a>
+    </div>
 
     <script>
         // Mobile menu toggle
@@ -797,9 +2112,11 @@
         window.addEventListener('scroll', () => {
             const navbar = document.querySelector('nav');
             if (window.scrollY > 50) {
-                navbar.classList.add('bg-white/95');
+                navbar.classList.add('bg-white/40');
+                navbar.classList.remove('bg-white/25');
             } else {
-                navbar.classList.remove('bg-white/95');
+                navbar.classList.add('bg-white/25');
+                navbar.classList.remove('bg-white/40');
             }
         });
 
@@ -827,23 +2144,46 @@
             updateCartBadge();
         }
 
-        function addToCart(name, price, image) {
+        function addToCart(name, price, image, options) {
+            const qty = options && options.quantity ? Math.max(1, parseInt(options.quantity, 10) || 1) : 1;
             const cart = getCart();
             const existingItem = cart.find(item => item.name === name);
 
             if (existingItem) {
-                existingItem.quantity += 1;
+                existingItem.quantity += qty;
             } else {
                 cart.push({
                     name: name,
                     price: price,
                     image: image,
-                    quantity: 1
+                    quantity: qty
                 });
             }
 
             saveCart(cart);
-            // Navigate to cart page
+            if (options && options.stay) {
+                showCartToast();
+                return;
+            }
+            if (!options || options.redirect !== false) {
+                window.location.href = 'cart.html';
+            }
+        }
+
+        function showCartToast() {
+            const toast = document.getElementById('cart-toast');
+            if (!toast) return;
+            toast.hidden = false;
+            clearTimeout(showCartToast._timer);
+            showCartToast._timer = setTimeout(function () {
+                toast.hidden = true;
+            }, 3200);
+        }
+
+        function addCombo(products) {
+            products.forEach(function (item) {
+                addToCart(item.name, item.price, item.image, { redirect: false });
+            });
             window.location.href = 'cart.html';
         }
 
@@ -862,13 +2202,379 @@
             }
         }
 
+        const PRODUCT_CATALOG = [
+            { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png', badge: 'New', desc: 'A wholesome one-pot rice mix with moringa goodness. Mix instantly with hot rice for busy weekdays, tiffins, and travel days. Natural ingredients, no added preservatives, and authentic homestyle taste.', points: ['Mix instantly with hot rice', 'Natural ingredients', 'No added preservatives', '100g pack'] },
+            { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png', badge: 'Premium', desc: 'Digestive and aromatic. Rich in natural coriander oils, with mild spice that works for all ages. Roasted and ground in small batches. No preservatives and no color added.', points: ['Mild spice for everyday meals', 'Roasted in small batches', 'No preservatives or added color', '100g pack'] },
+            { id: 'pesara', name: 'Pesara Podi', cartName: 'Pesara Podi', price: 199, mrp: 229, image: 'assets/Naturals/Pesara%20Podi.png', badge: 'Premium', desc: 'Light on the stomach and high on taste. Protein-packed with moong dal and chana dal. Great for kids and elders. Clean small-batch roasting with no preservatives or color.', points: ['Protein-rich moong and chana dal', 'Gentle everyday podi', 'Small-batch roasted', '100g pack'] },
+            { id: 'turmeric', name: 'Turmeric Powder', cartName: 'Turmeric Powder', price: 199, mrp: 229, image: 'assets/Naturals/Turmeric%20powder.png', badge: 'Premium', desc: 'Bright color and strong aroma. Hand-ground in small batches with no added color, preservatives, or starch. A kitchen staple that supports immunity and digestion.', points: ['Vibrant color and aroma', 'No added color or starch', 'Hand-ground in small batches', '100g pack'] },
+            { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'assets/Naturals/Kandi%20Podi.png', badge: 'Premium', desc: 'Roasted to perfection. Protein-rich and fiber-loaded, made from premium dals and spices. No preservatives and no artificial flavours.', points: ['Roasted toor dal blend', 'Protein and fiber rich', 'No artificial flavours', '100g pack'] },
+            { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'assets/products/masala-karam.png', badge: 'Premium', desc: 'Signature Andhra heat with balanced spice and aroma. Perfect for daily curries or special dishes. No preservatives or artificial color. Small-batch roasted and ground.', points: ['Signature Andhra heat', 'Balanced spice and aroma', 'Small-batch roasted', '100g pack'] },
+            { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png', badge: 'Premium', desc: 'Twenty-one timeless spices, slow-roasted and finely ground, bring authentic aroma and warmth to every dish. Finish dals, curries, biryani, and grilled meats with a pinch.', points: ['Blend of 21 spices', 'Slow-roasted and finely ground', 'Finish dals, curries, and biryani', '100g pack'] },
+            { id: 'sambar', name: 'Spiceblooms Naturals Sambar Powder Authentic Andhra Taste in Every Spoon', cartName: 'Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon', price: 199, image: 'assets/new_items/sambar.jpg', badge: 'Premium', desc: 'Crafted from a time-honored Andhra recipe. A blend of handpicked lentils, spices, and herbs, roasted to lock in flavor so you can make aromatic sambar at home.', points: ['Authentic Andhra sambar taste', 'Handpicked lentils and spices', 'Roasted fresh to lock in flavor', '100g pack'] },
+            { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png', badge: 'Premium', desc: 'Bring the authentic taste of Andhra coastal cooking home. This spicy prawn-flavoured chilli mix is perfect with hot rice and ghee, or as a punchy side with snacks.', points: ['Traditional prawn chilli mix', 'Coastal Andhra heat', 'Best with hot rice and ghee', '100g pack'] },
+            { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Madhuri Spices Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg', badge: 'Premium', desc: 'A blend of lentils and spices made for hot idlis and crispy dosas. Add a little ghee or oil and enjoy the classic taste of Andhra breakfast.', points: ['Made for idli and dosa', 'Classic Andhra breakfast taste', 'Add ghee or oil and serve', '100g pack'] },
+            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi Aromatic Curry Leaf Blast', cartName: 'Madhuri Spices Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png', badge: 'Premium', desc: 'Handcrafted with fresh curry leaves and secret spices. Aromatic, delicious, and traditionally used for digestion and hair health. Mix with hot rice and ghee.', points: ['Fresh curry leaf aroma', 'Mix with hot rice and ghee', 'Traditionally used for digestion', '100g pack'] },
+            { id: 'rasam', name: 'Madhuri Spices Rasam Powder Tangy and Peppery Delight', cartName: 'Madhuri Spices Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg', badge: 'Premium', desc: 'Pepper, cumin, and special lentils create a tangy, peppery, aromatic rasam. Add to tomato or tamarind water for a comforting bowl.', points: ['Tangy and peppery blend', 'Add to tomato or tamarind water', 'Comforting everyday rasam', '100g pack'] },
+            { id: 'chicken', name: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', cartName: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', price: 199, image: 'assets/Naturals/Chicken%20powder.png', badge: 'New', desc: 'A savoury chicken-flavoured instant rice mix with authentic homestyle taste. Mix 2 to 3 spoons with hot steamed rice and a spoon of ghee for a quick weekday meal or tiffin.', points: ['Instant rice mix', 'Savoury roast-chicken flavour', 'Ready in minutes', '100g pack'] },
+            { id: 'abc', name: 'Spiceblooms Naturals ABC Health Drink', cartName: 'Spiceblooms Naturals ABC Health Drink', price: 199, image: 'assets/Naturals/ABC%20Health%20Drink.png', badge: 'New', desc: 'A nourishing almonds, beetroot, and carrot health drink you can mix instantly with hot milk. Made with natural ingredients and no added preservatives.', points: ['Almonds, beetroot, and carrot', 'Mix instantly with hot milk', 'No added preservatives', '100g pack'] }
+        ];
+
+        function getProductById(id) {
+            return PRODUCT_CATALOG.find(function (item) { return item.id === id; });
+        }
+
+        var WISHLIST_KEY = 'spiceblooms_wishlist';
+        var HEART_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
+
+        function getWishlist() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+                return Array.isArray(stored) ? stored.filter(function (id) { return !!getProductById(id); }) : [];
+            } catch (err) {
+                return [];
+            }
+        }
+
+        function saveWishlist(ids) {
+            localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids));
+        }
+
+        function isWishlisted(id) {
+            return getWishlist().indexOf(id) !== -1;
+        }
+
+        function favButtonHtml(id, extraClass) {
+            const on = isWishlisted(id);
+            return '<button type="button" class="fav-btn' + (on ? ' is-active' : '') + (extraClass ? ' ' + extraClass : '') + '" data-fav-toggle="' + id + '" aria-label="' + (on ? 'Remove from wishlist' : 'Add to wishlist') + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + HEART_SVG + '</button>';
+        }
+
+        function syncHeartButtons() {
+            document.querySelectorAll('[data-fav-toggle]').forEach(function (btn) {
+                const id = btn.getAttribute('data-fav-toggle');
+                if (!id) return;
+                const on = isWishlisted(id);
+                btn.classList.toggle('is-active', on);
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                btn.setAttribute('aria-label', on ? 'Remove from wishlist' : 'Add to wishlist');
+            });
+        }
+
+        function renderWishlist() {
+            const ids = getWishlist();
+            const grid = document.querySelector('[data-wishlist-grid]');
+            const empty = document.querySelector('[data-wishlist-empty]');
+            document.querySelectorAll('[data-wishlist-count]').forEach(function (el) {
+                el.textContent = String(ids.length);
+                el.hidden = ids.length === 0;
+            });
+            if (!grid) return;
+            const products = ids.map(getProductById).filter(Boolean);
+            if (empty) empty.hidden = products.length > 0;
+            grid.innerHTML = products.map(function (item) {
+                return '<article class="wishlist-card">' +
+                    favButtonHtml(item.id) +
+                    '<img src="' + item.image + '" alt="' + item.name.replace(/"/g, '') + '">' +
+                    '<div class="wishlist-body">' +
+                    '<strong>' + item.name + '</strong>' +
+                    '<span class="wishlist-price">Rs ' + item.price + '/-</span>' +
+                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '">Add to Cart</button>' +
+                    '</div>' +
+                    '</article>';
+            }).join('');
+            syncHeartButtons();
+        }
+
+        function openWishlist(pushHash) {
+            closeProductDetail(true);
+            renderWishlist();
+            const section = document.getElementById('wishlist');
+            document.body.classList.add('wishlist-open');
+            if (section) section.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (pushHash !== false && location.hash !== '#wishlist') {
+                history.pushState({ wishlist: true }, '', '#wishlist');
+            }
+        }
+
+        function closeWishlist(clearHash) {
+            document.body.classList.remove('wishlist-open');
+            const section = document.getElementById('wishlist');
+            if (section) section.hidden = true;
+            if (clearHash !== false && location.hash === '#wishlist') {
+                history.replaceState(null, '', location.pathname + location.search);
+            }
+        }
+
+        function toggleWishlist(id) {
+            if (!getProductById(id)) return;
+            const list = getWishlist();
+            const index = list.indexOf(id);
+            if (index >= 0) list.splice(index, 1);
+            else list.push(id);
+            saveWishlist(list);
+            renderWishlist();
+        }
+
+        function mountCardHearts() {
+            document.querySelectorAll('#all-products .product-card[data-product-id]').forEach(function (card) {
+                const id = card.getAttribute('data-product-id');
+                if (!id || card.querySelector('[data-fav-toggle]')) return;
+                const media = card.querySelector('.relative');
+                if (!media) return;
+                media.insertAdjacentHTML('beforeend', favButtonHtml(id));
+            });
+        }
+
+        function currentSearchQuery() {
+            const input = document.getElementById('product-search');
+            return input ? input.value.trim().toLowerCase() : '';
+        }
+
+        function currentComboFilter() {
+            const active = document.querySelector('[data-combo-filter].is-active');
+            return active ? active.getAttribute('data-combo-filter') : 'all';
+        }
+
+        function matchesQuery(el, query) {
+            if (!query) return true;
+            return ((el.getAttribute('data-search') || el.textContent || '')).toLowerCase().includes(query);
+        }
+
+        function applyCatalogFilters() {
+            const query = currentSearchQuery();
+            const packFilter = currentComboFilter();
+            let visibleProducts = 0;
+            let visibleCombos = 0;
+
+            document.querySelectorAll('#all-products .product-card').forEach(function (card) {
+                const show = matchesQuery(card, query);
+                card.hidden = !show;
+                if (show) visibleProducts += 1;
+            });
+
+            document.querySelectorAll('.combo-card').forEach(function (card) {
+                const packOk = packFilter === 'all' || card.getAttribute('data-pack') === packFilter;
+                const show = packOk && matchesQuery(card, query);
+                card.hidden = !show;
+                if (show) visibleCombos += 1;
+            });
+
+            document.querySelectorAll('[data-combo-group]').forEach(function (group) {
+                const groupPack = group.getAttribute('data-combo-group');
+                const packOk = packFilter === 'all' || groupPack === packFilter;
+                const hasVisibleCard = Array.prototype.some.call(group.querySelectorAll('.combo-card'), function (card) {
+                    return !card.hidden;
+                });
+                group.hidden = !packOk || !hasVisibleCard;
+            });
+
+            const empty = document.getElementById('search-empty');
+            if (empty) empty.hidden = (visibleProducts + visibleCombos) > 0;
+        }
+
+        function closeProductDetail(keepHash) {
+            document.body.classList.remove('product-open');
+            const detail = document.getElementById('product-detail');
+            if (detail) detail.hidden = true;
+            if (!keepHash && location.hash.indexOf('#product=') === 0) {
+                history.replaceState(null, '', location.pathname + location.search);
+            }
+        }
+
+        function openProductDetail(id, pushHash) {
+            const product = getProductById(id);
+            if (!product) return;
+
+            const detail = document.getElementById('product-detail');
+            const img = detail.querySelector('[data-pd-image]');
+            const badge = detail.querySelector('[data-pd-badge]');
+            const title = detail.querySelector('[data-pd-title]');
+            const crumb = detail.querySelector('[data-pd-crumb]');
+            const mrp = detail.querySelector('[data-pd-mrp]');
+            const price = detail.querySelector('[data-pd-price]');
+            const desc = detail.querySelector('[data-pd-desc]');
+            const points = detail.querySelector('[data-pd-points]');
+            const qtyInput = detail.querySelector('[data-pd-qty]');
+
+            img.src = product.image;
+            img.alt = product.name;
+            badge.textContent = product.badge;
+            title.textContent = product.name;
+            crumb.textContent = product.name;
+            desc.textContent = product.desc;
+            price.textContent = 'Rs ' + product.price + '/-';
+            if (product.mrp) {
+                mrp.hidden = false;
+                mrp.textContent = 'Rs ' + product.mrp + '/-';
+            } else {
+                mrp.hidden = true;
+                mrp.textContent = '';
+            }
+            points.innerHTML = product.points.map(function (point) {
+                return '<li>' + point + '</li>';
+            }).join('');
+            qtyInput.value = '1';
+            detail.dataset.activeId = product.id;
+            const fav = detail.querySelector('[data-pd-fav]');
+            if (fav) fav.setAttribute('data-fav-toggle', product.id);
+            syncHeartButtons();
+
+            const relatedWrap = detail.querySelector('[data-pd-related]');
+            const start = PRODUCT_CATALOG.findIndex(function (item) { return item.id === product.id; });
+            const related = [];
+            for (let i = 1; i < PRODUCT_CATALOG.length && related.length < 4; i += 1) {
+                related.push(PRODUCT_CATALOG[(start + i) % PRODUCT_CATALOG.length]);
+            }
+            relatedWrap.innerHTML = related.map(function (item) {
+                return '<a class="pd-related-card" href="#product=' + item.id + '">' +
+                    '<img src="' + item.image + '" alt="' + item.name.replace(/"/g, '') + '">' +
+                    '<div><strong>' + item.name + '</strong><span>Rs ' + item.price + '/-</span></div>' +
+                    '</a>';
+            }).join('');
+
+            closeWishlist(false);
+            document.body.classList.add('product-open');
+            detail.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pushHash !== false) {
+                const next = '#product=' + product.id;
+                if (location.hash !== next) history.pushState({ product: product.id }, '', next);
+            }
+        }
+
+        function readProductHash() {
+            const match = location.hash.match(/^#product=([a-z0-9-]+)/i);
+            return match ? match[1] : '';
+        }
+
+        function syncProductFromHash() {
+            if (location.hash === '#wishlist') {
+                openWishlist(false);
+                return;
+            }
+            const id = readProductHash();
+            if (id && getProductById(id)) {
+                openProductDetail(id, false);
+            } else {
+                closeWishlist(false);
+                document.body.classList.remove('product-open');
+                const detail = document.getElementById('product-detail');
+                if (detail) detail.hidden = true;
+            }
+        }
+
         // Initialize on page load
         window.addEventListener('DOMContentLoaded', function () {
-            // Update cart badge
             updateCartBadge();
+
+            document.querySelectorAll('[data-combo-filter]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('[data-combo-filter]').forEach(function (b) {
+                        b.classList.toggle('is-active', b === btn);
+                    });
+                    applyCatalogFilters();
+                });
+            });
+
+            document.querySelectorAll('[data-combo-add]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const products = JSON.parse(btn.getAttribute('data-combo-add'));
+                    addCombo(products);
+                });
+            });
+
+            const searchForm = document.getElementById('product-search-form');
+            const searchInput = document.getElementById('product-search');
+            if (searchForm && searchInput) {
+                searchForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    closeProductDetail();
+                    closeWishlist();
+                    applyCatalogFilters();
+                    const products = document.getElementById('all-products');
+                    if (products) products.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                searchInput.addEventListener('input', function () {
+                    if (document.body.classList.contains('product-open')) closeProductDetail();
+                    if (document.body.classList.contains('wishlist-open')) closeWishlist();
+                    applyCatalogFilters();
+                });
+            }
+
+            mountCardHearts();
+            renderWishlist();
+
+            document.addEventListener('click', function (event) {
+                const fav = event.target.closest('[data-fav-toggle]');
+                if (fav) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    toggleWishlist(fav.getAttribute('data-fav-toggle'));
+                    return;
+                }
+                const addWish = event.target.closest('[data-wishlist-add]');
+                if (addWish) {
+                    event.preventDefault();
+                    const product = getProductById(addWish.getAttribute('data-wishlist-add'));
+                    if (product) addToCart(product.cartName, product.price, product.image, { stay: true });
+                }
+            });
+
+            const wishlistJump = document.querySelector('[data-wishlist-jump]');
+            if (wishlistJump) {
+                wishlistJump.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    openWishlist();
+                });
+            }
+
+            document.querySelectorAll('[data-wishlist-back]').forEach(function (link) {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    closeWishlist();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            document.querySelectorAll('#all-products .product-card').forEach(function (card) {
+                card.addEventListener('click', function (event) {
+                    if (event.target.closest('button')) return;
+                    const id = card.getAttribute('data-product-id');
+                    if (id) openProductDetail(id);
+                });
+            });
+
+            const detail = document.getElementById('product-detail');
+            if (detail) {
+                detail.querySelector('[data-pd-back]').addEventListener('click', function (event) {
+                    event.preventDefault();
+                    closeProductDetail();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                detail.querySelector('[data-pd-qty-minus]').addEventListener('click', function () {
+                    const input = detail.querySelector('[data-pd-qty]');
+                    input.value = String(Math.max(1, (parseInt(input.value, 10) || 1) - 1));
+                });
+                detail.querySelector('[data-pd-qty-plus]').addEventListener('click', function () {
+                    const input = detail.querySelector('[data-pd-qty]');
+                    input.value = String(Math.max(1, (parseInt(input.value, 10) || 1) + 1));
+                });
+                detail.querySelector('[data-pd-add]').addEventListener('click', function () {
+                    const product = getProductById(detail.dataset.activeId);
+                    if (!product) return;
+                    const qty = detail.querySelector('[data-pd-qty]').value;
+                    addToCart(product.cartName, product.price, product.image, { stay: true, quantity: qty });
+                });
+            }
+
+            window.addEventListener('hashchange', syncProductFromHash);
+            window.addEventListener('popstate', syncProductFromHash);
+            syncProductFromHash();
         });
 
     </script>
+    <script src="auth.js"></script>
 </body>
 
 </html>

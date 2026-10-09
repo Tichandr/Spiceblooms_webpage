@@ -82,28 +82,60 @@
                 margin-top: 0.75rem;
             }
         }
+
+        .checkout-auth-modal[hidden] {
+            display: none !important;
+        }
+
+        .checkout-auth-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        .checkout-auth-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(28, 24, 20, 0.45);
+            backdrop-filter: blur(6px);
+        }
+
+        .checkout-auth-card {
+            position: relative;
+            width: min(440px, 100%);
+            padding: 1.75rem 1.6rem 1.5rem;
+            border-radius: 30px;
+            background: #fff;
+            box-shadow: 0 20px 50px rgba(45, 45, 45, 0.18);
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
     </style>
 </head>
 
 <body class="font-body text-dark scroll-smooth bg-light">
     <!-- Navigation -->
     <nav
-        class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 transition-all duration-300">
+        class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/25 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)] transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center">
-                        <img src="assets/Spice-logo.png" alt="spice Blooms Logo" class="w-10 h-10">
-                    </div>
-                </div>
+            <div class="flex justify-between items-center h-16 md:h-24">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Spiceblooms Naturals home">
+                    <img src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872" class="h-12 md:h-[84px] w-auto object-contain">
+                </a>
 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="index.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
                     <a href="index.html#about"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
-                    <a href="index.html#services"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Services</a>
                     <a href="products.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
                     <a href="catalouge.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Catalogue</a>
                     <a href="index.html#contact"
@@ -114,9 +146,10 @@
                         </svg>
                         <span id="cart-badge" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center" style="display: none;">0</span>
                     </a>
+                    <button type="button" data-sign-out class="hidden px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors duration-200">Sign out</button>
                 </div>
 
-                <button class="md:hidden" id="mobile-menu-button">
+                <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
@@ -127,20 +160,20 @@
 
         <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
                 <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
                 <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
-                <a href="index.html#services" class="block px-3 py-2 text-gray-700 hover:text-primary">Services</a>
                 <a href="products.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Products</a>
                 <a href="catalouge.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Catalogue</a>
                 <a href="cart.html" class="block px-3 py-2 text-primary font-semibold">Cart</a>
                 <a href="index.html#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="pt-20 sm:pt-24 pb-12 sm:pb-16 gradient-bg relative overflow-hidden">
+    <section class="pt-32 sm:pt-36 pb-12 sm:pb-16 gradient-bg relative overflow-hidden">
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6">
@@ -211,7 +244,7 @@
                                     </svg>
                                     <span class="whitespace-nowrap">Proceed to Pay</span>
                                 </button>
-                                <p class="text-xs text-gray-500 text-center">Secure checkout powered by Razorpay</p>
+                                <p id="checkout-hint" class="text-xs text-gray-500 text-center">Sign in is required before payment. Secure checkout powered by Razorpay</p>
                                 <a href="products.html"
                                     class="block w-full bg-gray-100 text-dark px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold text-center hover:bg-gray-200 transition-colors">
                                     Continue Shopping
@@ -223,6 +256,30 @@
             </div>
         </div>
     </section>
+
+    <div id="checkout-auth-modal" class="checkout-auth-modal" hidden>
+        <div class="checkout-auth-backdrop" data-checkout-auth-close></div>
+        <div class="checkout-auth-card" role="dialog" aria-modal="true" aria-labelledby="checkout-auth-title">
+            <h2 id="checkout-auth-title" class="text-2xl font-bold text-dark mb-2">Sign in to continue</h2>
+            <p class="text-gray-600 mb-6 leading-relaxed">
+                Sign in or create an account so we can attach this order to your details before payment.
+            </p>
+            <div class="space-y-3">
+                <a href="login.html?next=cart.html%3Fcontinue%3Dpay"
+                    class="block w-full bg-primary text-white px-6 py-3 rounded-full font-semibold text-center hover:bg-primary/90 transition-colors">
+                    Sign in
+                </a>
+                <a href="login.html?next=cart.html%3Fcontinue%3Dpay&mode=signup"
+                    class="block w-full bg-gray-100 text-dark px-6 py-3 rounded-full font-semibold text-center hover:bg-gray-200 transition-colors">
+                    Sign up
+                </a>
+                <button type="button" data-checkout-auth-close
+                    class="block w-full text-gray-500 text-sm font-medium py-2 hover:text-dark transition-colors">
+                    Not now
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-dark text-white py-16">
@@ -268,18 +325,6 @@
                         <li><a href="#" class="hover:text-white transition-colors">Spice Blends</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Handmade in small batches</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">FSSAI Licensed</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-xl font-bold mb-6">Services</h3>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Home-Based, Hygienic
-                                Manufacturing</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Custom Product Packaging</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Fast Local Delivery & Pan-India
-                                Shipping</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Retail & Bulk Supply</a></li>
                     </ul>
                 </div>
 
@@ -435,6 +480,19 @@
         }
 
         const RAZORPAY_PAYMENT_PAGE = 'https://pages.razorpay.com/pl_Tcjt9CwKb9pbxo/view';
+        const checkoutAuthModal = document.getElementById('checkout-auth-modal');
+
+        function openCheckoutAuthModal() {
+            if (!checkoutAuthModal) {
+                window.location.href = 'login.html?next=cart.html%3Fcontinue%3Dpay';
+                return;
+            }
+            checkoutAuthModal.hidden = false;
+        }
+
+        function closeCheckoutAuthModal() {
+            if (checkoutAuthModal) checkoutAuthModal.hidden = true;
+        }
 
         function proceedToPayment() {
             const cart = getCart();
@@ -453,9 +511,21 @@
                 return;
             }
 
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            if (!session) {
+                openCheckoutAuthModal();
+                return;
+            }
+
             const paymentUrl = new URL(RAZORPAY_PAYMENT_PAGE);
             paymentUrl.searchParams.set('amount', String(totalItems));
             window.location.href = paymentUrl.toString();
+        }
+
+        if (checkoutAuthModal) {
+            checkoutAuthModal.querySelectorAll('[data-checkout-auth-close]').forEach((el) => {
+                el.addEventListener('click', closeCheckoutAuthModal);
+            });
         }
 
         // Mobile menu toggle
@@ -473,6 +543,22 @@
             updateCartBadge();
             renderCart();
         });
+    </script>
+    <script src="auth.js"></script>
+    <script>
+        (function () {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            const hint = document.getElementById('checkout-hint');
+            if (session && hint) {
+                hint.textContent = 'Secure checkout powered by Razorpay';
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('continue') !== 'pay') return;
+            history.replaceState({}, '', 'cart.html');
+            if (!session || !getCart().length) return;
+            proceedToPayment();
+        })();
     </script>
 </body>
 

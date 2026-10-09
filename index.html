@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<link>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SpiceBlooms - Where Flavor Gardens Come to life</title>
@@ -23,10 +23,11 @@
                         'body': ['Inter', 'system-ui', 'sans-serif']
                     }
                 }
-            }
+            },
+            safelist: ['bg-white/25', 'bg-white/40']
         }
     </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap"
     rel="stylesheet">
 
 <!-- Formspree will be used for email functionality -->
@@ -63,6 +64,191 @@
 
         50% {
             transform: translateY(-20px);
+        }
+    }
+
+    html,
+    body {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    .hero-combo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: min(28rem, calc(100vw - 2rem));
+        height: fit-content;
+        align-self: center;
+        margin: 0.5rem auto 0;
+        padding: 1.05rem 1rem 1.1rem;
+        border-radius: 30px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(40px) saturate(150%);
+        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 30px rgba(27, 61, 47, 0.08);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+    }
+
+    @media (min-width: 1024px) {
+        .hero-combo {
+            width: min(36rem, 44vw);
+            max-width: min(36rem, 44vw);
+            margin: 0;
+            justify-self: end;
+            align-self: center;
+            padding: 1.2rem 1.2rem 1.25rem;
+        }
+    }
+
+    .hero-combo:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.32);
+    }
+
+    .hero-combo-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 0.55rem 1.25rem;
+        border-radius: 999px;
+        background: #FF6B35;
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        line-height: 1.2;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .hero-combo-stage {
+        position: relative;
+        width: 100%;
+        margin: 0.85rem 0 0.7rem;
+    }
+
+    .hero-combo-slide {
+        --combo-gap: 0.55rem;
+        display: none;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--combo-gap);
+        width: 100%;
+    }
+
+    .hero-combo-slide.is-active {
+        display: grid;
+    }
+
+    .hero-combo-slide.is-active.is-pair {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .hero-combo-slide.is-pair .hero-combo-tile {
+        width: calc((100% - 2 * var(--combo-gap)) / 3);
+        flex: 0 0 calc((100% - 2 * var(--combo-gap)) / 3);
+        max-width: calc((100% - 2 * var(--combo-gap)) / 3);
+    }
+
+    .hero-combo-tile {
+        display: block;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-combo-title {
+        display: block;
+        margin: 0;
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        text-align: center;
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero-combo-sub {
+        display: block;
+        margin-top: 0.15rem;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-align: center;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.22);
+    }
+
+    .hero-combo-shop {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        margin-top: 0.9rem;
+        min-height: 44px;
+        padding: 0.7rem 1.6rem;
+        border-radius: 999px;
+        background: #fff;
+        color: #111;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+        transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .hero-combo-shop:hover,
+    .hero-combo-shop:focus-visible {
+        outline: none;
+        background: #FF6B35;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    @media (min-width: 1024px) {
+        .hero-combo-badge {
+            font-size: 0.95rem;
+            padding: 0.62rem 1.5rem;
+            letter-spacing: 0.16em;
+        }
+
+        .hero-combo-title {
+            font-size: 2rem;
+        }
+
+        .hero-combo-sub {
+            font-size: 1.05rem;
+        }
+
+        .hero-combo-tile {
+            border-radius: 20px;
+        }
+
+        .hero-combo-shop {
+            font-size: 1.02rem;
+            padding: 0.78rem 1.85rem;
+        }
+    }
+
+    .contact-name-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 480px) {
+        .contact-name-grid {
+            grid-template-columns: 1fr 1fr;
         }
     }
 
@@ -163,6 +349,389 @@
         opacity: 0;
         pointer-events: none;
     }
+
+    /* =========================================
+       SPICEBLOOMS SIGNATURE POWDERS
+    ========================================= */
+
+    .spice-section {
+        position: relative;
+        padding: 100px 0 90px;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(247, 167, 64, 0.07), transparent 30%),
+            radial-gradient(circle at 85% 70%, rgba(76, 120, 63, 0.06), transparent 30%),
+            #ffffff;
+        overflow: hidden;
+        font-family: Inter, system-ui, sans-serif;
+    }
+
+    .spice-container {
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .spice-header {
+        text-align: center;
+        max-width: 760px;
+        margin: 0 auto 58px;
+        padding: 0 24px;
+    }
+
+    .spice-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #c96b2c;
+    }
+
+    .eyebrow-line {
+        width: 28px;
+        height: 1px;
+        background: #d99a5b;
+    }
+
+    .spice-header h2 {
+        margin: 0;
+        font-size: clamp(38px, 5vw, 58px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+        font-weight: 800;
+        color: #292825;
+    }
+
+    .spice-header h2 span {
+        display: block;
+        color: #c96b2c;
+    }
+
+    .spice-header p {
+        max-width: 650px;
+        margin: 20px auto 0;
+        font-size: 17px;
+        line-height: 1.7;
+        color: #6d6a64;
+    }
+
+    .spice-carousel {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        padding: 12px 0 30px;
+    }
+
+    .carousel-fade {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 150px;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    .carousel-fade-left {
+        left: 0;
+        background: linear-gradient(90deg, #ffffff 0%, rgba(255,255,255,0.92) 30%, rgba(255,255,255,0) 100%);
+    }
+
+    .carousel-fade-right {
+        right: 0;
+        background: linear-gradient(270deg, #ffffff 0%, rgba(255,255,255,0.92) 30%, rgba(255,255,255,0) 100%);
+    }
+
+    .spice-marquee {
+        display: flex;
+        gap: 24px;
+        width: max-content;
+        animation: spiceMarquee 38s linear infinite;
+        will-change: transform;
+    }
+
+    .spice-carousel:hover .spice-marquee {
+        animation-play-state: paused;
+    }
+
+    @keyframes spiceMarquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(calc(-50% - 12px)); }
+    }
+
+    .spice-card {
+        position: relative;
+        width: 360px;
+        min-height: 430px;
+        flex: 0 0 360px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.96);
+        border: 1px solid rgba(42, 38, 32, 0.07);
+        box-shadow: 0 10px 35px rgba(44, 38, 30, 0.07), 0 2px 8px rgba(44, 38, 30, 0.03);
+        transition: transform 350ms ease, box-shadow 350ms ease, border-color 350ms ease;
+    }
+
+    .spice-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(201, 107, 44, 0.22);
+        box-shadow: 0 22px 55px rgba(44, 38, 30, 0.12), 0 4px 12px rgba(44, 38, 30, 0.05);
+    }
+
+    .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .product-mark {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .product-mark svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .product-mark img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .mark-yellow {
+        overflow: hidden;
+        padding: 0;
+        background: #f3d27a;
+    }
+    .mark-green {
+        overflow: hidden;
+        padding: 0;
+        background: #e8e4c8;
+    }
+    .mark-green-dark {
+        overflow: hidden;
+        padding: 0;
+        background: #f3e3a6;
+    }
+    .mark-red {
+        overflow: hidden;
+        padding: 0;
+        background: #2a241f;
+    }
+
+    .mark-red img {
+        object-position: center 42%;
+    }
+    .mark-gold {
+        overflow: hidden;
+        padding: 0;
+        background: #f4d56a;
+    }
+
+    .mark-moringa {
+        overflow: hidden;
+        padding: 0;
+        background: #eef6ea;
+    }
+
+    .mark-moringa img {
+        object-position: center 78%;
+    }
+
+    .mark-prawn {
+        overflow: hidden;
+        padding: 0;
+        background: #3a2418;
+    }
+
+    .mark-prawn img {
+        object-position: center 55%;
+    }
+
+    .mark-garam {
+        overflow: hidden;
+        padding: 0;
+        background: #e8d8b8;
+    }
+
+    .mark-garam img {
+        object-position: center 48%;
+    }
+
+    .mark-karivepaku {
+        overflow: hidden;
+        padding: 0;
+        background: #e8f3e4;
+    }
+
+    .mark-karivepaku img {
+        object-position: 62% 38%;
+    }
+
+    .mark-chicken {
+        overflow: hidden;
+        padding: 0;
+        background: #f4ead8;
+    }
+
+    .mark-chicken img {
+        object-position: center 42%;
+    }
+
+    .product-type {
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: #faf7f2;
+        color: #9a7658;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.11em;
+    }
+
+    .spice-card h3 {
+        margin: 0 0 12px;
+        color: #2c2a27;
+        font-size: 26px;
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+        font-weight: 700;
+    }
+
+    .card-description {
+        margin: 0;
+        color: #716d67;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .recipe-box {
+        margin-top: 24px;
+        padding: 18px;
+        border-radius: 16px;
+        background: #fbf8f3;
+        border: 1px solid rgba(201, 107, 44, 0.09);
+    }
+
+    .recipe-heading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 11px;
+        color: #c96b2c;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .recipe-icon {
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f4dfca;
+        font-size: 10px;
+    }
+
+    .recipe-box ol {
+        margin: 0;
+        padding-left: 18px;
+        list-style: decimal;
+        color: #77716a;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .recipe-box li + li {
+        margin-top: 4px;
+    }
+
+    .spice-card .read-more-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: auto;
+        padding: 24px 0 0;
+        border: 0;
+        background: transparent;
+        color: #c96b2c;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: gap 200ms ease, color 200ms ease;
+    }
+
+    .spice-card .read-more-btn span {
+        font-size: 17px;
+        transition: transform 200ms ease;
+    }
+
+    .spice-card .read-more-btn:hover {
+        color: #a9521d;
+        gap: 13px;
+    }
+
+    .spice-card .read-more-btn:hover span {
+        transform: translateX(3px);
+    }
+
+    .carousel-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        margin-top: 18px;
+        color: #aaa39b;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+    }
+
+    .hint-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #d58a4a;
+    }
+
+    @media (max-width: 768px) {
+        .spice-section { padding: 64px 0 56px; }
+        .spice-header { margin-bottom: 32px; padding: 0 20px; }
+        .spice-header h2 { font-size: clamp(28px, 8vw, 36px); line-height: 1.15; }
+        .spice-header p { font-size: 15px; }
+        .spice-card {
+            width: min(300px, calc(100vw - 48px));
+            flex-basis: min(300px, calc(100vw - 48px));
+            min-height: 390px;
+            padding: 22px;
+        }
+        .carousel-fade { width: 36px; }
+        .spice-marquee { gap: 16px; animation-duration: 32s; }
+        .hero-combo { animation: none; max-width: min(28rem, calc(100vw - 2rem)); height: fit-content; }
+        .hero-combo-badge { font-size: 0.8rem; padding: 0.52rem 1.15rem; letter-spacing: 0.12em; }
+        .hero-combo-title { font-size: 1.4rem; }
+        .hero-combo-tile { border-radius: 14px; }
+        .hero-combo-slide { --combo-gap: 0.4rem; gap: var(--combo-gap); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .spice-marquee { animation: none; }
+        .spice-card:hover { transform: none; }
+        .hero-combo { transform: none; }
+    }
 </style>
 
 
@@ -172,30 +741,27 @@
 
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 transition-all duration-300"
+    <nav class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/25 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)] transition-all duration-300"
         id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10  rounded-xl flex items-center justify-center">
-                        <img src="assets/Spice-logo.png" alt="spice Blooms Logo" class="w-26 h-26">
-                    </div>
-                </div>
+            <div class="flex justify-between items-center h-16 md:h-24">
+                <a href="#home" class="flex items-center shrink-0" aria-label="Spiceblooms Naturals home">
+                    <img src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872" class="h-12 md:h-[84px] w-auto object-contain">
+                </a>
 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
                     <a href="#about" class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
-                    <a href="#services"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Services</a>
                         <a href="products.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
                     <a href="exports.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Exports</a>
                     <a href="#contact"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
+                    <button type="button" data-sign-out class="hidden px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors duration-200">Sign out</button>
                 </div>
 
-                <button class="md:hidden" id="mobile-menu-button">
+                <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
@@ -206,19 +772,19 @@
 
         <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white/40 backdrop-blur-xl border-t border-white/30">
                 <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
                 <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
-                <a href="#services" class="block px-3 py-2 text-gray-700 hover:text-primary">Services</a>
                 <a href="products.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Products</a>
                 <a href="exports.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Exports</a>
                 <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="min-h-screen flex items-center relative overflow-hidden">
+    <section id="home" class="relative min-h-[100svh] flex items-start lg:items-center overflow-x-hidden">
         <!-- Video Background -->
         <video class="video-background" autoplay muted loop playsinline>
             <source src="assets/spicemovie.mp4" type="video/mp4">
@@ -228,58 +794,73 @@
         <!-- Video Overlay -->
         <div class="video-overlay"></div>
         
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div class="text-white">
-                    <h1 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-                        Where <span class="text-accent">Flavor</span> Gardens Come to life
-                    </h1>
-                    <p class="text-xl mb-8 opacity-90 leading-relaxed">
-                        Revolutionizing the spice industry with premium quality, sustainable sourcing, and cutting-edge
-                        technology. Experience the future of flavor.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="products.html"
-                            class="bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 text-center">
-                            Explore Our Spices
-                        </a>
-                        <a href="https://www.instagram.com/spiceblooms_naturals"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="border-2 border-white text-black px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 text-center">
-                            Watch Our Story
-                        </a>
-                    </div>
-                </div>
-
-                <div class="relative">
-                    <div class="animate-float">
-                        <img src="./assets/prodcts.png"
-                            alt="Spices" class="rounded-3xl shadow-2xl w-full max-w-lg mx-auto">
-                    </div>
-                    <div class="absolute -top-4 -right-4 animate-float-delayed">
-                        <div class="glass-effect rounded-2xl p-6 text-white">
-                            <div class="text-3xl font-bold">5+</div>
-                            <div class="text-sm opacity-80">Premium Spices</div>
-                        </div>
-                    </div>
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-10 sm:pt-36 lg:pt-36 lg:pb-20">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div class="text-white max-w-3xl min-w-0">
+                <h1 class="text-[2rem] leading-[1.15] sm:text-5xl lg:text-7xl font-bold mb-5 sm:mb-6 break-words">
+                    Where <span class="text-accent">Flavor</span> Gardens Come to life
+                </h1>
+                <p class="text-base sm:text-xl mb-6 sm:mb-8 opacity-90 leading-relaxed">
+                    Revolutionizing the spice industry with premium quality, sustainable sourcing, and cutting-edge
+                    technology. Experience the future of flavor.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <a href="products.html"
+                        class="bg-white text-black px-8 py-3.5 sm:py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 sm:hover:scale-105 text-center">
+                        Explore Our Spices
+                    </a>
+                    <a href="https://www.instagram.com/spiceblooms_naturals"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="border-2 border-white text-white px-8 py-3.5 sm:py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 text-center">
+                        Watch Our Story
+                    </a>
                 </div>
             </div>
+            <article class="hero-combo">
+                <span class="hero-combo-badge" data-hero-badge>3-Pack Combo</span>
+                <div class="hero-combo-stage">
+                    <div class="hero-combo-slide is-active" data-pack="3-Pack Combo" data-title="Coastal Kitchen">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/coastal-1.jpg" alt="Royya Karam Prawn Rice Mix">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/coastal-2.jpg" alt="Chicken Powder Instant Rice Mix">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/coastal-3.jpg" alt="21 Garam Masala Powder">
+                    </div>
+                    <div class="hero-combo-slide" data-pack="3-Pack Combo" data-title="Everyday Podi Trio">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/podi-1.jpg" alt="Kandi Podi">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/podi-2.jpg" alt="Pesara Podi">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/podi-3.jpg" alt="Dhanya Podi">
+                    </div>
+                    <div class="hero-combo-slide is-pair" data-pack="2-Pack Combo" data-title="Wellness Pair">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/wellness-1.jpg" alt="Moringa Instant Rice Mix">
+                        <img class="hero-combo-tile" src="assets/combos/tiles/wellness-2.jpg" alt="ABC Health Drink">
+                    </div>
+                </div>
+                <strong class="hero-combo-title" data-hero-title>Coastal Kitchen</strong>
+                <span class="hero-combo-sub">Spice Combos</span>
+                <a href="products.html" class="hero-combo-shop" aria-label="Shop now on the products page">Shop Now</a>
+            </article>
+            </div>
         </div>
+
+
+
+
+        
     </section>
+
 
     <!-- About Section -->
     <section id="about" class="py-20 bg-light">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold mb-6">About SpiceBlooms</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div class="text-center mb-12 lg:mb-16">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">About SpiceBlooms Naturals</h2>
+                <p class="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     Born from a passion for authentic flavors and sustainable practices, SpiceBlooms connects you with
                     the world's finest spices while empowering local farmers.
                 </p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
                 <div>
                     <img src="https://images.unsplash.com/photo-1490026220125-b42f3d66abd6?q=80&w=2172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         alt="Spice farming" class="rounded-3xl shadow-xl w-full">
@@ -334,269 +915,353 @@
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold mb-6 flex items-center justify-center gap-2">Our Services</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Experience the best of Andhra’s authentic flavors, hygienically handcrafted and delivered with care.
+    <!-- Spiceblooms Signature Section -->
+    <section id="blogs" class="spice-section">
+        <div class="spice-container">
+            <div class="spice-header">
+                <span class="spice-eyebrow">
+                    <span class="eyebrow-line"></span>
+                    FROM OUR KITCHEN
+                    <span class="eyebrow-line"></span>
+                </span>
+                <h2>
+                    Our Signature
+                    <span>Powders &amp; Mixes</span>
+                </h2>
+                <p>
+                    Discover authentic Andhra flavours, traditional recipes,
+                    and everyday favourites crafted to bring more taste to your table.
                 </p>
             </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-                <!-- Service 1 -->
-                <div class="bg-light rounded-3xl p-8 shadow-md flex flex-col items-center text-center h-full">
-                    <div class="text-4xl mb-4">🏡</div>
-                    <h3 class="text-2xl font-bold mb-3">Home-Based, Hygienic Manufacturing</h3>
-                    <ul class="text-gray-600 space-y-2 text-left list-disc list-inside">
-                        <li>Small-batch handcrafted production</li>
-                        <li>Traditional roasting & grinding methods</li>
-                        <li>Maintains authentic Andhra taste</li>
-                    </ul>
-                </div>
-                <!-- Service 2 -->
-                <div class="bg-light rounded-3xl p-8 shadow-md flex flex-col items-center text-center h-full">
-                    <div class="text-4xl mb-4">📦</div>
-                    <h3 class="text-2xl font-bold mb-3">Custom Product Packaging</h3>
-                    <ul class="text-gray-600 space-y-2 text-left list-disc list-inside">
-                        <li>Eco-friendly PET bottles</li>
-                        <li>FSSAI-compliant labeling</li>
-                        <li>Hand-sealed with hygiene protocols</li>
-                        <li>Custom combo packs available</li>
-                    </ul>
-                </div>
-                <!-- Service 3 -->
-                <div class="bg-light rounded-3xl p-8 shadow-md flex flex-col items-center text-center h-full">
-                    <div class="text-4xl mb-4">🚚</div>
-                    <h3 class="text-2xl font-bold mb-3">Fast Local Delivery & Pan-India Shipping</h3>
-                    <ul class="text-gray-600 space-y-2 text-left list-disc list-inside">
-                        <li>Same-day dispatch within Visakhapatnam</li>
-                        <li>Door delivery through courier partners</li>
-                        <li>Amazon, Blinkit & WhatsApp orders accepted</li>
-                    </ul>
-                </div>
-                <!-- Service 4 -->
-                <div class="bg-light rounded-3xl p-8 shadow-md flex flex-col items-center text-center h-full">
-                    <div class="text-4xl mb-4">🛍️</div>
-                    <h3 class="text-2xl font-bold mb-3">Retail & Bulk Supply</h3>
-                    <ul class="text-gray-600 space-y-2 text-left list-disc list-inside">
-                        <li>B2B supply to grocery stores & Kirana shops</li>
-                        <li>Distributor tie-ups welcome</li>
-                        <li>MOQ flexibility for new retailers</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!--Blogs sections...-->
-    <section id="blogs" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl lg:text-5xl font-bold mb-4">Our Signature Powders & Mixes</h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Discover the authentic Andhra flavors and easy recipes that make every meal special.</p>
-            </div>
-            <div class="relative overflow-hidden">
-                <div class="blogs-marquee flex gap-10" style="will-change: transform;">
-                    <!-- Kandi Podi -->
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="0">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">🧄</span>
-                            <h3 class="text-2xl font-bold">Kandi Podi – Andhra Protein Punch</h3>
+            <div class="spice-carousel">
+                <div class="carousel-fade carousel-fade-left"></div>
+                <div class="carousel-fade carousel-fade-right"></div>
+
+                <div class="spice-marquee">
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-yellow">
+                                <img src="assets/kandi-podi-dal.jpg" alt="Toor dal for Kandi Podi" width="54" height="54">
+                            </div>
+                            <span class="product-type">PODI</span>
                         </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">A roasted toor dal blend packed with protein, this nutty, earthy powder is a pantry staple. Perfect for mixing with hot rice and ghee for a quick, filling meal.</p>
-                            <div class="mb-2 font-semibold text-primary">Recipe – Kandi Podi Rice:</div>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2">
-                                <li>Add 2-3 spoons of Kandi Podi over hot steamed rice.</li>
+                        <h3>Kandi Podi</h3>
+                        <p class="card-description">
+                            A roasted toor dal blend packed with protein,
+                            delivering a nutty, earthy flavour to everyday meals.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Kandi Podi Rice
+                            </div>
+                            <ol>
+                                <li>Add 2–3 spoons over hot steamed rice.</li>
                                 <li>Top with a spoon of ghee.</li>
-                                <li>Mix well and enjoy with raw onion or pickle.</li>
+                                <li>Mix well and enjoy.</li>
                             </ol>
                         </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 0)">Read More</button>
-                    </div>
-                    <!-- Dhanya Podi -->
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">🌿</span>
-                            <h3 class="text-2xl font-bold">Dhanya Podi – Fragrant Instant Mix</h3>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-green">
+                                <img src="assets/dhanya-podi-coriander.png" alt="Coriander seeds for Dhanya Podi" width="54" height="54">
+                            </div>
+                            <span class="product-type">INSTANT MIX</span>
                         </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">This cumin and red chilli blend is light, aromatic, and perfect for daily meals. It adds a spicy-smooth touch to your plate.</p>
-                            <div class="mb-2 font-semibold text-primary">Recipe – Dhanya Podi Rice:</div>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2">
+                        <h3>Dhanya Podi</h3>
+                        <p class="card-description">
+                            A fragrant cumin and red chilli blend that's light,
+                            aromatic, and perfect for everyday meals.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Dhanya Podi Rice
+                            </div>
+                            <ol>
                                 <li>Mix 2 spoons with hot rice.</li>
                                 <li>Add a dash of ghee.</li>
-                                <li>Tastes great with papad or curd.</li>
+                                <li>Serve with papad or curd.</li>
                             </ol>
                         </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 1)">Read More</button>
-                    </div>
-                    <!-- Pesara Podi -->
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="2">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">🌱</span>
-                            <h3 class="text-2xl font-bold">Pesara Podi – Light & Nourishing</h3>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-green-dark">
+                                <img src="assets/pesara-podi-dal.png" alt="Pesara dal" width="54" height="54">
+                            </div>
+                            <span class="product-type">LIGHT &amp; NOURISHING</span>
                         </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">Made from green gram (moong dal), this podi is easy to digest, protein-rich, and ideal for kids, elders, or light meals.</p>
-                            <div class="mb-2 font-semibold text-primary">Recipe – Pesara Podi Rice:</div>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2">
-                                <li>Mix 2-3 spoons in hot rice with ghee.</li>
-                                <li>Pair with mango pickle or dry curry for a simple meal.</li>
+                        <h3>Pesara Podi</h3>
+                        <p class="card-description">
+                            Made from green gram, this gentle podi is protein-rich,
+                            easy to digest, and ideal for lighter meals.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Pesara Podi Rice
+                            </div>
+                            <ol>
+                                <li>Mix 2–3 spoons with hot rice.</li>
+                                <li>Add ghee for richness.</li>
+                                <li>Pair with pickle or dry curry.</li>
                             </ol>
                         </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 2)">Read More</button>
-                    </div>
-                    <!-- Masala Karam -->
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="3">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">🌶️</span>
-                            <h3 class="text-2xl font-bold">Masala Karam – Spicy Andhra Chilli Mix</h3>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-red">
+                                <img src="assets/masala-karam-spices.png" alt="Whole spices for Masala Karam" width="54" height="54">
+                            </div>
+                            <span class="product-type">SPICY BLEND</span>
                         </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">A bold blend of dry red chillies, garlic, and spices — this karam elevates every dish from dosas to curries.</p>
-                            <div class="mb-2 font-semibold text-primary">Recipe – Masala Karam Dosa:</div>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2">
-                                <li>Sprinkle Masala Karam on dosa while cooking.</li>
-                                <li>Add a little oil and roast it crisp.</li>
+                        <h3>Masala Karam</h3>
+                        <p class="card-description">
+                            A bold blend of dry red chillies, garlic, and spices
+                            that adds authentic Andhra heat to your favourite dishes.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Masala Karam Dosa
+                            </div>
+                            <ol>
+                                <li>Sprinkle over dosa while cooking.</li>
+                                <li>Add a little oil and roast.</li>
                                 <li>Serve with chutney or sambar.</li>
                             </ol>
-                            <div class="mb-2 font-semibold text-primary">Other Uses:</div>
-                            <ul class="list-disc list-inside text-gray-600 space-y-1">
-                                <li>Add to curries for extra spice</li>
-                                <li>Sprinkle on stir-fries or idli</li>
-                            </ul>
                         </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 3)">Read More</button>
-                    </div>
-                    <!-- Turmeric Powder -->
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="4">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">✨</span>
-                            <h3 class="text-2xl font-bold">Turmeric Powder – Pure Haldi from Andhra</h3>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-gold">
+                                <img src="assets/turmeric-roots.jpg" alt="Turmeric roots" width="54" height="54">
+                            </div>
+                            <span class="product-type">PURE POWDER</span>
                         </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">Sourced from local farms, naturally dried, and finely ground — this turmeric is vibrant, aromatic, and perfect for cooking and health drinks.</p>
-                            <div class="mb-2 font-semibold text-primary">Uses:</div>
-                            <ul class="list-disc list-inside text-gray-600 space-y-1">
-                                <li>Add ½ tsp to dal, curry, or sabzi</li>
-                                <li>Mix with warm milk for immunity</li>
-                                <li>Apply with honey as a natural face mask</li>
-                            </ul>
-                        </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 4)">Read More</button>
-                    </div>
-                    <!-- Duplicate cards for seamless loop -->
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="5">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">🧄</span>
-                            <h3 class="text-2xl font-bold">Kandi Podi – Andhra Protein Punch</h3>
-                        </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">A roasted toor dal blend packed with protein, this nutty, earthy powder is a pantry staple. Perfect for mixing with hot rice and ghee for a quick, filling meal.</p>
-                            <div class="mb-2 font-semibold text-primary">Recipe – Kandi Podi Rice:</div>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2">
-                                <li>Add 2-3 spoons of Kandi Podi over hot steamed rice.</li>
-                                <li>Top with a spoon of ghee.</li>
-                                <li>Mix well and enjoy with raw onion or pickle.</li>
+                        <h3>Turmeric Powder</h3>
+                        <p class="card-description">
+                            Naturally dried and finely ground turmeric with a
+                            vibrant colour and aromatic flavour for everyday use.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Everyday Uses
+                            </div>
+                            <ol>
+                                <li>Add to dal, curry, or sabzi.</li>
+                                <li>Mix with warm milk.</li>
+                                <li>Use in traditional home recipes.</li>
                             </ol>
                         </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 5)">Read More</button>
-                    </div>
-                    <div class="blog-card uniform-blog-card bg-light rounded-3xl p-8 shadow-md flex flex-col h-full min-w-[340px] max-w-xs transition-all duration-300" data-blog="6">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-3xl">🌿</span>
-                            <h3 class="text-2xl font-bold">Dhanya Podi – Fragrant Instant Mix</h3>
+                        <a class="read-more-btn" href="products.html">
+                            Explore uses
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-moringa">
+                                <img src="assets/moringa-leaves.png" alt="Moringa leaves, flowers, and seeds" width="54" height="54">
+                            </div>
+                            <span class="product-type">SUPERFOOD</span>
                         </div>
-                        <div class="blog-content truncate-content">
-                            <p class="text-gray-700 mb-4">This cumin and red chilli blend is light, aromatic, and perfect for daily meals. It adds a spicy-smooth touch to your plate.</p>
-                            <div class="mb-2 font-semibold text-primary">Recipe – Dhanya Podi Rice:</div>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2">
-                                <li>Mix 2 spoons with hot rice.</li>
-                                <li>Add a dash of ghee.</li>
-                                <li>Tastes great with papad or curd.</li>
+                        <h3>Moringa Powder</h3>
+                        <p class="card-description">
+                            Fine moringa leaves, packed with vitamins, minerals,
+                            and antioxidants for a clean daily health boost.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Everyday Uses
+                            </div>
+                            <ol>
+                                <li>Blend a teaspoon into smoothies or juices.</li>
+                                <li>Sprinkle over dals and everyday meals.</li>
+                                <li>Stir into warm water for a light tonic.</li>
                             </ol>
                         </div>
-                        <button class="read-more-btn text-primary font-semibold mt-auto" onclick="toggleBlogExpand(event, 6)">Read More</button>
-                    </div>
+                        <a class="read-more-btn" href="products.html">
+                            Explore uses
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-prawn">
+                                <img src="assets/royya-karam-prawn.jpg" alt="Prawns for Royya Karam" width="54" height="54">
+                            </div>
+                            <span class="product-type">PRAWN RICE MIX</span>
+                        </div>
+                        <h3>Royya Karam</h3>
+                        <p class="card-description">
+                            A traditional spicy prawn-flavoured chilli mix that
+                            carries the heat and depth of Andhra’s coast.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Royya Karam Rice
+                            </div>
+                            <ol>
+                                <li>Mix with hot rice and a spoon of ghee.</li>
+                                <li>Serve as a punchy side with tiffins.</li>
+                                <li>Pair with snacks for extra coastal heat.</li>
+                            </ol>
+                        </div>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-garam">
+                                <img src="assets/21-garam-masala-spices.jpg" alt="Whole spices for 21 Garam Masala" width="54" height="54">
+                            </div>
+                            <span class="product-type">SPICE BLEND</span>
+                        </div>
+                        <h3>21 Garam Masala</h3>
+                        <p class="card-description">
+                            Twenty-one timeless spices, slow-roasted and finely
+                            ground, bring authentic aroma and warmth to every dish.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Everyday Uses
+                            </div>
+                            <ol>
+                                <li>Finish dals and curries with a pinch.</li>
+                                <li>Stir into biryani just before serving.</li>
+                                <li>Dust over grilled meats for extra warmth.</li>
+                            </ol>
+                        </div>
+                        <a class="read-more-btn" href="products.html">
+                            Explore uses
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-karivepaku">
+                                <img src="assets/karivepaku-leaves.jpg" alt="Fresh curry leaves for Karivepaku Podi" width="54" height="54">
+                            </div>
+                            <span class="product-type">RICE MIX</span>
+                        </div>
+                        <h3>Karivepaku Podi</h3>
+                        <p class="card-description">
+                            Fresh curry leaves and secret spices — aromatic,
+                            delicious, and traditionally used for digestion and hair health.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Karivepaku Podi Rice
+                            </div>
+                            <ol>
+                                <li>Mix 2–3 spoons with hot steamed rice.</li>
+                                <li>Add a spoon of ghee and toss well.</li>
+                                <li>Serve as a simple, soul-satisfying meal.</li>
+                            </ol>
+                        </div>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
+
+                    <article class="spice-card">
+                        <div class="card-top">
+                            <div class="product-mark mark-chicken">
+                                <img src="assets/chicken-powder-roast.png" alt="Roast chicken for Chicken Powder Instant Rice Mix" width="54" height="54">
+                            </div>
+                            <span class="product-type">INSTANT RICE MIX</span>
+                        </div>
+                        <h3>Chicken Powder</h3>
+                        <p class="card-description">
+                            A savoury chicken-flavoured instant rice mix that
+                            brings roast-chicken richness to a quick weekday meal.
+                        </p>
+                        <div class="recipe-box">
+                            <div class="recipe-heading">
+                                <span class="recipe-icon">✦</span>
+                                Chicken Powder Rice
+                            </div>
+                            <ol>
+                                <li>Mix 2–3 spoons with hot steamed rice.</li>
+                                <li>Add a spoon of ghee or a drizzle of oil.</li>
+                                <li>Pack for tiffins or serve as a one-pot meal.</li>
+                            </ol>
+                        </div>
+                        <a class="read-more-btn" href="products.html">
+                            Explore recipe
+                            <span>→</span>
+                        </a>
+                    </article>
                 </div>
+            </div>
+
+            <div class="carousel-hint">
+                <span class="hint-dot"></span>
+                <span>Discover our traditional favourites</span>
             </div>
         </div>
     </section>
-    <style>
-        .blogs-marquee {
-            animation: blogs-scroll 20s linear infinite;
-        }
-        .blogs-marquee:hover {
-            animation-play-state: paused;
-        }
-        @keyframes blogs-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        @media (max-width: 768px) {
-            .blogs-marquee {
-                animation-duration: 10s;
-            }
-        }
-        .uniform-blog-card {
-            width: 340px;
-            min-width: 340px;
-            max-width: 340px;
-            height: 420px;
-            max-height: 420px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        .truncate-content {
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 6;
-            -webkit-box-orient: vertical;
-            transition: max-height 0.3s;
-            max-height: 10.5em;
-        }
-        .expanded-card .truncate-content {
-            -webkit-line-clamp: unset;
-            max-height: 1000px;
-            overflow: visible;
-        }
-    </style>
     <script>
-        function toggleBlogExpand(event, idx) {
-            event.preventDefault();
-            // Collapse all
-            document.querySelectorAll('.blog-card').forEach(card => {
-                card.classList.remove('expanded-card');
-                card.querySelector('.read-more-btn').textContent = 'Read More';
+        document.addEventListener("DOMContentLoaded", () => {
+            const marquee = document.querySelector(".spice-marquee");
+            if (!marquee) return;
+            const originalCards = Array.from(marquee.querySelectorAll(".spice-card"));
+            originalCards.forEach((card) => {
+                const clone = card.cloneNode(true);
+                clone.setAttribute("aria-hidden", "true");
+                marquee.appendChild(clone);
             });
-            // Expand/collapse this one
-            const card = document.querySelector('.blog-card[data-blog="' + idx + '"]');
-            if (!card.classList.contains('expanded-card')) {
-                card.classList.add('expanded-card');
-                card.querySelector('.read-more-btn').textContent = 'Show Less';
-            } else {
-                card.classList.remove('expanded-card');
-                card.querySelector('.read-more-btn').textContent = 'Read More';
-            }
-        }
+        });
     </script>
 
 
     <!-- Contact Section -->
     <section id="contact" class="py-20 bg-light">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold mb-6">Get In Touch</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <div class="text-center mb-12 lg:mb-16">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">Get In Touch</h2>
+                <p class="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto">
                     Ready to elevate your culinary experience? Let's discuss how SpiceBlooms can meet your needs.
                 </p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-16">
+            <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
                 <div class="space-y-8">
                     <div class="flex items-start space-x-4">
                         <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
@@ -639,7 +1304,7 @@
                         </div>
                         <div>
                             <h3 class="text-xl font-bold mb-2 required">Email Us</h3>
-                            <p class="text-gray-600">spicebloomsenterprise@gmail.com<br>We'll respond within 24 hours</p>
+                            <p class="text-gray-600 break-words">spicebloomsenterprise@gmail.com<br>We'll respond within 24 hours</p>
                         </div>
                     </div>
                 </div>
@@ -647,7 +1312,7 @@
                 <form action="https://getform.io/f/bjjovrxb" method="POST" novalidate
                     style="background-color:white;padding:2rem;border-radius:1.5rem;box-shadow:0 10px 25px rgba(0,0,0,0.1);"
                     id="contactForm" onsubmit="return validateAndSubmit(event)">
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;">
+                    <div class="contact-name-grid">
                         <div style="display:flex;flex-direction:column;">
                             <input type="text" name="firstName" placeholder="First Name" required
                                 style="width:100%;padding:1rem;border:1px solid #e5e7eb;border-radius:0.75rem;outline:none;"
@@ -703,7 +1368,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
                 <div>
-                    <div class="flex items-center space-x-2 mb-6">
+                    <div class="flex flex-wrap items-center gap-2 mb-6">
                         <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
                             <span class="text-white font-bold text-xl">S</span>
                         </div>
@@ -736,16 +1401,6 @@
                         <li><a href="#" class="hover:text-white transition-colors">Spice Blends</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Handmade in small batches</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">FSSAI Licensed</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-xl font-bold mb-6">Services</h3>
-                    <ul class="space-y-3 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Home-Based, Hygienic Manufacturing</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Custom Product Packaging</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Fast Local Delivery & Pan-India Shipping</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Retail & Bulk Supply</a></li>
                     </ul>
                 </div>
 
@@ -926,7 +1581,8 @@
             // The form will be submitted normally, no need to prevent default
         });
     </script>
-    <script src="index.js"></script>
+    <script src="index.js?v=combos4"></script>
+    <script src="auth.js"></script>
     <script src="https://getform.io/f/bjjovrxb"></script>
     
 </body>
