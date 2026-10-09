@@ -643,8 +643,6 @@
               <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
               <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
               <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
-              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
-              <input type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
             </div>
             <p class="error" id="otp-error"></p>
             <button class="send" type="submit">
@@ -664,6 +662,7 @@
   </div>
 
   <script src="auth.js?v=gauth4"></script>
+  <script src="api.js"></script>
   <script src="firebase-config.js?v=gauth4"></script>
   <script src="firebase-auth.js?v=gauth4"></script>
   <script>
@@ -928,6 +927,13 @@
     let step = 1;
     let savedPhone = "";
     let savedName = "";
+    let otpSessionId = "";
+    let busy = false;
+
+    const setBusy = (value) => {
+      busy = value;
+      form.querySelectorAll("button").forEach((btn) => { btn.disabled = value; });
+    };
 
     const setMode = (next) => {
       mode = next;
@@ -982,18 +988,19 @@
       });
       input.addEventListener("paste", (event) => {
         event.preventDefault();
-        const text = (event.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+        const text = (event.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 4);
         text.split("").forEach((digit, i) => {
           if (otpInputs[i]) otpInputs[i].value = digit;
         });
-        otpInputs[Math.min(text.length, 5)].focus();
+        otpInputs[Math.min(text.length, 3)].focus();
       });
     });
 
     const isValidName = (value) => /^[A-Za-z][A-Za-z .'-]{1,59}$/.test(value);
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (busy) return;
       if (step === 1) {
         if (!/^[6-9]\d{9}$/.test(phone.value)) {
           phoneError.textContent = "Enter a valid 10-digit Indian mobile number.";
@@ -1008,40 +1015,94 @@
         }
         if (mode !== "signup") savedName = "";
         savedPhone = phone.value;
+        setBusy(true);
+        try {
+          const res = await window.SpicebloomsApi.sendOtp(savedPhone);
+          otpSessionId = (res && res.sessionId) || "";
+        } catch (error) {
+          phoneError.textContent = error.message;
+          return;
+        } finally {
+          setBusy(false);
+        }
         step = 2;
         stepNumber.classList.add("hidden");
         stepOtp.classList.remove("hidden");
         document.getElementById("google-block").classList.add("hidden");
         title.textContent = "Verify OTP";
-        lead.textContent = "Enter the 6-digit code sent to +91 " + savedPhone;
+        lead.textContent = "Enter the 4-digit code sent to +91 " + savedPhone;
         otpInputs[0].focus();
         return;
       }
 
       const code = otpInputs.map((input) => input.value).join("");
-      if (code.length !== 6) {
-        otpError.textContent = "Enter the 6-digit OTP to continue.";
+      if (code.length !== 4) {
+        otpError.textContent = "Enter the 4-digit OTP to continue.";
         return;
       }
+
+      setBusy(true);
+      try {
+        const auth = await window.SpicebloomsApi.verifyOtp({
+          phone: savedPhone,
+          sessionId: otpSessionId,
+          otp: code
+        });
+        if (!auth || !auth.token) throw new Error("Verification failed. Please try again.");
+
+        let user = auth.user || {};
+        if (mode === "signup" && savedName && !user.fullName) {
+          try {
+            user = (await window.SpicebloomsApi.completeProfile(auth.token, {
+              fullName: savedName,
+              phone: savedPhone
+            })) || user;
+          } catch (profileError) {
+            user = Object.assign({}, user, { fullName: savedName });
+          }
+        }
+
+        window.SpicebloomsAuth.set({
+          phone: savedPhone,
+          name: user.fullName || savedName || undefined,
+          mode: mode,
+          provider: "otp",
+          at: Date.now(),
+          token: auth.token,
+          refreshToken: auth.refreshToken,
+          expiry: auth.expiry,
+          user: user
+        });
+      } catch (error) {
+        otpError.textContent = error.message;
+        setBusy(false);
+        return;
+      }
+
+      setBusy(false);
       title.textContent = mode === "signup" ? "Account created" : "Welcome back";
       lead.textContent = fromCheckout
         ? "Taking you back to checkout…"
         : "Taking you to Spiceblooms Naturals…";
       stepOtp.classList.add("hidden");
-      window.SpicebloomsAuth.set({
-        phone: savedPhone,
-        name: savedName || undefined,
-        mode: mode,
-        at: Date.now()
-      });
       window.setTimeout(() => { window.location.href = safeNext; }, 900);
     });
 
-    document.getElementById("resend").addEventListener("click", () => {
-      otpInputs.forEach((input) => { input.value = ""; });
+    document.getElementById("resend").addEventListener("click", async () => {
+      if (busy) return;
       otpError.textContent = "";
-      lead.textContent = "A new OTP was sent to +91 " + savedPhone;
-      otpInputs[0].focus();
+      setBusy(true);
+      try {
+        const res = await window.SpicebloomsApi.sendOtp(savedPhone);
+        otpSessionId = (res && res.sessionId) || "";
+        otpInputs.forEach((input) => { input.value = ""; });
+        lead.textContent = "A new OTP was sent to +91 " + savedPhone;
+        otpInputs[0].focus();
+      } catch (error) {
+        otpError.textContent = error.message;
+      } finally {
+        setBusy(false);
+      }
     });
 
     const googleBtn = document.getElementById("google-btn");
