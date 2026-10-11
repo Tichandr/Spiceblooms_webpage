@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Address - SpiceBlooms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B35',
+                        secondary: '#F7931E',
+                        accent: '#FFB800',
+                        brand: '#1B3D2F',
+                        dark: '#2D2D2D',
+                        light: '#F8F9FA'
+                    },
+                    fontFamily: {
+                        'display': ['Inter', 'system-ui', 'sans-serif'],
+                        'body': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFB800 100%);
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        .bag-page {
+            padding: 7.25rem 0 3rem;
+            background: #fff;
+            min-height: 70vh;
+        }
+
+        @media (min-width: 768px) {
+            .bag-page {
+                padding: 9.5rem 0 4rem;
+            }
+        }
+
+        .bag-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            margin: 0 auto 1.75rem;
+            max-width: 420px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .bag-progress span,
+        .bag-progress a {
+            color: #9ca3af;
+            text-decoration: none;
+        }
+
+        .bag-progress .is-done,
+        .bag-progress .is-done a {
+            color: #FF6B35;
+        }
+
+        .bag-progress .is-current {
+            color: #FF6B35;
+            box-shadow: inset 0 -2px 0 #FF6B35;
+            padding-bottom: 2px;
+        }
+
+        .bag-progress i {
+            flex: 1;
+            max-width: 72px;
+            border-top: 1px dashed #d1d5db;
+        }
+
+        .bag-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .bag-layout {
+                grid-template-columns: minmax(0, 2.05fr) minmax(280px, 1fr);
+                gap: 0;
+                align-items: start;
+            }
+
+            .bag-main {
+                padding-right: 2rem;
+            }
+
+            .bag-aside {
+                padding-left: 2rem;
+                border-left: 1px solid #eee6dc;
+                position: sticky;
+                top: 8.5rem;
+            }
+        }
+
+        .addr-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.35rem;
+        }
+
+        .addr-head h1 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #2D2D2D;
+        }
+
+        .bag-outline {
+            flex-shrink: 0;
+            border: 1px solid #FF6B35;
+            color: #FF6B35;
+            background: #fff;
+            border-radius: 999px;
+            padding: 0.55rem 1rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .bag-outline:hover,
+        .bag-outline:focus-visible {
+            background: #fff1ea;
+            outline: 2px solid #FF6B35;
+            outline-offset: 2px;
+        }
+
+        .addr-label {
+            margin: 0 0 0.7rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: #6b7280;
+        }
+
+        .addr-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .addr-card {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 0.85rem;
+            padding: 1rem 1.1rem;
+            border: 1px solid #eee6dc;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 6px 18px rgba(45, 45, 45, 0.04);
+            cursor: pointer;
+        }
+
+        .addr-card.is-selected {
+            border-color: #FF6B35;
+            background: #fff8f2;
+        }
+
+        .addr-card input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 4px;
+            accent-color: #FF6B35;
+        }
+
+        .addr-name {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #2D2D2D;
+        }
+
+        .addr-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.12rem 0.45rem;
+            border-radius: 4px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .addr-copy {
+            margin: 0.4rem 0 0;
+            font-size: 0.86rem;
+            line-height: 1.5;
+            color: #4b5563;
+        }
+
+        .addr-phone {
+            margin: 0.45rem 0 0;
+            font-size: 0.86rem;
+            color: #2D2D2D;
+        }
+
+        .addr-phone strong {
+            font-weight: 800;
+        }
+
+        .addr-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.45rem;
+        }
+
+        .addr-actions button {
+            background: none;
+            border: 0;
+            padding: 0.2rem 0;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #374151;
+        }
+
+        .addr-actions button:hover,
+        .addr-actions button:focus-visible {
+            color: #FF6B35;
+        }
+
+        .addr-empty {
+            margin: 0 0 1rem;
+            padding: 0.9rem 1rem;
+            border: 1px dashed #eee6dc;
+            border-radius: 16px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .addr-add {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 68px;
+            width: 100%;
+            border: 1px dashed #FF6B35;
+            border-radius: 16px;
+            background: #fff;
+            color: #FF6B35;
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .addr-add:hover,
+        .addr-add:focus-visible {
+            background: #fff8f2;
+            outline: 2px solid #FF6B35;
+            outline-offset: 2px;
+        }
+
+        .est-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.35rem;
+        }
+
+        .est-thumb {
+            width: 46px;
+            height: 54px;
+            border: 1px solid #f3ebe2;
+            border-radius: 10px;
+            background: #fff8f2;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .est-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .est-copy {
+            margin: 0;
+            font-size: 0.88rem;
+            color: #4b5563;
+        }
+
+        .est-copy.is-loading {
+            color: #9ca3af;
+        }
+
+        .bag-summary h2 {
+            margin: 0 0 1rem;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #6b7280;
+        }
+
+        .bag-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.7rem;
+            font-size: 0.92rem;
+            color: #4b5563;
+        }
+
+        .bag-row .is-save {
+            color: #FF6B35;
+            font-weight: 700;
+        }
+
+        .bag-row #total-discount:not(.is-save) {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .bag-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.9rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid #eee6dc;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #2D2D2D;
+        }
+
+        .bag-place {
+            width: 100%;
+            border: 0;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            padding: 0.95rem 1rem;
+            margin-top: 1.1rem;
+        }
+
+        .bag-place:hover:not(:disabled) {
+            background: #e85d2c;
+        }
+
+        .bag-place:focus-visible {
+            outline: 3px solid #ffd0bf;
+            outline-offset: 2px;
+        }
+
+        .bag-place:disabled {
+            background: #f0c4b3;
+            cursor: not-allowed;
+        }
+
+        .bag-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .addr-hint {
+            margin: 0.75rem 0 0;
+            font-size: 0.78rem;
+            color: #b45309;
+            min-height: 1.1rem;
+        }
+
+        .checkout-bar {
+            border-top: 1px solid #eee6dc;
+            background: #fff;
+            padding: 1rem 0;
+        }
+
+        .checkout-bar-inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            font-size: 0.82rem;
+            color: #6b7280;
+        }
+
+        .checkout-bar a {
+            color: #FF6B35;
+            font-weight: 700;
+        }
+
+        .bag-modal[hidden] {
+            display: none !important;
+        }
+
+        .bag-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        .bag-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(28, 24, 20, 0.45);
+            backdrop-filter: blur(6px);
+        }
+
+        .bag-modal-card {
+            position: relative;
+            width: min(560px, 100%);
+            max-height: calc(100vh - 2.5rem);
+            overflow: auto;
+            padding: 1.6rem 1.5rem 1.35rem;
+            border-radius: 28px;
+            background: #fff;
+            box-shadow: 0 20px 50px rgba(45, 45, 45, 0.18);
+        }
+
+        .addr-form {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .addr-form label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .addr-form input,
+        .addr-form select {
+            width: 100%;
+            border: 1px solid #eee6dc;
+            border-radius: 12px;
+            padding: 0.7rem 0.85rem;
+            font-size: 0.95rem;
+        }
+
+        .addr-form input:focus,
+        .addr-form select:focus {
+            outline: 2px solid #FF6B35;
+            outline-offset: 1px;
+        }
+
+        .addr-form .is-invalid {
+            border-color: #d97706;
+        }
+
+        .field-error {
+            min-height: 1rem;
+            margin: 0.3rem 0 0;
+            font-size: 0.75rem;
+            color: #b45309;
+        }
+
+        .addr-grid {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        @media (min-width: 640px) {
+            .addr-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .addr-check {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .addr-check input {
+            width: 16px;
+            height: 16px;
+            accent-color: #FF6B35;
+        }
+
+        .addr-type {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .addr-type label {
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            border: 1px solid #eee6dc;
+            border-radius: 999px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+        }
+
+        .addr-type input {
+            width: 14px;
+            height: 14px;
+            accent-color: #FF6B35;
+        }
+
+        @media (max-width: 767px) {
+            .bag-progress {
+                max-width: 280px;
+                font-size: 0.64rem;
+                gap: 0.4rem;
+            }
+
+            .addr-head {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .addr-card {
+                grid-template-columns: auto minmax(0, 1fr);
+            }
+
+            .addr-actions {
+                grid-column: 2;
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-body text-dark bg-white">
+    <nav class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/25 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)] transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-24">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Spiceblooms Naturals home">
+                    <img src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872" class="h-12 md:h-[84px] w-auto object-contain">
+                </a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
+                    <a href="index.html#about" class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
+                    <a href="products.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
+                    <a href="catalouge.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Catalogue</a>
+                    <a href="index.html#contact" class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
+                    <a href="cart.html" class="relative text-primary font-semibold">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span id="cart-badge" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center" style="display: none;">0</span>
+                    </a>
+                    <button type="button" data-sign-out class="hidden px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors duration-200">Sign out</button>
+                </div>
+                <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
+                <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
+                <a href="products.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Products</a>
+                <a href="catalouge.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Catalogue</a>
+                <a href="cart.html" class="block px-3 py-2 text-primary font-semibold">Cart</a>
+                <a href="index.html#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="bag-page">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="bag-progress" aria-label="Checkout progress">
+                <a class="is-done" href="cart.html">Bag</a>
+                <i aria-hidden="true"></i>
+                <span class="is-current" aria-current="step">Address</span>
+                <i aria-hidden="true"></i>
+                <span>Payment</span>
+            </nav>
+
+            <div id="empty-cart" class="bag-empty hidden">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-3">Your cart is empty</h1>
+                <p class="text-gray-500 mb-6">Add products before choosing a delivery address.</p>
+                <a href="products.html" class="inline-block bg-primary text-white px-6 py-2.5 rounded-full font-semibold hover:bg-primary/90">Browse Products</a>
+            </div>
+
+            <div id="address-stage" class="bag-layout hidden">
+                <div class="bag-main">
+                    <div class="addr-head">
+                        <h1>Select Delivery Address</h1>
+                        <button type="button" class="bag-outline" id="add-address-top">ADD NEW ADDRESS</button>
+                    </div>
+                    <p id="default-prompt" class="addr-empty hidden">No default address yet. Add an address, or mark one as default after you save it.</p>
+                    <section aria-labelledby="default-address-title">
+                        <h2 class="addr-label" id="default-address-title">DEFAULT ADDRESS</h2>
+                        <div id="default-address-list" class="addr-list"></div>
+                    </section>
+                    <section aria-labelledby="other-address-title">
+                        <h2 class="addr-label" id="other-address-title">OTHER ADDRESS</h2>
+                        <div id="other-address-list" class="addr-list"></div>
+                    </section>
+                    <button type="button" class="addr-add" id="add-address-card">+ Add New Address</button>
+                </div>
+
+                <aside class="bag-aside">
+                    <h2 class="addr-label">DELIVERY ESTIMATES</h2>
+                    <div class="est-card">
+                        <div class="est-thumb" id="estimate-thumb"></div>
+                        <p class="est-copy is-loading" id="delivery-estimate">Checking delivery estimate…</p>
+                    </div>
+                    <div class="bag-summary">
+                        <h2>PRICE DETAILS (<span id="price-item-count">0 Items</span>)</h2>
+                        <div class="bag-row"><span>Total MRP</span><span id="total-mrp">Rs 0/-</span></div>
+                        <div class="bag-row"><span>Discount on MRP</span><span class="is-save" id="total-discount">-Rs 0/-</span></div>
+                        <div class="bag-row"><span>Platform Fee</span><span id="platform-fee">Rs 0/-</span></div>
+                        <div class="bag-total"><span>Total Amount</span><span id="total-price">Rs 0/-</span></div>
+                        <button type="button" class="bag-place" id="continue-order">CONTINUE</button>
+                        <p class="addr-hint" id="continue-hint"></p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <div class="checkout-bar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 checkout-bar-inner">
+            <p>Secure checkout powered by Razorpay</p>
+            <a href="index.html#contact">Need Help? Contact Us</a>
+        </div>
+    </div>
+
+    <div id="address-modal" class="bag-modal" hidden>
+        <div class="bag-modal-backdrop" data-address-close></div>
+        <div class="bag-modal-card" role="dialog" aria-modal="true" aria-labelledby="address-modal-title">
+            <h2 id="address-modal-title" class="text-xl font-bold mb-4">Add New Address</h2>
+            <form id="address-form" class="addr-form" novalidate>
+                <input type="hidden" id="address-id">
+                <div>
+                    <label for="address-name">Full Name</label>
+                    <input id="address-name" name="name" autocomplete="name" required>
+                    <p class="field-error" data-error="name"></p>
+                </div>
+                <div>
+                    <label for="address-phone">Mobile Number</label>
+                    <input id="address-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
+                    <p class="field-error" data-error="phone"></p>
+                </div>
+                <div>
+                    <label for="address-line1">Address Line 1</label>
+                    <input id="address-line1" name="line1" autocomplete="address-line1" required>
+                    <p class="field-error" data-error="line1"></p>
+                </div>
+                <div>
+                    <label for="address-line2">Address Line 2</label>
+                    <input id="address-line2" name="line2" autocomplete="address-line2">
+                    <p class="field-error" data-error="line2"></p>
+                </div>
+                <div>
+                    <label for="address-building">Apartment, Unit, or Building</label>
+                    <input id="address-building" name="building" autocomplete="address-line3">
+                </div>
+                <div>
+                    <label for="address-area">Locality / Area</label>
+                    <input id="address-area" name="area" required>
+                    <p class="field-error" data-error="area"></p>
+                </div>
+                <div class="addr-grid">
+                    <div>
+                        <label for="address-city">City</label>
+                        <input id="address-city" name="city" autocomplete="address-level2" required>
+                        <p class="field-error" data-error="city"></p>
+                    </div>
+                    <div>
+                        <label for="address-state">State / Region</label>
+                        <input id="address-state" name="state" autocomplete="address-level1" required>
+                        <p class="field-error" data-error="state"></p>
+                    </div>
+                </div>
+                <div class="addr-grid">
+                    <div>
+                        <label for="address-postcode">PIN / Postcode</label>
+                        <input id="address-postcode" name="postcode" autocomplete="postal-code" required>
+                        <p class="field-error" data-error="postcode"></p>
+                    </div>
+                    <div>
+                        <label for="address-country">Country</label>
+                        <select id="address-country" name="country" autocomplete="country-name">
+                            <option value="India" selected>India</option>
+                            <option value="Australia">Australia</option>
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <p class="field-error" data-error="country"></p>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend class="text-sm font-bold mb-2">Address Type</legend>
+                    <div class="addr-type">
+                        <label><input type="radio" name="type" value="HOME" checked> HOME</label>
+                        <label><input type="radio" name="type" value="WORK"> WORK</label>
+                        <label><input type="radio" name="type" value="OTHER"> OTHER</label>
+                    </div>
+                </fieldset>
+                <label class="addr-check">
+                    <input type="checkbox" id="address-default" name="isDefault">
+                    Set as default address
+                </label>
+                <p class="field-error" id="address-form-error"></p>
+                <button type="submit" class="bag-place" id="save-address">SAVE ADDRESS</button>
+                <button type="button" class="block w-full text-gray-500 text-sm font-medium py-3" data-address-close>CANCEL</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">S</span>
+                        </div>
+                        <span class="text-2xl font-bold">SpiceBlooms</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">Where flavor meets innovation. Premium spices sourced globally, delivered with passion.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Contact</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li>spicebloomsenterprise@gmail.com</li>
+                        <li>+91 9030760943</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2025 SpiceBlooms. All rights reserved.</p>
+                <div class="flex space-x-6 text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        const CART_KEY = 'cart';
+        const SELECTED_ITEMS_KEY = 'cart_selected';
+        const SELECTED_ADDRESS_KEY = 'checkout_selected_address';
+        const LOCAL_ADDRESS_KEY = 'spiceblooms_addresses';
+        const PLATFORM_FEE = 0;
+        const RAZORPAY_PAYMENT_PAGE = 'https://pages.razorpay.com/pl_Tcjt9CwKb9pbxo/view';
+        const CATALOG = [
+            { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png' },
+            { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png' },
+            { id: 'pesara', name: 'Pesara Podi', cartName: 'Pesara Podi', price: 199, mrp: 229, image: 'assets/Naturals/Pesara%20Podi.png' },
+            { id: 'turmeric', name: 'Turmeric Powder', cartName: 'Turmeric Powder', price: 199, mrp: 229, image: 'assets/Naturals/Turmeric%20powder.png' },
+            { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'assets/Naturals/Kandi%20Podi.png' },
+            { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'assets/products/masala-karam.png' },
+            { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png' },
+            { id: 'sambar', name: 'Spiceblooms Naturals Sambar Powder Authentic Andhra Taste in Every Spoon', cartName: 'Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon', price: 199, image: 'assets/new_items/sambar.jpg' },
+            { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png' },
+            { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Madhuri Spices Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg' },
+            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi Aromatic Curry Leaf Blast', cartName: 'Madhuri Spices Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png' },
+            { id: 'rasam', name: 'Madhuri Spices Rasam Powder Tangy and Peppery Delight', cartName: 'Madhuri Spices Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg' },
+            { id: 'chicken', name: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', cartName: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', price: 199, image: 'assets/Naturals/Chicken%20powder.png' },
+            { id: 'abc', name: 'Spiceblooms Naturals ABC Health Drink', cartName: 'Spiceblooms Naturals ABC Health Drink', price: 199, image: 'assets/Naturals/ABC%20Health%20Drink.png' }
+        ];
+
+        let addresses = [];
+        let selectedAddressId = sessionStorage.getItem(SELECTED_ADDRESS_KEY) || '';
+        let saving = false;
+        let continuing = false;
+        let formSnapshot = '';
+
+        function money(value) {
+            return 'Rs ' + Math.max(0, Math.round(value)) + '/-';
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, function (char) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+            });
+        }
+
+        function customerKey() {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            if (!session) return '';
+            return String(session.uid || session.email || session.phone || '').trim().toLowerCase();
+        }
+
+        function getCart() {
+            try {
+                const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+                return Array.isArray(cart) ? cart.filter(function (item) { return item && item.name; }) : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function selectedCartItems() {
+            const cart = getCart();
+            try {
+                const stored = JSON.parse(sessionStorage.getItem(SELECTED_ITEMS_KEY) || '[]');
+                const names = Array.isArray(stored) ? stored : [];
+                const picked = cart.filter(function (item) { return names.indexOf(item.name) !== -1; });
+                return picked.length ? picked : cart;
+            } catch (error) {
+                return cart;
+            }
+        }
+
+        function findCatalog(item) {
+            const name = (item && item.name) || '';
+            return CATALOG.find(function (row) { return row.cartName === name || row.name === name; })
+                || CATALOG.find(function (row) {
+                    return name.indexOf(row.cartName) !== -1 || row.cartName.indexOf(name) !== -1
+                        || name.indexOf(row.name) !== -1 || row.name.indexOf(name) !== -1;
+                }) || null;
+        }
+
+        function enrich(item) {
+            const catalog = findCatalog(item);
+            const price = Number(item.price) || (catalog && catalog.price) || 0;
+            const mrp = catalog && catalog.mrp && catalog.mrp > price ? catalog.mrp : 0;
+            return {
+                name: item.name,
+                price: price,
+                quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
+                image: item.image || (catalog && catalog.image) || '',
+                mrp: mrp
+            };
+        }
+
+        function updateCartBadge() {
+            const totalItems = getCart().reduce(function (sum, item) { return sum + (parseInt(item.quantity, 10) || 0); }, 0);
+            const badge = document.getElementById('cart-badge');
+            if (!badge) return;
+            if (totalItems > 0) {
+                badge.textContent = String(totalItems);
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function readLocalStore() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(LOCAL_ADDRESS_KEY) || '{}');
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function writeLocalStore(store) {
+            localStorage.setItem(LOCAL_ADDRESS_KEY, JSON.stringify(store));
+        }
+
+        function fingerprint(address) {
+            return [
+                String(address.name || '').trim().toLowerCase(),
+                String(address.phone || '').replace(/\D/g, ''),
+                String(address.line1 || '').trim().toLowerCase(),
+                String(address.postcode || '').trim().toLowerCase(),
+                String(address.country || '').trim().toLowerCase()
+            ].join('|');
+        }
+
+        function validateAddress(input) {
+            const country = String(input.country || 'India').trim() || 'India';
+            const address = {
+                name: String(input.name || '').trim(),
+                phone: String(input.phone || '').trim(),
+                line1: String(input.line1 || '').trim(),
+                line2: String(input.line2 || '').trim(),
+                building: String(input.building || '').trim(),
+                area: String(input.area || '').trim(),
+                city: String(input.city || '').trim(),
+                state: String(input.state || '').trim(),
+                postcode: String(input.postcode || '').trim(),
+                country: country,
+                type: /^(HOME|WORK|OTHER)$/i.test(input.type) ? String(input.type).toUpperCase() : 'HOME',
+                isDefault: Boolean(input.isDefault)
+            };
+            const errors = {};
+            const phoneDigits = address.phone.replace(/\D/g, '');
+            if (address.name.length < 2) errors.name = 'Enter the full name.';
+            if (country.toLowerCase() === 'india') {
+                if (!/^[6-9]\d{9}$/.test(phoneDigits) && !/^91[6-9]\d{9}$/.test(phoneDigits)) {
+                    errors.phone = 'Enter a valid 10-digit Indian mobile number.';
+                }
+            } else if (phoneDigits.length < 6 || phoneDigits.length > 15) {
+                errors.phone = 'Enter a valid mobile number.';
+            }
+            if (address.line1.length < 4) errors.line1 = 'Enter address line 1.';
+            if (address.area.length < 2) errors.area = 'Enter the locality or area.';
+            if (address.city.length < 2) errors.city = 'Enter the city.';
+            if (address.state.length < 2) errors.state = 'Enter the state or region.';
+            if (country.toLowerCase() === 'india' && !/^\d{6}$/.test(address.postcode)) errors.postcode = 'Enter a valid 6-digit PIN code.';
+            if (country.toLowerCase() === 'australia' && !/^\d{4}$/.test(address.postcode)) errors.postcode = 'Enter a valid 4-digit postcode.';
+            if (country.toLowerCase() !== 'india' && country.toLowerCase() !== 'australia' && !/^[A-Za-z0-9][A-Za-z0-9\s-]{2,15}$/.test(address.postcode)) {
+                errors.postcode = 'Enter a valid postcode.';
+            }
+            return { address: address, errors: errors };
+        }
+
+        function localFallback(method, id, body) {
+            const key = customerKey();
+            const store = readLocalStore();
+            const list = Array.isArray(store[key]) ? store[key].slice() : [];
+            if (method === 'GET') return { addresses: list };
+            if (method === 'POST') {
+                const checked = validateAddress(body);
+                if (Object.keys(checked.errors).length) {
+                    const error = new Error('Please correct the highlighted fields.');
+                    error.fields = checked.errors;
+                    throw error;
+                }
+                if (list.some(function (item) { return fingerprint(item) === fingerprint(checked.address); })) {
+                    throw new Error('This address is already saved.');
+                }
+                const now = new Date().toISOString();
+                const address = Object.assign({ id: 'addr_' + Date.now(), createdAt: now, updatedAt: now }, checked.address);
+                list.push(address);
+                if (address.isDefault || list.length === 1) list.forEach(function (item) { item.isDefault = item.id === address.id; });
+                store[key] = list;
+                writeLocalStore(store);
+                return { address: address, addresses: list };
+            }
+            const index = list.findIndex(function (item) { return item.id === id; });
+            if (index === -1) throw new Error('Address not found.');
+            if (method === 'PUT') {
+                const checked = validateAddress(body);
+                if (Object.keys(checked.errors).length) {
+                    const error = new Error('Please correct the highlighted fields.');
+                    error.fields = checked.errors;
+                    throw error;
+                }
+                if (list.some(function (item) { return item.id !== id && fingerprint(item) === fingerprint(checked.address); })) {
+                    throw new Error('This address is already saved.');
+                }
+                list[index] = Object.assign({}, list[index], checked.address, { id: id, updatedAt: new Date().toISOString() });
+                if (list[index].isDefault) list.forEach(function (item) { item.isDefault = item.id === id; });
+                store[key] = list;
+                writeLocalStore(store);
+                return { address: list[index], addresses: list };
+            }
+            if (method === 'DELETE') {
+                const remaining = list.filter(function (item) { return item.id !== id; });
+                if (remaining.length === 1) remaining[0].isDefault = true;
+                store[key] = remaining;
+                writeLocalStore(store);
+                return { addresses: remaining };
+            }
+            throw new Error('Request failed.');
+        }
+
+        async function addressRequest(method, id, body) {
+            const key = customerKey();
+            if (!key) throw new Error('Sign in is required to manage addresses.');
+            const path = '/api/addresses' + (id ? '/' + encodeURIComponent(id) : '');
+            try {
+                const response = await fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Spiceblooms-Customer': key
+                    },
+                    body: body ? JSON.stringify(body) : undefined
+                });
+                const type = response.headers.get('content-type') || '';
+                if (!type.includes('application/json')) throw new Error('NO_API');
+                const payload = await response.json();
+                if (!response.ok) {
+                    const error = new Error(payload.error || 'Request failed.');
+                    error.fields = payload.fields;
+                    throw error;
+                }
+                return payload;
+            } catch (error) {
+                if (error.message === 'NO_API' || error.name === 'TypeError') {
+                    return localFallback(method, id, body);
+                }
+                throw error;
+            }
+        }
+
+        function formatAddress(item) {
+            return [item.line1, item.line2, item.building, item.area, item.city, item.state, item.postcode, item.country]
+                .filter(Boolean).join(', ');
+        }
+
+        function selectedAddress() {
+            return addresses.find(function (item) { return item.id === selectedAddressId; }) || null;
+        }
+
+        function setSelectedAddress(id) {
+            selectedAddressId = id || '';
+            if (selectedAddressId) sessionStorage.setItem(SELECTED_ADDRESS_KEY, selectedAddressId);
+            else sessionStorage.removeItem(SELECTED_ADDRESS_KEY);
+        }
+
+        function renderEstimate() {
+            const estimate = document.getElementById('delivery-estimate');
+            const thumb = document.getElementById('estimate-thumb');
+            const items = selectedCartItems().map(enrich);
+            const first = items[0];
+            thumb.innerHTML = first && first.image ? '<img src="' + escapeHtml(first.image) + '" alt="">' : '';
+            estimate.classList.add('is-loading');
+            estimate.textContent = 'Checking delivery estimate…';
+            window.setTimeout(function () {
+                estimate.classList.remove('is-loading');
+                estimate.textContent = selectedAddress()
+                    ? 'Delivery estimate unavailable'
+                    : 'Select an address to check delivery.';
+            }, 250);
+        }
+
+        function renderPrices() {
+            const items = selectedCartItems().map(enrich);
+            const units = items.reduce(function (sum, item) { return sum + item.quantity; }, 0);
+            const selling = items.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0);
+            const mrpTotal = items.reduce(function (sum, item) { return sum + (item.mrp || item.price) * item.quantity; }, 0);
+            const discount = mrpTotal - selling;
+            document.getElementById('price-item-count').textContent = units + (units === 1 ? ' Item' : ' Items');
+            document.getElementById('total-mrp').textContent = money(mrpTotal);
+            document.getElementById('total-discount').textContent = '- ' + money(discount);
+            document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
+            document.getElementById('platform-fee').textContent = money(PLATFORM_FEE);
+            document.getElementById('total-price').textContent = money(selling + PLATFORM_FEE);
+        }
+
+        function cardHtml(item) {
+            const selected = item.id === selectedAddressId;
+            return '<article class="addr-card' + (selected ? ' is-selected' : '') + '" data-address-id="' + escapeHtml(item.id) + '">' +
+                '<input type="radio" name="checkout-address" value="' + escapeHtml(item.id) + '" ' + (selected ? 'checked' : '') + ' aria-label="Deliver to ' + escapeHtml(item.name) + '">' +
+                '<div>' +
+                '<div class="addr-name">' + escapeHtml(item.name) + '<span class="addr-badge">' + escapeHtml(item.type || 'HOME') + '</span></div>' +
+                '<p class="addr-copy">' + escapeHtml(formatAddress(item)) + '</p>' +
+                '<p class="addr-phone">Mobile: <strong>' + escapeHtml(item.phone) + '</strong></p>' +
+                '</div>' +
+                '<div class="addr-actions">' +
+                '<button type="button" data-edit="' + escapeHtml(item.id) + '">EDIT</button>' +
+                '<button type="button" data-remove="' + escapeHtml(item.id) + '">REMOVE</button>' +
+                '</div></article>';
+        }
+
+        function renderAddresses() {
+            const defaults = addresses.filter(function (item) { return item.isDefault; });
+            const others = addresses.filter(function (item) { return !item.isDefault; });
+            document.getElementById('default-address-list').innerHTML = defaults.map(cardHtml).join('');
+            document.getElementById('other-address-list').innerHTML = others.map(cardHtml).join('');
+            document.getElementById('default-prompt').classList.toggle('hidden', defaults.length > 0);
+            document.getElementById('continue-order').disabled = !selectedAddress() || !selectedCartItems().length;
+            renderEstimate();
+            renderPrices();
+        }
+
+        function formValues() {
+            const type = document.querySelector('input[name="type"]:checked');
+            return {
+                name: document.getElementById('address-name').value,
+                phone: document.getElementById('address-phone').value,
+                line1: document.getElementById('address-line1').value,
+                line2: document.getElementById('address-line2').value,
+                building: document.getElementById('address-building').value,
+                area: document.getElementById('address-area').value,
+                city: document.getElementById('address-city').value,
+                state: document.getElementById('address-state').value,
+                postcode: document.getElementById('address-postcode').value,
+                country: document.getElementById('address-country').value,
+                type: type ? type.value : 'HOME',
+                isDefault: document.getElementById('address-default').checked
+            };
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('[data-error]').forEach(function (el) { el.textContent = ''; });
+            document.querySelectorAll('#address-form input, #address-form select').forEach(function (el) { el.classList.remove('is-invalid'); });
+            document.getElementById('address-form-error').textContent = '';
+        }
+
+        function showFieldErrors(fields) {
+            Object.keys(fields || {}).forEach(function (key) {
+                const note = document.querySelector('[data-error="' + key + '"]');
+                const input = document.querySelector('[name="' + key + '"]');
+                if (note) note.textContent = fields[key];
+                if (input) input.classList.add('is-invalid');
+            });
+        }
+
+        function fillForm(item) {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            document.getElementById('address-id').value = item && item.id ? item.id : '';
+            document.getElementById('address-name').value = item ? item.name : (session && session.name ? session.name : '');
+            document.getElementById('address-phone').value = item ? item.phone : (session && session.phone ? session.phone : '');
+            document.getElementById('address-line1').value = item ? item.line1 : '';
+            document.getElementById('address-line2').value = item ? item.line2 : '';
+            document.getElementById('address-building').value = item ? item.building : '';
+            document.getElementById('address-area').value = item ? item.area : '';
+            document.getElementById('address-city').value = item ? item.city : '';
+            document.getElementById('address-state').value = item ? item.state : '';
+            document.getElementById('address-postcode').value = item ? item.postcode : '';
+            document.getElementById('address-country').value = item && item.country ? item.country : 'India';
+            document.getElementById('address-default').checked = item ? Boolean(item.isDefault) : addresses.length === 0;
+            document.querySelectorAll('input[name="type"]').forEach(function (radio) {
+                radio.checked = (item ? item.type : 'HOME') === radio.value;
+            });
+            document.getElementById('address-modal-title').textContent = item ? 'Edit Address' : 'Add New Address';
+            document.getElementById('save-address').textContent = 'SAVE ADDRESS';
+            clearFieldErrors();
+            formSnapshot = JSON.stringify(formValues());
+        }
+
+        function openForm(item) {
+            fillForm(item || null);
+            document.getElementById('address-modal').hidden = false;
+            document.getElementById('address-name').focus();
+        }
+
+        function closeForm(force) {
+            if (!force && JSON.stringify(formValues()) !== formSnapshot) {
+                if (!window.confirm('Discard unsaved address changes?')) return;
+            }
+            document.getElementById('address-modal').hidden = true;
+        }
+
+        async function loadAddresses() {
+            const payload = await addressRequest('GET');
+            addresses = payload.addresses || [];
+            if (selectedAddressId && !addresses.some(function (item) { return item.id === selectedAddressId; })) {
+                setSelectedAddress('');
+            }
+            renderAddresses();
+        }
+
+        async function saveAddress(event) {
+            event.preventDefault();
+            if (saving) return;
+            clearFieldErrors();
+            const values = formValues();
+            const checked = validateAddress(values);
+            if (Object.keys(checked.errors).length) {
+                showFieldErrors(checked.errors);
+                return;
+            }
+            saving = true;
+            const saveBtn = document.getElementById('save-address');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'SAVING…';
+            try {
+                const id = document.getElementById('address-id').value;
+                const payload = await addressRequest(id ? 'PUT' : 'POST', id, values);
+                addresses = payload.addresses || [];
+                if (!id) setSelectedAddress(payload.address && payload.address.id);
+                formSnapshot = JSON.stringify(formValues());
+                closeForm(true);
+                renderAddresses();
+            } catch (error) {
+                if (error.fields) showFieldErrors(error.fields);
+                document.getElementById('address-form-error').textContent = error.message || 'Could not save this address.';
+            } finally {
+                saving = false;
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'SAVE ADDRESS';
+            }
+        }
+
+        async function removeAddress(id) {
+            const item = addresses.find(function (row) { return row.id === id; });
+            if (!item) return;
+            if (!window.confirm('Remove this saved address?')) return;
+            const payload = await addressRequest('DELETE', id);
+            addresses = payload.addresses || [];
+            if (selectedAddressId === id) {
+                setSelectedAddress('');
+                document.getElementById('continue-hint').textContent = 'Select another delivery address to continue.';
+            }
+            renderAddresses();
+        }
+
+        function continueToPayment() {
+            const hint = document.getElementById('continue-hint');
+            const button = document.getElementById('continue-order');
+            hint.textContent = '';
+            const items = selectedCartItems();
+            const units = items.reduce(function (sum, item) {
+                const quantity = parseInt(item.quantity, 10);
+                return sum + (Number.isFinite(quantity) && quantity > 0 ? quantity : 0);
+            }, 0);
+            if (!items.length || units < 1) {
+                hint.textContent = 'Your bag has no purchasable items.';
+                return;
+            }
+            const address = selectedAddress();
+            if (!address) {
+                hint.textContent = 'Select a delivery address to continue.';
+                return;
+            }
+            if (continuing) return;
+            continuing = true;
+            button.disabled = true;
+            button.textContent = 'CONTINUING…';
+            sessionStorage.setItem(SELECTED_ADDRESS_KEY, address.id);
+            sessionStorage.setItem('checkout_shipping_address', JSON.stringify(address));
+            const paymentUrl = new URL(RAZORPAY_PAYMENT_PAGE);
+            paymentUrl.searchParams.set('amount', String(units));
+            window.location.href = paymentUrl.toString();
+        }
+
+        document.getElementById('add-address-top').addEventListener('click', function () { openForm(null); });
+        document.getElementById('add-address-card').addEventListener('click', function () { openForm(null); });
+        document.getElementById('address-form').addEventListener('submit', saveAddress);
+        document.getElementById('continue-order').addEventListener('click', continueToPayment);
+        document.querySelectorAll('[data-address-close]').forEach(function (el) {
+            el.addEventListener('click', function () { closeForm(false); });
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !document.getElementById('address-modal').hidden) closeForm(false);
+        });
+
+        document.getElementById('default-address-list').addEventListener('click', onAddressListClick);
+        document.getElementById('other-address-list').addEventListener('click', onAddressListClick);
+        function onAddressListClick(event) {
+            const edit = event.target.closest('[data-edit]');
+            if (edit) {
+                event.preventDefault();
+                event.stopPropagation();
+                const item = addresses.find(function (row) { return row.id === edit.getAttribute('data-edit'); });
+                if (item) openForm(item);
+                return;
+            }
+            const remove = event.target.closest('[data-remove]');
+            if (remove) {
+                event.preventDefault();
+                event.stopPropagation();
+                removeAddress(remove.getAttribute('data-remove'));
+                return;
+            }
+            const card = event.target.closest('[data-address-id]');
+            if (!card) return;
+            setSelectedAddress(card.getAttribute('data-address-id'));
+            document.getElementById('continue-hint').textContent = '';
+            renderAddresses();
+        }
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            if (!session) {
+                window.location.replace('login.html?next=address.html');
+                return;
+            }
+            updateCartBadge();
+            const cart = getCart();
+            if (!cart.length) {
+                document.getElementById('empty-cart').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('address-stage').classList.remove('hidden');
+            loadAddresses().catch(function (error) {
+                document.getElementById('continue-hint').textContent = error.message || 'Could not load saved addresses.';
+                renderPrices();
+                renderEstimate();
+            });
+        });
+    </script>
+</body>
+
+</html>

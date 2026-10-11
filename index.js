@@ -98,6 +98,42 @@ document.querySelectorAll("section").forEach((section) => {
 document.querySelector("#home").style.opacity = "1";
 document.querySelector("#home").style.transform = "translateY(0)";
 
+(function initHeroVideo() {
+  const section = document.getElementById("home");
+  const video = document.getElementById("hero-video");
+  if (!section || !video) return;
+
+  const showPoster = () => {
+    section.classList.add("is-static");
+    try { video.pause(); } catch (error) { /* keep the poster visible */ }
+  };
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    showPoster();
+    return;
+  }
+
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+
+  const tryPlay = () => {
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => showPoster());
+    }
+  };
+
+  if (video.readyState >= 2) tryPlay();
+  else video.addEventListener("canplay", tryPlay, { once: true });
+
+  video.addEventListener("error", showPoster);
+  const source = video.querySelector("source");
+  if (source) source.addEventListener("error", showPoster);
+})();
+
 // Tailwind Css config...
 // tailwind.config = {
 //   theme: {
@@ -163,26 +199,3 @@ const testimonialSlider = () => {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', testimonialSlider);
-
-(function () {
-  const slides = document.querySelectorAll('.hero-combo-slide');
-  if (slides.length < 2) return;
-
-  const badge = document.querySelector('[data-hero-badge]');
-  const title = document.querySelector('[data-hero-title]');
-
-  function show(i) {
-    slides.forEach((slide, n) => slide.classList.toggle('is-active', n === i));
-    const active = slides[i];
-    if (badge && active.dataset.pack) badge.textContent = active.dataset.pack;
-    if (title && active.dataset.title) title.textContent = active.dataset.title;
-  }
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  let index = 0;
-  setInterval(() => {
-    index = (index + 1) % slides.length;
-    show(index);
-  }, 4000);
-})();

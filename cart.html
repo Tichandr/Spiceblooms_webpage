@@ -15,6 +15,7 @@
                         primary: '#FF6B35',
                         secondary: '#F7931E',
                         accent: '#FFB800',
+                        brand: '#1B3D2F',
                         dark: '#2D2D2D',
                         light: '#F8F9FA'
                     },
@@ -36,58 +37,438 @@
             background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFB800 100%);
         }
 
-        .scroll-smooth {
-            scroll-behavior: smooth;
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
         }
 
-        /* Cart item alignment */
-        .cart-item {
+        .bag-page {
+            padding: 7.25rem 0 4rem;
+            background: #fff;
+            min-height: 70vh;
+        }
+
+        @media (min-width: 768px) {
+            .bag-page {
+                padding: 9.5rem 0 5rem;
+            }
+        }
+
+        .bag-progress {
             display: flex;
             align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            margin: 0 auto 1.75rem;
+            max-width: 420px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .bag-progress span {
+            color: #9ca3af;
+        }
+
+        .bag-progress .is-current {
+            color: #FF6B35;
+            box-shadow: inset 0 -2px 0 #FF6B35;
+            padding-bottom: 2px;
+        }
+
+        .bag-progress i {
+            flex: 1;
+            max-width: 72px;
+            border-top: 1px dashed #d1d5db;
+        }
+
+        .bag-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .bag-layout {
+                grid-template-columns: minmax(0, 1.95fr) minmax(280px, 1fr);
+                gap: 0;
+                align-items: start;
+            }
+
+            .bag-main {
+                padding-right: 2rem;
+            }
+
+            .bag-aside {
+                padding-left: 2rem;
+                border-left: 1px solid #eee6dc;
+                position: sticky;
+                top: 8.5rem;
+            }
+        }
+
+        .bag-card,
+        .bag-item,
+        .bag-wish,
+        .bag-toolbar {
+            border: 1px solid #eee6dc;
+            border-radius: 16px;
+            background: #fff;
+        }
+
+        .bag-pincode {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             gap: 1rem;
+            padding: 1rem 1.15rem;
+            background: #fff8f2;
         }
 
-        .cart-item-price {
-            display: inline-flex;
-            align-items: baseline;
-            line-height: 1.2;
+        .bag-pincode h2 {
+            margin: 0;
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: #2D2D2D;
         }
 
-        /* Line clamping for product names */
-        .line-clamp-2 {
+        .bag-pincode-status {
+            margin: 0.45rem 0 0;
+            font-size: 0.82rem;
+            color: #6b7280;
+        }
+
+        .bag-pincode-status.is-error {
+            color: #b45309;
+        }
+
+        .bag-outline {
+            flex-shrink: 0;
+            border: 1px solid #FF6B35;
+            color: #FF6B35;
+            background: #fff;
+            border-radius: 999px;
+            padding: 0.55rem 1rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .bag-outline:hover,
+        .bag-outline:focus-visible {
+            background: #fff1ea;
+            outline: 2px solid #FF6B35;
+            outline-offset: 2px;
+        }
+
+        .bag-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            margin: 1rem 0;
+        }
+
+        .bag-toolbar label {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #2D2D2D;
+            cursor: pointer;
+        }
+
+        .bag-bulk {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bag-bulk button {
+            background: none;
+            border: 0;
+            padding: 0;
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #374151;
+        }
+
+        .bag-bulk button:hover:not(:disabled) {
+            color: #FF6B35;
+        }
+
+        .bag-bulk button:disabled {
+            color: #c4c4c4;
+            cursor: not-allowed;
+        }
+
+        .bag-bulk span {
+            width: 1px;
+            height: 14px;
+            background: #e5e7eb;
+        }
+
+        .bag-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .bag-item {
+            display: grid;
+            grid-template-columns: auto 92px minmax(0, 1fr) auto;
+            gap: 0.85rem;
+            padding: 1rem;
+            box-shadow: 0 6px 18px rgba(45, 45, 45, 0.04);
+        }
+
+        .bag-item.is-unselected {
+            border-color: #f0ece6;
+            background: #fcfcfb;
+        }
+
+        .bag-item input[type="checkbox"],
+        .bag-toolbar input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #FF6B35;
+            margin-top: 2px;
+        }
+
+        .bag-thumb {
+            width: 92px;
+            height: 108px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff8f2;
+            border: 1px solid #f3ebe2;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .bag-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .bag-copy h3 {
+            margin: 0;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #1B3D2F;
+        }
+
+        .bag-copy p {
+            margin: 0.2rem 0 0;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #2D2D2D;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        /* Responsive cart item */
-        @media (max-width: 640px) {
-            .cart-item-mobile {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .cart-item-mobile .cart-item-main {
-                width: 100%;
-                display: flex;
-                gap: 1rem;
-            }
-            
-            .cart-item-mobile .cart-item-actions {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 0.75rem;
-            }
+        .bag-meta {
+            margin-top: 0.35rem;
+            font-size: 0.78rem;
+            color: #6b7280;
         }
 
-        .checkout-auth-modal[hidden] {
+        .bag-price {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.45rem;
+            margin-top: 0.55rem;
+        }
+
+        .bag-price strong {
+            font-size: 1rem;
+            color: #2D2D2D;
+        }
+
+        .bag-price s {
+            font-size: 0.82rem;
+            color: #9ca3af;
+        }
+
+        .bag-price em {
+            font-style: normal;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #FF6B35;
+        }
+
+        .bag-qty {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.7rem;
+            border: 1px solid #eee6dc;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bag-qty button,
+        .bag-qty span {
+            width: 30px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .bag-qty button {
+            background: #fff8f2;
+            border: 0;
+            color: #2D2D2D;
+        }
+
+        .bag-qty button:hover:not(:disabled) {
+            background: #ffece3;
+        }
+
+        .bag-qty button:disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .bag-remove {
+            width: 34px;
+            height: 34px;
+            border: 0;
+            background: transparent;
+            color: #9ca3af;
+            border-radius: 8px;
+        }
+
+        .bag-remove:hover,
+        .bag-remove:focus-visible {
+            color: #dc2626;
+            background: #fff1f2;
+            outline: 2px solid #fda4af;
+        }
+
+        .bag-wish {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding: 0.95rem 1.1rem;
+            color: #2D2D2D;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .bag-wish:hover,
+        .bag-wish:focus-visible {
+            border-color: #FF6B35;
+            color: #FF6B35;
+        }
+
+        .bag-wish svg:last-child {
+            margin-left: auto;
+        }
+
+        .bag-summary h2 {
+            margin: 0 0 1rem;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #6b7280;
+        }
+
+        .bag-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.7rem;
+            font-size: 0.92rem;
+            color: #4b5563;
+        }
+
+        .bag-row .is-save {
+            color: #FF6B35;
+            font-weight: 700;
+        }
+
+        .bag-row #total-discount:not(.is-save) {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .bag-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.9rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid #eee6dc;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #2D2D2D;
+        }
+
+        .bag-consent {
+            margin: 0.9rem 0 1.1rem;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: #6b7280;
+        }
+
+        .bag-consent a {
+            color: #FF6B35;
+            text-decoration: underline;
+        }
+
+        .bag-place {
+            width: 100%;
+            border: 0;
+            border-radius: 999px;
+            background: #FF6B35;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            padding: 0.95rem 1rem;
+        }
+
+        .bag-place:hover:not(:disabled) {
+            background: #e85d2c;
+        }
+
+        .bag-place:focus-visible {
+            outline: 3px solid #ffd0bf;
+            outline-offset: 2px;
+        }
+
+        .bag-place:disabled {
+            background: #f0c4b3;
+            cursor: not-allowed;
+        }
+
+        .bag-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .checkout-auth-modal[hidden],
+        .bag-modal[hidden],
+        .bag-toast[hidden] {
             display: none !important;
         }
 
-        .checkout-auth-modal {
+        .checkout-auth-modal,
+        .bag-modal {
             position: fixed;
             inset: 0;
             z-index: 80;
@@ -97,14 +478,16 @@
             padding: 1.25rem;
         }
 
-        .checkout-auth-backdrop {
+        .checkout-auth-backdrop,
+        .bag-modal-backdrop {
             position: absolute;
             inset: 0;
             background: rgba(28, 24, 20, 0.45);
             backdrop-filter: blur(6px);
         }
 
-        .checkout-auth-card {
+        .checkout-auth-card,
+        .bag-modal-card {
             position: relative;
             width: min(440px, 100%);
             padding: 1.75rem 1.6rem 1.5rem;
@@ -113,16 +496,88 @@
             box-shadow: 0 20px 50px rgba(45, 45, 45, 0.18);
         }
 
-        html,
-        body {
-            overflow-x: hidden;
-            max-width: 100%;
+        .bag-modal-card label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 0.45rem;
+        }
+
+        .bag-modal-card input {
+            width: 100%;
+            border: 1px solid #eee6dc;
+            border-radius: 12px;
+            padding: 0.75rem 0.9rem;
+            font-size: 1rem;
+        }
+
+        .bag-modal-error {
+            min-height: 1.2rem;
+            margin: 0.45rem 0 0.9rem;
+            font-size: 0.8rem;
+            color: #b45309;
+        }
+
+        .bag-toast {
+            position: fixed;
+            left: 50%;
+            bottom: 1.25rem;
+            transform: translateX(-50%);
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #1B3D2F;
+            color: #fff;
+            border-radius: 999px;
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 30px rgba(27, 61, 47, 0.25);
+        }
+
+        .bag-toast button {
+            border: 0;
+            background: transparent;
+            color: #FFB800;
+            font-weight: 800;
+        }
+
+        @media (max-width: 767px) {
+            .bag-progress {
+                max-width: 280px;
+                font-size: 0.64rem;
+                gap: 0.4rem;
+            }
+
+            .bag-pincode {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bag-item {
+                grid-template-columns: auto 72px minmax(0, 1fr) auto;
+                gap: 0.6rem;
+                padding: 0.8rem;
+            }
+
+            .bag-thumb {
+                width: 72px;
+                height: 88px;
+            }
+
+            .bag-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bag-bulk {
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
 
-<body class="font-body text-dark scroll-smooth bg-light">
-    <!-- Navigation -->
+<body class="font-body text-dark bg-white">
     <nav
         class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/25 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)] transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -132,14 +587,11 @@
                 </a>
 
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
-                    <a href="index.html#about"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
+                    <a href="index.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
+                    <a href="index.html#about" class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
                     <a href="products.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
                     <a href="catalouge.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Catalogue</a>
-                    <a href="index.html#contact"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
+                    <a href="index.html#contact" class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
                     <a href="cart.html" class="relative text-primary font-semibold">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -151,14 +603,12 @@
 
                 <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
                 <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
@@ -172,90 +622,89 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="pt-32 sm:pt-36 pb-12 sm:pb-16 gradient-bg relative overflow-hidden">
-        <div class="absolute inset-0 bg-black/20"></div>
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6">
-                Your <span class="text-accent">Shopping</span> Cart
-            </h1>
-            <p class="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-2">
-                Review your selected products and proceed to checkout
-            </p>
-        </div>
-    </section>
-
-    <!-- Cart Section -->
-    <section class="py-12 sm:py-16 lg:py-20 bg-white">
+    <main class="bag-page">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Empty Cart Message -->
-            <div id="empty-cart" class="text-center py-12 sm:py-16 hidden">
-                <svg class="w-16 h-16 sm:w-24 sm:h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <nav class="bag-progress" aria-label="Checkout progress">
+                <span class="is-current" aria-current="step">Bag</span>
+                <i aria-hidden="true"></i>
+                <span>Address</span>
+                <i aria-hidden="true"></i>
+                <span>Payment</span>
+            </nav>
+
+            <div id="empty-cart" class="bag-empty hidden">
+                <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-3 sm:mb-4">Your cart is empty</h2>
-                <p class="text-gray-500 mb-6 sm:mb-8 text-sm sm:text-base">Add some products to get started!</p>
-                <a href="products.html" class="inline-block bg-primary text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold hover:bg-primary/90 transition-colors">
-                    Browse Products
-                </a>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-700 mb-3">Your cart is empty</h1>
+                <p class="text-gray-500 mb-6">Add some products to get started.</p>
+                <a href="products.html" class="inline-block bg-primary text-white px-6 py-2.5 rounded-full font-semibold hover:bg-primary/90">Browse Products</a>
             </div>
 
-            <!-- Cart Items -->
-            <div id="cart-items" class="hidden">
-                <div class="grid lg:grid-cols-3 gap-6 lg:gap-8">
-                    <!-- Cart Items List -->
-                    <div class="lg:col-span-2 order-2 lg:order-1">
-                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
-                            <h2 class="text-xl sm:text-2xl font-bold text-dark mb-4 sm:mb-6">Cart Items</h2>
-                            <div id="cart-items-list" class="space-y-3 sm:space-y-4">
-                                <!-- Cart items will be dynamically inserted here -->
-                            </div>
+            <div id="cart-items" class="bag-layout hidden">
+                <div class="bag-main">
+                    <section class="bag-card bag-pincode" aria-labelledby="pincode-title">
+                        <div>
+                            <h2 id="pincode-title">Check delivery time &amp; services</h2>
+                            <p id="pincode-status" class="bag-pincode-status">Enter a PIN code to check whether we can look up delivery for your area.</p>
+                        </div>
+                        <button type="button" class="bag-outline" id="pincode-open">ENTER PIN CODE</button>
+                    </section>
+
+                    <div class="bag-toolbar">
+                        <label>
+                            <input type="checkbox" id="select-all" checked>
+                            <span id="selected-count">0/0 ITEMS SELECTED</span>
+                        </label>
+                        <div class="bag-bulk">
+                            <button type="button" id="bulk-remove" disabled>REMOVE</button>
+                            <span aria-hidden="true"></span>
+                            <button type="button" id="bulk-wishlist" disabled>MOVE TO WISHLIST</button>
                         </div>
                     </div>
 
-                    <!-- Order Summary -->
-                    <div class="lg:col-span-1 order-1 lg:order-2">
-                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 lg:sticky lg:top-24">
-                            <h2 class="text-xl sm:text-2xl font-bold text-dark mb-4 sm:mb-6">Order Summary</h2>
-                            
-                            <div class="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-                                <div class="flex justify-between items-center text-gray-600">
-                                    <span class="text-sm sm:text-base">Subtotal</span>
-                                    <span id="subtotal" class="text-sm sm:text-base font-semibold">Rs 0/-</span>
-                                </div>
-                                <div class="flex justify-between items-center text-gray-600">
-                                    <span class="text-sm sm:text-base">Items</span>
-                                    <span id="total-items" class="text-sm sm:text-base font-semibold">0</span>
-                                </div>
-                                <div class="border-t border-gray-200 pt-3 sm:pt-4">
-                                    <div class="flex justify-between items-center text-lg sm:text-xl font-bold text-dark">
-                                        <span>Total</span>
-                                        <span id="total-price" class="text-primary">Rs 0/-</span>
-                                    </div>
-                                </div>
-                            </div>
+                    <div id="cart-items-list" class="bag-list"></div>
 
-                            <div class="space-y-2 sm:space-y-3">
-                                <button type="button" onclick="proceedToPayment()"
-                                    class="w-full bg-primary text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                                    </svg>
-                                    <span class="whitespace-nowrap">Proceed to Pay</span>
-                                </button>
-                                <p id="checkout-hint" class="text-xs text-gray-500 text-center">Sign in is required before payment. Secure checkout powered by Razorpay</p>
-                                <a href="products.html"
-                                    class="block w-full bg-gray-100 text-dark px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold text-center hover:bg-gray-200 transition-colors">
-                                    Continue Shopping
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <a class="bag-wish" href="products.html#wishlist">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                        </svg>
+                        Add More From Wishlist
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
                 </div>
+
+                <aside class="bag-aside" aria-labelledby="price-details-title">
+                    <div class="bag-summary">
+                        <h2 id="price-details-title">PRICE DETAILS (<span id="price-item-count">0 Items</span>)</h2>
+                        <div class="bag-row"><span>Total MRP</span><span id="total-mrp">Rs 0/-</span></div>
+                        <div class="bag-row" id="discount-row"><span>Discount on MRP</span><span class="is-save" id="total-discount">-Rs 0/-</span></div>
+                        <div class="bag-row"><span>Platform Fee</span><span id="platform-fee">Rs 0/-</span></div>
+                        <div class="bag-total"><span>Total Amount</span><span id="total-price">Rs 0/-</span></div>
+                        <p class="bag-consent">By placing the order, you agree to SpiceBlooms Naturals’ <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+                        <button type="button" class="bag-place" id="place-order">PLACE ORDER</button>
+                        <p id="checkout-hint" class="text-xs text-gray-500 text-center mt-3">Sign in is required before payment. Secure checkout powered by Razorpay</p>
+                    </div>
+                </aside>
             </div>
         </div>
-    </section>
+    </main>
+
+    <div id="pincode-modal" class="bag-modal" hidden>
+        <div class="bag-modal-backdrop" data-pincode-close></div>
+        <div class="bag-modal-card" role="dialog" aria-modal="true" aria-labelledby="pincode-modal-title">
+            <h2 id="pincode-modal-title" class="text-xl font-bold mb-4">Enter PIN code</h2>
+            <form id="pincode-form">
+                <label for="pincode-input">Delivery PIN code</label>
+                <input id="pincode-input" name="pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="6-digit PIN">
+                <p class="bag-modal-error" id="pincode-error"></p>
+                <button type="submit" class="bag-place">CHECK</button>
+                <button type="button" class="block w-full text-gray-500 text-sm font-medium py-3" data-pincode-close>Cancel</button>
+            </form>
+        </div>
+    </div>
 
     <div id="checkout-auth-modal" class="checkout-auth-modal" hidden>
         <div class="checkout-auth-backdrop" data-checkout-auth-close></div>
@@ -265,23 +714,18 @@
                 Sign in with Google or your mobile number so we can attach this order before payment.
             </p>
             <div class="space-y-3">
-                <a href="login.html?next=cart.html%3Fcontinue%3Dpay"
-                    class="block w-full bg-primary text-white px-6 py-3 rounded-full font-semibold text-center hover:bg-primary/90 transition-colors">
-                    Sign in
-                </a>
-                <a href="login.html?next=cart.html%3Fcontinue%3Dpay&mode=signup"
-                    class="block w-full bg-gray-100 text-dark px-6 py-3 rounded-full font-semibold text-center hover:bg-gray-200 transition-colors">
-                    Sign up
-                </a>
-                <button type="button" data-checkout-auth-close
-                    class="block w-full text-gray-500 text-sm font-medium py-2 hover:text-dark transition-colors">
-                    Not now
-                </button>
+                <a href="login.html?next=address.html" class="block w-full bg-primary text-white px-6 py-3 rounded-full font-semibold text-center hover:bg-primary/90 transition-colors">Sign in</a>
+                <a href="login.html?next=address.html&mode=signup" class="block w-full bg-gray-100 text-dark px-6 py-3 rounded-full font-semibold text-center hover:bg-gray-200 transition-colors">Sign up</a>
+                <button type="button" data-checkout-auth-close class="block w-full text-gray-500 text-sm font-medium py-2 hover:text-dark transition-colors">Not now</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
+    <div id="bag-toast" class="bag-toast" hidden>
+        <span id="bag-toast-text">Item removed.</span>
+        <button type="button" id="bag-undo">UNDO</button>
+    </div>
+
     <footer class="bg-dark text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
@@ -291,223 +735,297 @@
                             <span class="text-white font-bold text-xl">S</span>
                         </div>
                         <span class="text-2xl font-bold">SpiceBlooms</span>
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmfc_stMboTgZwxbPdTOxBRXzji-8-pSrHACNuUoseM3tePQLmFJlkRjk&s=10"
-                            alt="Footer Decorative"
-                            style="height:32px; width:auto; margin-left:8px; border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.08); object-fit:contain;" />
                     </div>
-                    <p class="text-gray-400 mb-6">Where flavor meets innovation. Premium spices sourced globally,
-                        delivered with passion.</p>
+                    <p class="text-gray-400 mb-6">Where flavor meets innovation. Premium spices sourced globally, delivered with passion.</p>
                     <div class="flex space-x-4">
-                        <!-- WhatsApp -->
-                        <a href="https://wa.me/message/DH57EHUBAARAE1" target="_blank" rel="noopener"
-                            class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                            </svg>
+                        <a href="https://wa.me/message/DH57EHUBAARAE1" target="_blank" rel="noopener" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors" aria-label="WhatsApp">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
                         </a>
-                        <!-- Instagram -->
-                        <a href="https://www.instagram.com/spiceblooms_/" target="_blank" rel="noopener"
-                            class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5zm4.25 2.25a5.25 5.25 0 1 1-5.25 5.25A5.25 5.25 0 0 1 12 5.75zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 7.25zm5.25.75a1 1 0 1 1-1 1 1 1 0 0 1 1-1z" />
-                            </svg>
+                        <a href="https://www.instagram.com/spiceblooms_/" target="_blank" rel="noopener" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors" aria-label="Instagram">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5zm4.25 2.25a5.25 5.25 0 1 1-5.25 5.25A5.25 5.25 0 0 1 12 5.75zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 7.25zm5.25.75a1 1 0 1 1-1 1 1 1 0 0 1 1-1z" /></svg>
                         </a>
                     </div>
                 </div>
-
                 <div>
                     <h3 class="text-xl font-bold mb-6">Products</h3>
                     <ul class="space-y-3 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Whole Spices</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Ground Spices</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Spice Blends</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Handmade in small batches</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">FSSAI Licensed</a></li>
+                        <li><a href="products.html" class="hover:text-white transition-colors">Whole Spices</a></li>
+                        <li><a href="products.html" class="hover:text-white transition-colors">Ground Spices</a></li>
+                        <li><a href="products.html" class="hover:text-white transition-colors">Spice Blends</a></li>
                     </ul>
                 </div>
-
                 <div>
                     <h3 class="text-xl font-bold mb-6">Contact</h3>
                     <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-start space-x-2">
-                            <svg class="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            <span>spicebloomsenterprise@gmail.com</span>
-                        </li>
-                        <li class="flex items-start space-x-2">
-                            <svg class="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                                </path>
-                            </svg>
-                            <span>+91 9030760943</span>
-                        </li>
-                        <li class="flex items-start space-x-2">
-                            <svg class="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            <span class="text-sm">PBR'S SILVER OKS flat no 201, 2nd floor, Balaji gardens, RRV puram
-                                junction, Gopalapatnam, Simhachalam, Visakhapatnam - 530029</span>
-                        </li>
+                        <li>spicebloomsenterprise@gmail.com</li>
+                        <li>+91 9030760943</li>
                     </ul>
                 </div>
             </div>
-
             <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-400 mb-4 md:mb-0">© 2025 SpiceBlooms. All rights reserved.</p>
                 <div class="flex space-x-6 text-gray-400">
                     <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
                     <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
-                    <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // Cart Management Functions
+        const CART_KEY = 'cart';
+        const WISHLIST_KEY = 'spiceblooms_wishlist';
+        const SELECTED_KEY = 'cart_selected';
+        const KNOWN_KEY = 'cart_known_names';
+        const MAX_QTY = 20;
+        const PLATFORM_FEE = 0;
+        const CATALOG = [
+            { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png', pack: '100g pack' },
+            { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png', pack: '100g pack' },
+            { id: 'pesara', name: 'Pesara Podi', cartName: 'Pesara Podi', price: 199, mrp: 229, image: 'assets/Naturals/Pesara%20Podi.png', pack: '100g pack' },
+            { id: 'turmeric', name: 'Turmeric Powder', cartName: 'Turmeric Powder', price: 199, mrp: 229, image: 'assets/Naturals/Turmeric%20powder.png', pack: '100g pack' },
+            { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'assets/Naturals/Kandi%20Podi.png', pack: '100g pack' },
+            { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'assets/products/masala-karam.png', pack: '100g pack' },
+            { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png', pack: '100g pack' },
+            { id: 'sambar', name: 'Spiceblooms Naturals Sambar Powder Authentic Andhra Taste in Every Spoon', cartName: 'Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon', price: 199, image: 'assets/new_items/sambar.jpg', pack: '100g pack' },
+            { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png', pack: '100g pack' },
+            { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Madhuri Spices Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg', pack: '100g pack' },
+            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi Aromatic Curry Leaf Blast', cartName: 'Madhuri Spices Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png', pack: '100g pack' },
+            { id: 'rasam', name: 'Madhuri Spices Rasam Powder Tangy and Peppery Delight', cartName: 'Madhuri Spices Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg', pack: '100g pack' },
+            { id: 'chicken', name: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', cartName: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', price: 199, image: 'assets/Naturals/Chicken%20powder.png', pack: '100g pack' },
+            { id: 'abc', name: 'Spiceblooms Naturals ABC Health Drink', cartName: 'Spiceblooms Naturals ABC Health Drink', price: 199, image: 'assets/Naturals/ABC%20Health%20Drink.png', pack: '100g pack' }
+        ];
+
+        let undoStack = null;
+        let toastTimer = null;
+
+        function money(value) {
+            return 'Rs ' + Math.max(0, Math.round(value)) + '/-';
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, function (char) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+            });
+        }
+
         function getCart() {
-            const cart = localStorage.getItem('cart');
-            return cart ? JSON.parse(cart) : [];
+            try {
+                const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+                return Array.isArray(cart) ? cart.filter(function (item) { return item && item.name; }) : [];
+            } catch (error) {
+                return [];
+            }
         }
 
         function saveCart(cart) {
-            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartBadge();
             renderCart();
         }
 
+        function findCatalog(item) {
+            const name = (item && item.name) || '';
+            return CATALOG.find(function (row) { return row.cartName === name || row.name === name; })
+                || CATALOG.find(function (row) {
+                    return name.indexOf(row.cartName) !== -1 || row.cartName.indexOf(name) !== -1
+                        || name.indexOf(row.name) !== -1 || row.name.indexOf(name) !== -1;
+                }) || null;
+        }
+
+        function getSelectedNames() {
+            const names = getCart().map(function (item) { return item.name; });
+            let known = [];
+            try {
+                known = JSON.parse(sessionStorage.getItem(KNOWN_KEY) || '[]');
+                if (!Array.isArray(known)) known = [];
+            } catch (error) {
+                known = [];
+            }
+            const newcomers = names.filter(function (name) { return known.indexOf(name) === -1; });
+            sessionStorage.setItem(KNOWN_KEY, JSON.stringify(names));
+
+            const raw = sessionStorage.getItem(SELECTED_KEY);
+            if (raw === null) return names.slice();
+            try {
+                const stored = JSON.parse(raw);
+                if (!Array.isArray(stored)) return names.slice();
+                const valid = stored.filter(function (name) { return names.indexOf(name) !== -1; });
+                newcomers.forEach(function (name) {
+                    if (valid.indexOf(name) === -1) valid.push(name);
+                });
+                return valid;
+            } catch (error) {
+                return names.slice();
+            }
+        }
+
+        function setSelectedNames(names) {
+            sessionStorage.setItem(SELECTED_KEY, JSON.stringify(names));
+        }
+
+        function selectedItems() {
+            const selected = getSelectedNames();
+            return getCart().filter(function (item) { return selected.indexOf(item.name) !== -1; });
+        }
+
         function updateCartBadge() {
-            const cart = getCart();
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalItems = getCart().reduce(function (sum, item) { return sum + (parseInt(item.quantity, 10) || 0); }, 0);
             const badge = document.getElementById('cart-badge');
-            
-            if (badge) {
-                if (totalItems > 0) {
-                    badge.textContent = totalItems;
-                    badge.style.display = 'flex';
-                } else {
-                    badge.style.display = 'none';
-                }
-            }
-        }
-
-        function removeFromCart(index) {
-            const cart = getCart();
-            cart.splice(index, 1);
-            saveCart(cart);
-        }
-
-        function updateQuantity(index, change) {
-            const cart = getCart();
-            cart[index].quantity += change;
-            if (cart[index].quantity <= 0) {
-                removeFromCart(index);
+            if (!badge) return;
+            if (totalItems > 0) {
+                badge.textContent = String(totalItems);
+                badge.style.display = 'flex';
             } else {
-                saveCart(cart);
+                badge.style.display = 'none';
             }
+        }
+
+        function getWishlist() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+                return Array.isArray(stored) ? stored : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function addIdsToWishlist(ids) {
+            const list = getWishlist();
+            ids.forEach(function (id) {
+                if (id && list.indexOf(id) === -1) list.push(id);
+            });
+            localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+        }
+
+        function showToast(message, canUndo) {
+            const toast = document.getElementById('bag-toast');
+            const text = document.getElementById('bag-toast-text');
+            const undo = document.getElementById('bag-undo');
+            if (!toast || !text) return;
+            text.textContent = message;
+            if (undo) undo.hidden = !canUndo;
+            toast.hidden = false;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+                toast.hidden = true;
+                if (!canUndo) undoStack = null;
+            }, 4000);
+        }
+
+        function enrich(item) {
+            const catalog = findCatalog(item);
+            const price = Number(item.price) || (catalog && catalog.price) || 0;
+            const mrp = catalog && catalog.mrp && catalog.mrp > price ? catalog.mrp : 0;
+            return {
+                name: item.name,
+                price: price,
+                quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
+                image: item.image || (catalog && catalog.image) || '',
+                mrp: mrp,
+                pack: catalog && catalog.pack ? catalog.pack : '',
+                id: catalog && catalog.id ? catalog.id : '',
+                brand: 'SpiceBlooms Naturals'
+            };
         }
 
         function renderCart() {
-            const cart = getCart();
-            const cartItemsList = document.getElementById('cart-items-list');
+            const cart = getCart().map(enrich);
             const emptyCart = document.getElementById('empty-cart');
             const cartItems = document.getElementById('cart-items');
+            const list = document.getElementById('cart-items-list');
+            const placeOrder = document.getElementById('place-order');
 
-            if (cart.length === 0) {
+            if (!cart.length) {
                 emptyCart.classList.remove('hidden');
                 cartItems.classList.add('hidden');
+                sessionStorage.setItem(KNOWN_KEY, '[]');
+                sessionStorage.setItem(SELECTED_KEY, '[]');
+                if (placeOrder) placeOrder.disabled = true;
                 return;
             }
 
             emptyCart.classList.add('hidden');
             cartItems.classList.remove('hidden');
 
-            // Render cart items
-            cartItemsList.innerHTML = cart.map((item, index) => `
-                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
-                    <div class="flex gap-3 sm:gap-4 flex-1 min-w-0">
-                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg flex-shrink-0">
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-base sm:text-lg text-dark mb-1 line-clamp-2">${item.name}</h3>
-                            <p class="text-gray-600 text-xs sm:text-sm">Rs ${item.price}/- per item</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 flex-shrink-0 w-full sm:w-auto">
-                        <div class="flex items-center gap-2">
-                            <button onclick="updateQuantity(${index}, -1)" 
-                                class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 active:bg-gray-400 flex items-center justify-center transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                </svg>
-                            </button>
-                            <span class="w-10 sm:w-12 text-center font-semibold text-dark text-sm sm:text-base">${item.quantity}</span>
-                            <button onclick="updateQuantity(${index}, 1)" 
-                                class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 active:bg-gray-400 flex items-center justify-center transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="text-right flex flex-col items-end">
-                            <p class="font-bold text-primary text-base sm:text-lg leading-tight whitespace-nowrap">Rs ${item.price * item.quantity}/-</p>
-                            <button onclick="removeFromCart(${index})" 
-                                class="text-red-500 hover:text-red-700 active:text-red-800 text-xs sm:text-sm mt-1 transition-colors">Remove</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            const selected = getSelectedNames().filter(function (name) {
+                return cart.some(function (item) { return item.name === name; });
+            });
+            setSelectedNames(selected);
 
-            // Update totals
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            list.innerHTML = cart.map(function (item, index) {
+                const checked = selected.indexOf(item.name) !== -1;
+                const save = item.mrp ? (item.mrp - item.price) * item.quantity : 0;
+                return '<article class="bag-item' + (checked ? '' : ' is-unselected') + '">' +
+                    '<input type="checkbox" data-select="' + index + '" ' + (checked ? 'checked' : '') + ' aria-label="Select ' + escapeHtml(item.name) + '">' +
+                    '<div class="bag-thumb"><img src="' + escapeHtml(item.image) + '" alt="" width="92" height="108"></div>' +
+                    '<div class="bag-copy">' +
+                    '<h3>' + escapeHtml(item.brand) + '</h3>' +
+                    '<p>' + escapeHtml(item.name) + '</p>' +
+                    (item.pack ? '<div class="bag-meta">' + escapeHtml(item.pack) + '</div>' : '') +
+                    '<div class="bag-price"><strong>' + money(item.price) + '</strong>' +
+                    (item.mrp ? '<s>' + money(item.mrp) + '</s>' : '') +
+                    (save > 0 ? '<em>Save ' + money(save) + '</em>' : '') +
+                    '</div>' +
+                    '<div class="bag-qty">' +
+                    '<button type="button" data-qty="' + index + '" data-delta="-1" aria-label="Decrease quantity" ' + (item.quantity <= 1 ? 'disabled' : '') + '>-</button>' +
+                    '<span>' + item.quantity + '</span>' +
+                    '<button type="button" data-qty="' + index + '" data-delta="1" aria-label="Increase quantity" ' + (item.quantity >= MAX_QTY ? 'disabled' : '') + '>+</button>' +
+                    '</div></div>' +
+                    '<button type="button" class="bag-remove" data-remove="' + index + '" aria-label="Remove ' + escapeHtml(item.name) + '">' +
+                    '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' +
+                    '</button></article>';
+            }).join('');
 
-            document.getElementById('subtotal').textContent = `Rs ${subtotal}/-`;
-            document.getElementById('total-items').textContent = totalItems;
-            document.getElementById('total-price').textContent = `Rs ${subtotal}/-`;
+            document.getElementById('selected-count').textContent = selected.length + '/' + cart.length + ' ITEMS SELECTED';
+            document.getElementById('select-all').checked = selected.length === cart.length;
+            document.getElementById('select-all').indeterminate = selected.length > 0 && selected.length < cart.length;
+
+            const hasSelected = selected.length > 0;
+            document.getElementById('bulk-remove').disabled = !hasSelected;
+            document.getElementById('bulk-wishlist').disabled = !hasSelected;
+
+            const priced = cart.filter(function (item) { return selected.indexOf(item.name) !== -1; });
+            const units = priced.reduce(function (sum, item) { return sum + item.quantity; }, 0);
+            const selling = priced.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0);
+            const mrpTotal = priced.reduce(function (sum, item) { return sum + (item.mrp || item.price) * item.quantity; }, 0);
+            const discount = mrpTotal - selling;
+
+            document.getElementById('price-item-count').textContent = units + (units === 1 ? ' Item' : ' Items');
+            document.getElementById('total-mrp').textContent = money(mrpTotal);
+            document.getElementById('total-discount').textContent = '- ' + money(discount);
+            document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
+            document.getElementById('platform-fee').textContent = money(PLATFORM_FEE);
+            document.getElementById('total-price').textContent = money(selling + PLATFORM_FEE);
+            if (placeOrder) placeOrder.disabled = !hasSelected;
         }
 
-        const RAZORPAY_PAYMENT_PAGE = 'https://pages.razorpay.com/pl_Tcjt9CwKb9pbxo/view';
-        const checkoutAuthModal = document.getElementById('checkout-auth-modal');
-
-        function openCheckoutAuthModal() {
-            if (!checkoutAuthModal) {
-                window.location.href = 'login.html?next=cart.html%3Fcontinue%3Dpay';
-                return;
-            }
-            checkoutAuthModal.hidden = false;
-        }
-
-        function closeCheckoutAuthModal() {
-            if (checkoutAuthModal) checkoutAuthModal.hidden = true;
-        }
-
-        function proceedToPayment() {
+        function removeIndexes(indexes, message) {
             const cart = getCart();
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
+            undoStack = cart.slice();
+            const keep = cart.filter(function (_, index) { return indexes.indexOf(index) === -1; });
+            const selected = getSelectedNames().filter(function (name) {
+                return keep.some(function (item) { return item.name === name; });
+            });
+            setSelectedNames(selected);
+            saveCart(keep);
+            showToast(message, true);
+        }
+
+        function proceedToAddress() {
+            const items = selectedItems();
+            const placeOrder = document.getElementById('place-order');
+            if (!items.length) {
+                showToast('Select at least one item to place the order.', false);
                 return;
             }
 
-            const totalItems = cart.reduce((sum, item) => {
+            const totalItems = items.reduce(function (sum, item) {
                 const quantity = parseInt(item.quantity, 10);
                 return sum + (Number.isFinite(quantity) && quantity > 0 ? quantity : 0);
             }, 0);
-
             if (totalItems < 1) {
-                alert('Your cart is empty!');
+                showToast('Select at least one item to place the order.', false);
                 return;
             }
 
@@ -517,28 +1035,145 @@
                 return;
             }
 
-            const paymentUrl = new URL(RAZORPAY_PAYMENT_PAGE);
-            paymentUrl.searchParams.set('amount', String(totalItems));
-            window.location.href = paymentUrl.toString();
+            if (placeOrder) {
+                placeOrder.disabled = true;
+                placeOrder.textContent = 'CONTINUING...';
+            }
+            window.location.href = 'address.html';
         }
 
+        const checkoutAuthModal = document.getElementById('checkout-auth-modal');
+        function openCheckoutAuthModal() {
+            if (!checkoutAuthModal) {
+                window.location.href = 'login.html?next=address.html';
+                return;
+            }
+            checkoutAuthModal.hidden = false;
+        }
+        function closeCheckoutAuthModal() {
+            if (checkoutAuthModal) checkoutAuthModal.hidden = true;
+        }
+
+        document.getElementById('cart-items-list').addEventListener('click', function (event) {
+            const qtyBtn = event.target.closest('[data-qty]');
+            if (qtyBtn) {
+                const index = parseInt(qtyBtn.getAttribute('data-qty'), 10);
+                const delta = parseInt(qtyBtn.getAttribute('data-delta'), 10);
+                const cart = getCart();
+                if (!cart[index]) return;
+                const next = (parseInt(cart[index].quantity, 10) || 1) + delta;
+                if (next < 1 || next > MAX_QTY) return;
+                cart[index].quantity = next;
+                saveCart(cart);
+                return;
+            }
+            const removeBtn = event.target.closest('[data-remove]');
+            if (removeBtn) {
+                removeIndexes([parseInt(removeBtn.getAttribute('data-remove'), 10)], 'Item removed.');
+            }
+        });
+
+        document.getElementById('cart-items-list').addEventListener('change', function (event) {
+            const box = event.target.closest('[data-select]');
+            if (!box) return;
+            const cart = getCart();
+            const item = cart[parseInt(box.getAttribute('data-select'), 10)];
+            if (!item) return;
+            let selected = getSelectedNames();
+            if (box.checked && selected.indexOf(item.name) === -1) selected.push(item.name);
+            if (!box.checked) selected = selected.filter(function (name) { return name !== item.name; });
+            setSelectedNames(selected);
+            renderCart();
+        });
+
+        document.getElementById('select-all').addEventListener('change', function () {
+            setSelectedNames(this.checked ? getCart().map(function (item) { return item.name; }) : []);
+            renderCart();
+        });
+
+        document.getElementById('bulk-remove').addEventListener('click', function () {
+            const selected = getSelectedNames();
+            if (!selected.length) return;
+            if (!window.confirm('Remove ' + selected.length + ' selected item' + (selected.length === 1 ? '' : 's') + ' from your bag?')) return;
+            const indexes = getCart().reduce(function (list, item, index) {
+                if (selected.indexOf(item.name) !== -1) list.push(index);
+                return list;
+            }, []);
+            removeIndexes(indexes, 'Selected items removed.');
+        });
+
+        document.getElementById('bulk-wishlist').addEventListener('click', function () {
+            const selected = getSelectedNames();
+            const cart = getCart();
+            const ids = [];
+            const indexes = [];
+            cart.forEach(function (item, index) {
+                if (selected.indexOf(item.name) === -1) return;
+                const catalog = findCatalog(item);
+                if (catalog) ids.push(catalog.id);
+                indexes.push(index);
+            });
+            if (!indexes.length) return;
+            addIdsToWishlist(ids);
+            removeIndexes(indexes, ids.length ? 'Moved to wishlist.' : 'Removed from bag. Wishlist match was not found for some items.');
+        });
+
+        document.getElementById('bag-undo').addEventListener('click', function () {
+            if (!undoStack) return;
+            saveCart(undoStack);
+            undoStack = null;
+            document.getElementById('bag-toast').hidden = true;
+        });
+
+        document.getElementById('place-order').addEventListener('click', proceedToAddress);
+
+        const pinModal = document.getElementById('pincode-modal');
+        const pinStatus = document.getElementById('pincode-status');
+        const pinError = document.getElementById('pincode-error');
+        document.getElementById('pincode-open').addEventListener('click', function () {
+            pinModal.hidden = false;
+            document.getElementById('pincode-input').focus();
+        });
+        pinModal.querySelectorAll('[data-pincode-close]').forEach(function (el) {
+            el.addEventListener('click', function () { pinModal.hidden = true; });
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key !== 'Escape') return;
+            if (pinModal && !pinModal.hidden) pinModal.hidden = true;
+            closeCheckoutAuthModal();
+        });
+
+        document.getElementById('pincode-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const pin = String(document.getElementById('pincode-input').value || '').trim();
+            if (!pin) {
+                pinError.textContent = 'Please enter your PIN code.';
+                return;
+            }
+            if (!/^\d{6}$/.test(pin)) {
+                pinError.textContent = 'Enter a valid 6-digit PIN code.';
+                return;
+            }
+            pinError.textContent = '';
+            pinModal.hidden = true;
+            pinStatus.classList.remove('is-error');
+            pinStatus.textContent = 'We do not have a delivery-time lookup for PIN ' + pin + ' yet. You can still place your order.';
+        });
+
         if (checkoutAuthModal) {
-            checkoutAuthModal.querySelectorAll('[data-checkout-auth-close]').forEach((el) => {
+            checkoutAuthModal.querySelectorAll('[data-checkout-auth-close]').forEach(function (el) {
                 el.addEventListener('click', closeCheckoutAuthModal);
             });
         }
 
-        // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
-
         if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => {
+            mobileMenuButton.addEventListener('click', function () {
                 mobileMenu.classList.toggle('hidden');
             });
         }
 
-        // Initialize cart on page load
         window.addEventListener('DOMContentLoaded', function () {
             updateCartBadge();
             renderCart();
@@ -549,18 +1184,15 @@
         (function () {
             const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
             const hint = document.getElementById('checkout-hint');
-            if (session && hint) {
-                hint.textContent = 'Secure checkout powered by Razorpay';
-            }
+            if (session && hint) hint.textContent = 'Secure checkout powered by Razorpay';
 
             const params = new URLSearchParams(window.location.search);
-            if (params.get('continue') !== 'pay') return;
+            if (params.get('continue') !== 'pay' && params.get('continue') !== 'address') return;
             history.replaceState({}, '', 'cart.html');
             if (!session || !getCart().length) return;
-            proceedToPayment();
+            proceedToAddress();
         })();
     </script>
 </body>
 
 </html>
-

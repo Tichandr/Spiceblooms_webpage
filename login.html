@@ -883,8 +883,8 @@
 
     const params = new URLSearchParams(window.location.search);
     const nextRaw = params.get("next") || "";
-    const fromCheckout = nextRaw.startsWith("cart.html");
-    const safeNext = /^(cart|index|products|exports|catalouge)\.html(\?continue=pay)?$/.test(nextRaw)
+    const fromCheckout = nextRaw.startsWith("cart.html") || nextRaw.startsWith("address.html");
+    const safeNext = /^(cart|index|products|exports|catalouge|address)\.html(\?continue=(pay|address))?$/.test(nextRaw)
       ? nextRaw
       : "index.html";
 
