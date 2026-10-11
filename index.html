@@ -73,180 +73,76 @@
         max-width: 100%;
     }
 
-    .hero-combo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    .hero-canva {
         width: 100%;
-        max-width: min(28rem, calc(100vw - 2rem));
-        height: fit-content;
-        align-self: center;
-        margin: 0.5rem auto 0;
-        padding: 1.05rem 1rem 1.1rem;
-        border-radius: 30px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(40px) saturate(150%);
-        -webkit-backdrop-filter: blur(40px) saturate(150%);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        box-shadow: 0 8px 30px rgba(27, 61, 47, 0.08);
-        transition: transform 0.25s ease, background-color 0.25s ease;
+        margin: 0;
+        padding: 5.75rem 0 0;
+        background: #fff;
     }
 
-    @media (min-width: 1024px) {
-        .hero-combo {
-            width: min(36rem, 44vw);
-            max-width: min(36rem, 44vw);
-            margin: 0;
-            justify-self: end;
-            align-self: center;
-            padding: 1.2rem 1.2rem 1.25rem;
+    @media (min-width: 768px) {
+        .hero-canva {
+            padding: 8.75rem 0 0;
         }
     }
 
-    .hero-combo:hover {
-        transform: translateY(-3px);
-        background: rgba(255, 255, 255, 0.32);
-    }
-
-    .hero-combo-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        padding: 0.55rem 1.25rem;
-        border-radius: 999px;
-        background: #FF6B35;
-        color: #fff;
-        font-size: 0.82rem;
-        font-weight: 800;
-        letter-spacing: 0.14em;
-        line-height: 1.2;
-        text-transform: uppercase;
-        white-space: nowrap;
-    }
-
-    .hero-combo-stage {
+    .hero-canva-frame {
         position: relative;
         width: 100%;
-        margin: 0.85rem 0 0.7rem;
+        max-width: 100%;
+        overflow: hidden;
+        line-height: 0;
+        background: #f6e4a8 url("assets/dussehra-sale-banner.jpg") center / cover no-repeat;
+        aspect-ratio: 1980 / 794;
     }
 
-    .hero-combo-slide {
-        --combo-gap: 0.55rem;
-        display: none;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: var(--combo-gap);
-        width: 100%;
-    }
-
-    .hero-combo-slide.is-active {
-        display: grid;
-    }
-
-    .hero-combo-slide.is-active.is-pair {
-        display: flex;
-        justify-content: center;
-        align-items: stretch;
-    }
-
-    .hero-combo-slide.is-pair .hero-combo-tile {
-        width: calc((100% - 2 * var(--combo-gap)) / 3);
-        flex: 0 0 calc((100% - 2 * var(--combo-gap)) / 3);
-        max-width: calc((100% - 2 * var(--combo-gap)) / 3);
-    }
-
-    .hero-combo-tile {
+    .hero-canva-poster {
         display: block;
         width: 100%;
-        aspect-ratio: 3 / 4;
+        height: 100%;
         object-fit: cover;
-        object-position: center;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.12);
+        object-position: center center;
+        pointer-events: none;
     }
 
-    .hero-combo-title {
-        display: block;
-        margin: 0;
-        color: #fff;
-        font-size: 1.5rem;
-        font-weight: 800;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
-        text-align: center;
-        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
+    .hero-canva-video {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        pointer-events: none;
+        border: 0;
+        background: transparent;
     }
 
-    .hero-combo-sub {
-        display: block;
-        margin-top: 0.15rem;
-        color: rgba(255, 255, 255, 0.86);
-        font-size: 0.95rem;
-        font-weight: 600;
-        text-align: center;
-        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.22);
+    .hero-canva.is-static .hero-canva-video {
+        display: none;
     }
 
-    .hero-combo-shop {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-        margin-top: 0.9rem;
-        min-height: 44px;
-        padding: 0.7rem 1.6rem;
-        border-radius: 999px;
-        background: #fff;
-        color: #111;
-        font-size: 0.95rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        text-decoration: none;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
-        transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    @media (max-width: 767px) {
+        .hero-canva-frame {
+            min-height: clamp(168px, 46vw, 280px);
+        }
+
+        .hero-canva-video,
+        .hero-canva-poster {
+            object-position: center 46%;
+        }
     }
 
-    .hero-combo-shop:hover,
-    .hero-combo-shop:focus-visible {
-        outline: none;
-        background: #FF6B35;
-        color: #fff;
-        transform: translateY(-1px);
+    @media (prefers-reduced-motion: reduce) {
+        .hero-canva-video {
+            display: none;
+        }
     }
 
-    .hero-story-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        min-height: 52px;
-        padding: 0.9rem 1.85rem;
-        border: 2px solid #fff;
-        border-radius: 999px;
-        background: #fff;
-        color: #111;
-        font-size: 1rem;
-        font-weight: 700;
-        letter-spacing: 0.01em;
-        text-decoration: none;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
-        transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-    }
-
-    .hero-story-btn svg {
-        width: 22px;
-        height: 22px;
-        flex-shrink: 0;
-    }
-
-    .hero-story-btn:hover,
-    .hero-story-btn:focus-visible {
-        outline: none;
-        background: #FF6B35;
-        border-color: #FF6B35;
-        color: #fff;
-        transform: translateY(-1px);
+    .hero-canva-hit {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
     }
 
     .home-shop {
@@ -291,6 +187,252 @@
         border-radius: 20px;
         background: #fff;
         box-shadow: 0 8px 24px rgba(45, 45, 45, 0.05);
+    }
+
+    .festive-product-card {
+        min-width: 0;
+        height: 100%;
+    }
+
+    .festive-product-card .home-product {
+        height: 100%;
+    }
+
+    .festive-campaign .home-shop-grid {
+        gap: 22px;
+        overflow: visible;
+    }
+
+    .festive-campaign .festive-product-card {
+        --festive-space: 16px;
+        --festive-tile: 16px;
+        --festive-step: 16px;
+        --festive-curve: 28px;
+        --festive-tiny-curve: 32px;
+        --festive-corner: 8px;
+        --festive-tiny:
+            radial-gradient(circle 3.3px at 50% 50%,
+                #ffffff 0 0.95px,
+                #ffe7a8 1.3px,
+                #e0a820 1.7px,
+                rgba(255, 200, 70, 0.35) 2.4px,
+                transparent 3.3px);
+        --festive-bulb:
+            radial-gradient(circle 7px at 50% 50%,
+                #ffffff 0 2.1px,
+                #fff3c4 2.5px,
+                #ffd34a 2.95px,
+                #e8a818 3.3px,
+                rgba(255, 204, 72, 0.55) 4.6px,
+                transparent 7px);
+        --festive-bulb-gold:
+            radial-gradient(circle 7px at 50% 50%,
+                #fffceb 0 2.05px,
+                #ffe08a 2.5px,
+                #f0b429 2.95px,
+                #d49216 3.3px,
+                rgba(255, 190, 48, 0.5) 4.6px,
+                transparent 7px);
+        position: relative;
+        padding: var(--festive-space);
+        overflow: visible;
+    }
+
+    .festive-campaign .festive-product-card::before {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border-radius: 26px;
+        border: 3px solid #d4a017;
+        box-shadow:
+            inset 0 0 0 1px rgba(255, 220, 120, 0.22),
+            0 0 0 1px #9a6814;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .festive-campaign .festive-lights,
+    .festive-campaign .festive-lights::before,
+    .festive-campaign .festive-lights::after,
+    .festive-campaign .festive-lights i {
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .festive-campaign .festive-lights {
+        inset: 0;
+        z-index: 3;
+        overflow: visible;
+        border-radius: 32px;
+    }
+
+    .festive-campaign .festive-lights::before,
+    .festive-campaign .festive-lights::after {
+        content: "";
+        inset: 0;
+        background-repeat: no-repeat;
+        background-size: var(--festive-tile) var(--festive-tile);
+    }
+
+    .festive-campaign .festive-lights::before {
+        background-image: var(--festive-bulb), var(--festive-bulb-gold);
+        background-position:
+            var(--festive-corner) var(--festive-corner),
+            calc(100% - var(--festive-corner)) var(--festive-corner);
+        animation: festive-blink-a 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-lights::after {
+        background-image: var(--festive-bulb-gold), var(--festive-bulb);
+        background-position:
+            var(--festive-corner) calc(100% - var(--festive-corner)),
+            calc(100% - var(--festive-corner)) calc(100% - var(--festive-corner));
+        animation: festive-blink-b 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-lights i {
+        display: block;
+        background-repeat: repeat-x;
+        background-size: var(--festive-step) var(--festive-tile);
+    }
+
+    .festive-campaign .festive-lights i:nth-child(1),
+    .festive-campaign .festive-lights i:nth-child(3) {
+        background-image: var(--festive-bulb);
+        animation: festive-blink-a 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-lights i:nth-child(2),
+    .festive-campaign .festive-lights i:nth-child(4) {
+        background-image: var(--festive-bulb-gold);
+        animation: festive-blink-b 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-lights i:nth-child(1) {
+        top: 0;
+        left: var(--festive-curve);
+        right: var(--festive-curve);
+        height: var(--festive-tile);
+    }
+
+    .festive-campaign .festive-lights i:nth-child(2) {
+        bottom: 0;
+        left: var(--festive-curve);
+        right: var(--festive-curve);
+        height: var(--festive-tile);
+    }
+
+    .festive-campaign .festive-lights i:nth-child(3),
+    .festive-campaign .festive-lights i:nth-child(4) {
+        top: var(--festive-curve);
+        bottom: var(--festive-curve);
+        width: var(--festive-tile);
+        background-repeat: repeat-y;
+        background-size: var(--festive-tile) var(--festive-step);
+    }
+
+    .festive-campaign .festive-lights i:nth-child(3) {
+        left: 0;
+    }
+
+    .festive-campaign .festive-lights i:nth-child(4) {
+        right: 0;
+    }
+
+    .festive-campaign .festive-tiny {
+        background-image: var(--festive-tiny);
+        background-repeat: repeat-x;
+        background-size: var(--festive-step) var(--festive-tile);
+        background-position: 8px 0;
+    }
+
+    .festive-campaign .festive-tiny:nth-child(5) {
+        top: 0;
+        left: var(--festive-tiny-curve);
+        right: var(--festive-tiny-curve);
+        height: var(--festive-tile);
+        animation: festive-blink-b 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-tiny:nth-child(6) {
+        bottom: 0;
+        left: var(--festive-tiny-curve);
+        right: var(--festive-tiny-curve);
+        height: var(--festive-tile);
+        animation: festive-blink-a 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-tiny:nth-child(7),
+    .festive-campaign .festive-tiny:nth-child(8) {
+        top: var(--festive-tiny-curve);
+        bottom: var(--festive-tiny-curve);
+        width: var(--festive-tile);
+        background-repeat: repeat-y;
+        background-size: var(--festive-tile) var(--festive-step);
+        background-position: 0 8px;
+    }
+
+    .festive-campaign .festive-tiny:nth-child(7) {
+        left: 0;
+        animation: festive-blink-b 1.4s ease-in-out infinite;
+    }
+
+    .festive-campaign .festive-tiny:nth-child(8) {
+        right: 0;
+        animation: festive-blink-a 1.4s ease-in-out infinite;
+    }
+
+    @keyframes festive-blink-a {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.35; }
+    }
+
+    @keyframes festive-blink-b {
+        0%, 100% { opacity: 0.35; }
+        50% { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .festive-campaign .festive-lights::before,
+        .festive-campaign .festive-lights::after,
+        .festive-campaign .festive-lights i {
+            animation: none;
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 639px) {
+        .festive-campaign .festive-product-card {
+            --festive-space: 15px;
+            --festive-tile: 15px;
+            --festive-step: 15px;
+            --festive-curve: 26px;
+            --festive-tiny-curve: 30px;
+            --festive-corner: 7px;
+            --festive-tiny:
+                radial-gradient(circle 3px at 50% 50%,
+                    #ffffff 0 0.85px,
+                    #ffe7a8 1.15px,
+                    #e0a820 1.5px,
+                    rgba(255, 200, 70, 0.32) 2.15px,
+                    transparent 3px);
+            --festive-bulb:
+                radial-gradient(circle 6.5px at 50% 50%,
+                    #ffffff 0 1.9px,
+                    #fff3c4 2.3px,
+                    #ffd34a 2.7px,
+                    #e8a818 3px,
+                    rgba(255, 204, 72, 0.5) 4.2px,
+                    transparent 6.5px);
+            --festive-bulb-gold:
+                radial-gradient(circle 6.5px at 50% 50%,
+                    #fffceb 0 1.85px,
+                    #ffe08a 2.3px,
+                    #f0b429 2.7px,
+                    #d49216 3px,
+                    rgba(255, 190, 48, 0.45) 4.2px,
+                    transparent 6.5px);
+        }
     }
 
     .home-product img {
@@ -427,37 +569,6 @@
         }
     }
 
-    @media (max-width: 639px) {
-        .hero-story-btn {
-            width: 100%;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .hero-combo-badge {
-            font-size: 0.95rem;
-            padding: 0.62rem 1.5rem;
-            letter-spacing: 0.16em;
-        }
-
-        .hero-combo-title {
-            font-size: 2rem;
-        }
-
-        .hero-combo-sub {
-            font-size: 1.05rem;
-        }
-
-        .hero-combo-tile {
-            border-radius: 20px;
-        }
-
-        .hero-combo-shop {
-            font-size: 1.02rem;
-            padding: 0.78rem 1.85rem;
-        }
-    }
-
     .contact-name-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -472,27 +583,6 @@
 
     .scroll-smooth {
         scroll-behavior: smooth;
-    }
-
-    /* Video Background Styles */
-    .video-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: 1;
-    }
-
-    .video-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 2;
     }
 
     /* Loading Animation Styles */
@@ -938,17 +1028,11 @@
         }
         .carousel-fade { width: 36px; }
         .spice-marquee { gap: 16px; animation-duration: 32s; }
-        .hero-combo { animation: none; max-width: min(28rem, calc(100vw - 2rem)); height: fit-content; }
-        .hero-combo-badge { font-size: 0.8rem; padding: 0.52rem 1.15rem; letter-spacing: 0.12em; }
-        .hero-combo-title { font-size: 1.4rem; }
-        .hero-combo-tile { border-radius: 14px; }
-        .hero-combo-slide { --combo-gap: 0.4rem; gap: var(--combo-gap); }
     }
 
     @media (prefers-reduced-motion: reduce) {
         .spice-marquee { animation: none; }
         .spice-card:hover { transform: none; }
-        .hero-combo { transform: none; }
     }
 </style>
 
@@ -1019,68 +1103,32 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="relative min-h-[100svh] flex items-start lg:items-center overflow-x-hidden">
-        <!-- Video Background -->
-        <video class="video-background" autoplay muted loop playsinline>
-            <source src="assets/spicemovie.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        
-        <!-- Video Overlay -->
-        <div class="video-overlay"></div>
-        
-        <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-10 sm:pt-36 lg:pt-36 lg:pb-20">
-            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div class="text-white max-w-3xl min-w-0">
-                <h1 class="text-[2rem] leading-[1.15] sm:text-5xl lg:text-7xl font-bold mb-5 sm:mb-6 break-words">
-                    Where <span class="text-accent">Flavor</span> Gardens Come to life
-                </h1>
-                <p class="text-base sm:text-xl mb-6 sm:mb-8 opacity-90 leading-relaxed">
-                    Revolutionizing the spice industry with premium quality, sustainable sourcing, and cutting-edge
-                    technology. Experience the future of flavor.
-                </p>
-                <div class="pt-1">
-                    <a href="https://www.instagram.com/spiceblooms_naturals"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="hero-story-btn">
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
-                            <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="currentColor"/>
-                        </svg>
-                        Watch Our Story
-                    </a>
-                </div>
-            </div>
-            <article class="hero-combo">
-                <span class="hero-combo-badge" data-hero-badge>3-Pack Combo</span>
-                <div class="hero-combo-stage">
-                    <div class="hero-combo-slide is-active" data-pack="3-Pack Combo" data-title="Coastal Kitchen">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/coastal-1.jpg" alt="Royya Karam Prawn Rice Mix">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/coastal-2.jpg" alt="Chicken Powder Instant Rice Mix">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/coastal-3.jpg" alt="21 Garam Masala Powder">
-                    </div>
-                    <div class="hero-combo-slide" data-pack="3-Pack Combo" data-title="Everyday Podi Trio">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/podi-1.jpg" alt="Kandi Podi">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/podi-2.jpg" alt="Pesara Podi">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/podi-3.jpg" alt="Dhanya Podi">
-                    </div>
-                    <div class="hero-combo-slide is-pair" data-pack="2-Pack Combo" data-title="Wellness Pair">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/wellness-1.jpg" alt="Moringa Instant Rice Mix">
-                        <img class="hero-combo-tile" src="assets/combos/tiles/wellness-2.jpg" alt="ABC Health Drink">
-                    </div>
-                </div>
-                <strong class="hero-combo-title" data-hero-title>Coastal Kitchen</strong>
-                <span class="hero-combo-sub">Spice Combos</span>
-                <a href="products.html" class="hero-combo-shop" aria-label="Shop now on the products page">Shop Now</a>
-            </article>
-            </div>
+    <section id="home" class="hero-canva">
+        <div class="hero-canva-frame">
+            <img class="hero-canva-poster"
+                src="assets/dussehra-sale-banner.jpg"
+                width="1920"
+                height="698"
+                alt="SpiceBlooms Dussehra sale, up to 40 percent off"
+                fetchpriority="high"
+                decoding="async">
+            <video id="hero-video"
+                class="hero-canva-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                poster="assets/dussehra-sale-banner.jpg"
+                disablepictureinpicture
+                disableremoteplayback
+                controlslist="nodownload nofullscreen noremoteplayback"
+                tabindex="-1"
+                aria-hidden="true">
+                <source src="assets/videos/dussehra-sale.mp4" type="video/mp4">
+            </video>
+            <a class="hero-canva-hit" href="products.html" aria-label="Shop the Dussehra sale, up to 40 percent off"></a>
         </div>
-
-
-
-
-        
     </section>
 
 
@@ -1150,14 +1198,16 @@
         </div>
     </section>
 
-    <section id="home-products" class="home-shop" aria-labelledby="home-products-title">
+    <section id="home-products" class="home-shop festive-campaign" aria-labelledby="home-products-title">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="home-shop-head">
                 <h2 id="home-products-title">Shop our spices</h2>
                 <p>A few kitchen staples from the Naturals range. Add them to your cart here, or browse the full shelf.</p>
             </div>
             <div class="home-shop-grid">
-                <article class="home-product">
+                <div class="festive-product-card">
+                    <span class="festive-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i></span>
+                    <article class="home-product">
                     <img src="assets/Naturals/21%20Garam%20Masala%20Powder.png" alt="21 Garam Masala" width="640" height="640">
                     <div class="home-product-body">
                         <h3>21 Garam Masala</h3>
@@ -1169,8 +1219,11 @@
                             Add to Cart
                         </button>
                     </div>
-                </article>
-                <article class="home-product">
+                    </article>
+                </div>
+                <div class="festive-product-card">
+                    <span class="festive-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i></span>
+                    <article class="home-product">
                     <img src="assets/Naturals/Kandi%20Podi.png" alt="Kandi Podi" width="640" height="640">
                     <div class="home-product-body">
                         <h3>Kandi Podi</h3>
@@ -1182,8 +1235,11 @@
                             Add to Cart
                         </button>
                     </div>
-                </article>
-                <article class="home-product">
+                    </article>
+                </div>
+                <div class="festive-product-card">
+                    <span class="festive-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i></span>
+                    <article class="home-product">
                     <img src="assets/Naturals/Roya%20Karma.png" alt="Royya Karam" width="640" height="640">
                     <div class="home-product-body">
                         <h3>Royya Karam</h3>
@@ -1195,8 +1251,11 @@
                             Add to Cart
                         </button>
                     </div>
-                </article>
-                <article class="home-product">
+                    </article>
+                </div>
+                <div class="festive-product-card">
+                    <span class="festive-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i><i class="festive-tiny"></i></span>
+                    <article class="home-product">
                     <img src="assets/Naturals/Karivepaku%20podi.png" alt="Karivepaku Podi" width="640" height="640">
                     <div class="home-product-body">
                         <h3>Karivepaku Podi</h3>
@@ -1208,7 +1267,8 @@
                             Add to Cart
                         </button>
                     </div>
-                </article>
+                    </article>
+                </div>
             </div>
             <div class="home-shop-more">
                 <a href="products.html">Explore more products</a>
@@ -1931,7 +1991,7 @@
             updateBadges();
         })();
     </script>
-    <script src="index.js?v=combos5"></script>
+    <script src="index.js?v=hero10"></script>
     <script src="auth.js"></script>
     <script src="https://getform.io/f/bjjovrxb"></script>
     
