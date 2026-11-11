@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delivery Address - SpiceBlooms</title>
+    <link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -662,7 +663,7 @@
                         <h2>PRICE DETAILS (<span id="price-item-count">0 Items</span>)</h2>
                         <div class="bag-row"><span>Total MRP</span><span id="total-mrp">Rs 0/-</span></div>
                         <div class="bag-row"><span>Discount on MRP</span><span class="is-save" id="total-discount">-Rs 0/-</span></div>
-                        <div class="bag-row"><span>Platform Fee</span><span id="platform-fee">Rs 0/-</span></div>
+                        <div class="bag-row"><span>Delivery Fee</span><span id="delivery-fee">Rs 0/-</span></div>
                         <div class="bag-total"><span>Total Amount</span><span id="total-price">Rs 0/-</span></div>
                         <button type="button" class="bag-place" id="continue-order">CONTINUE</button>
                         <p class="addr-hint" id="continue-hint"></p>
@@ -719,6 +720,11 @@
                         <input id="address-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="Select a country code first" disabled required>
                     </div>
                     <p class="field-error" data-error="phone"></p>
+                </div>
+                <div>
+                    <label for="address-email">Email</label>
+                    <input id="address-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" placeholder="you@example.com" required>
+                    <p class="field-error" data-error="email"></p>
                 </div>
                 <div>
                     <label for="address-line1">Address Line 1</label>
@@ -819,13 +825,15 @@
     </footer>
 
     <script src="auth.js"></script>
+    <script src="api.js"></script>
+    <script src="cart-pricing.js"></script>
     <script>
         const CART_KEY = 'cart';
         const SELECTED_ITEMS_KEY = 'cart_selected';
         const SELECTED_ADDRESS_KEY = 'checkout_selected_address';
         const LOCAL_ADDRESS_KEY = 'spiceblooms_addresses';
-        const PLATFORM_FEE = 0;
-        const RAZORPAY_PAYMENT_PAGE = 'https://pages.razorpay.com/pl_Tcjt9CwKb9pbxo/view';
+        const DELIVERY_FEE = 0;
+        const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const CATALOG = [
             { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png' },
             { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png' },
@@ -898,7 +906,8 @@
         function enrich(item) {
             const catalog = findCatalog(item);
             const price = Number(item.price) || (catalog && catalog.price) || 0;
-            const mrp = catalog && catalog.mrp && catalog.mrp > price ? catalog.mrp : 0;
+            const listed = item.mrp !== undefined ? Number(item.mrp) : (catalog && catalog.mrp);
+            const mrp = listed && listed > price ? listed : 0;
             return {
                 name: item.name,
                 price: price,
@@ -1012,6 +1021,7 @@
             const address = {
                 name: String(input.name || '').trim(),
                 phone: String(input.phone || '').trim(),
+                email: String(input.email || '').trim(),
                 line1: String(input.line1 || '').trim(),
                 line2: String(input.line2 || '').trim(),
                 building: String(input.building || '').trim(),
@@ -1041,6 +1051,7 @@
             } else if (phoneDigits.length < 6 || phoneDigits.length > 15) {
                 errors.phone = 'Enter a valid mobile number.';
             }
+            if (!EMAIL_PATTERN.test(address.email)) errors.email = 'Enter a valid email address.';
             if (address.line1.length < 4) errors.line1 = 'Enter address line 1.';
             if (address.area.length < 2) errors.area = 'Enter the locality or area.';
             if (address.city.length < 2) errors.city = 'Enter the city.';
@@ -1139,10 +1150,15 @@
                 .filter(Boolean).join(', ');
         }
 
-        function paymentEmail() {
+        function sessionEmail() {
             const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
             const email = session && session.email ? String(session.email).trim() : '';
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '';
+            return EMAIL_PATTERN.test(email) ? email : '';
+        }
+
+        function paymentEmail(address) {
+            const email = String(address && address.email || '').trim();
+            return EMAIL_PATTERN.test(email) ? email : sessionEmail();
         }
 
         function paymentPhone(address) {
@@ -1194,8 +1210,8 @@
             document.getElementById('total-mrp').textContent = money(mrpTotal);
             document.getElementById('total-discount').textContent = '- ' + money(discount);
             document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
-            document.getElementById('platform-fee').textContent = money(PLATFORM_FEE);
-            document.getElementById('total-price').textContent = money(selling + PLATFORM_FEE);
+            document.getElementById('delivery-fee').textContent = money(DELIVERY_FEE);
+            document.getElementById('total-price').textContent = money(selling + DELIVERY_FEE);
         }
 
         function cardHtml(item) {
@@ -1206,6 +1222,7 @@
                 '<div class="addr-name">' + escapeHtml(item.name) + '<span class="addr-badge">' + escapeHtml(item.type || 'HOME') + '</span></div>' +
                 '<p class="addr-copy">' + escapeHtml(formatAddress(item)) + '</p>' +
                 '<p class="addr-phone">Mobile: <strong>' + escapeHtml(item.phone) + '</strong></p>' +
+                (item.email ? '<p class="addr-phone">Email: <strong>' + escapeHtml(item.email) + '</strong></p>' : '') +
                 '</div>' +
                 '<div class="addr-actions">' +
                 '<button type="button" data-edit="' + escapeHtml(item.id) + '">EDIT</button>' +
@@ -1232,6 +1249,7 @@
                 name: document.getElementById('address-name').value,
                 phone: formatPhone(phoneCode, localPhone),
                 phoneCode: phoneCode,
+                email: document.getElementById('address-email').value,
                 line1: document.getElementById('address-line1').value,
                 line2: document.getElementById('address-line2').value,
                 building: document.getElementById('address-building').value,
@@ -1268,6 +1286,7 @@
             document.getElementById('address-phone-code').value = parsedPhone.code;
             setPhoneEnabled(parsedPhone.code);
             document.getElementById('address-phone').value = parsedPhone.local;
+            document.getElementById('address-email').value = (item && item.email) || sessionEmail();
             document.getElementById('address-line1').value = item ? item.line1 : '';
             document.getElementById('address-line2').value = item ? item.line2 : '';
             document.getElementById('address-building').value = item ? item.building : '';
@@ -1353,16 +1372,17 @@
             renderAddresses();
         }
 
-        function continueToPayment() {
+        async function refreshCartPrices() {
+            const result = await window.SpicebloomsPricing.reprice(getCart());
+            if (result.changed) localStorage.setItem(CART_KEY, JSON.stringify(result.cart));
+            renderPrices();
+        }
+
+        async function continueToPayment() {
             const hint = document.getElementById('continue-hint');
             const button = document.getElementById('continue-order');
             hint.textContent = '';
-            const items = selectedCartItems();
-            const units = items.reduce(function (sum, item) {
-                const quantity = parseInt(item.quantity, 10);
-                return sum + (Number.isFinite(quantity) && quantity > 0 ? quantity : 0);
-            }, 0);
-            if (!items.length || units < 1) {
+            if (!selectedCartItems().length) {
                 hint.textContent = 'Your bag has no purchasable items.';
                 return;
             }
@@ -1371,21 +1391,138 @@
                 hint.textContent = 'Select a delivery address to continue.';
                 return;
             }
+            const email = paymentEmail(address);
+            if (!email) {
+                hint.textContent = 'Add an email to this address to continue to payment.';
+                openForm(address);
+                showFieldErrors({ email: 'Enter your email address.' });
+                document.getElementById('address-email').focus();
+                return;
+            }
             if (continuing) return;
             continuing = true;
             button.disabled = true;
             button.textContent = 'CONTINUING…';
+            try {
+                await refreshCartPrices();
+            } catch (error) {
+                continuing = false;
+                button.disabled = false;
+                button.textContent = 'CONTINUE';
+                hint.textContent = 'We could not confirm the latest prices. Check your connection and try again.';
+                return;
+            }
+            const items = selectedCartItems().map(enrich);
+            const total = items.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0) + DELIVERY_FEE;
+            if (!items.length || total <= 0) {
+                continuing = false;
+                button.disabled = false;
+                button.textContent = 'CONTINUE';
+                hint.textContent = 'Your bag has no purchasable items.';
+                return;
+            }
             sessionStorage.setItem(SELECTED_ADDRESS_KEY, address.id);
             sessionStorage.setItem('checkout_shipping_address', JSON.stringify(address));
-            const paymentUrl = new URL(RAZORPAY_PAYMENT_PAGE);
-            paymentUrl.searchParams.set('amount', String(units));
-            const email = paymentEmail();
+            const resetButton = function (message) {
+                continuing = false;
+                button.disabled = false;
+                button.textContent = 'CONTINUE';
+                if (message) hint.textContent = message;
+            };
+            try {
+                await openRazorpayCheckout(items, address, email);
+                resetButton('');
+            } catch (error) {
+                resetButton(error.message || 'Could not start the payment. Try again.');
+            }
+        }
+
+        function loadRazorpayScript() {
+            if (window.Razorpay) return Promise.resolve();
+            return new Promise(function (resolve, reject) {
+                const script = document.createElement('script');
+                script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+                script.onload = function () { resolve(); };
+                script.onerror = function () { reject(new Error('Could not load Razorpay. Check your connection and try again.')); };
+                document.head.appendChild(script);
+            });
+        }
+
+        async function postJson(path, body) {
+            let response;
+            try {
+                response = await fetch(path, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+            } catch (error) {
+                throw new Error('Payments are unavailable right now. Check your connection and try again.');
+            }
+            const type = response.headers.get('content-type') || '';
+            if (!type.includes('application/json')) throw new Error('Payments are unavailable right now. Please try again later.');
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.error || 'Could not start the payment. Try again.');
+            return payload;
+        }
+
+        async function openRazorpayCheckout(items, address, email) {
             const phone = paymentPhone(address);
             const delivery = paymentDeliveryAddress(address);
-            if (email) paymentUrl.searchParams.set('email', email);
-            if (phone) paymentUrl.searchParams.set('phone', phone);
-            if (delivery) paymentUrl.searchParams.set('delivery_address', delivery);
-            window.location.href = paymentUrl.toString();
+            const [order] = await Promise.all([
+                postJson('/api/payments/order', {
+                    items: items.map(function (item) { return { name: item.name, quantity: item.quantity }; }),
+                    customer: { email: email, phone: phone, name: address.name, address: delivery }
+                }),
+                loadRazorpayScript()
+            ]);
+            sessionStorage.setItem('checkout_payment_total', String(order.total));
+
+            return new Promise(function (resolve, reject) {
+                const checkout = new window.Razorpay({
+                    key: order.keyId,
+                    order_id: order.orderId,
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: 'Spiceblooms Naturals',
+                    description: items.length + (items.length === 1 ? ' item' : ' items'),
+                    image: new URL('assets/new-logo-naturals.png', window.location.href).href,
+                    prefill: { name: address.name || '', email: email, contact: phone || '' },
+                    notes: { delivery_address: delivery.slice(0, 250) },
+                    theme: { color: '#1B3D2F' },
+                    handler: function (response) {
+                        postJson('/api/payments/verify', response).then(function (result) {
+                            completeOrder(items, order, result, address);
+                        }).catch(function (error) {
+                            reject(new Error('Payment received but not verified yet (' + response.razorpay_payment_id + '). Please contact us. ' + error.message));
+                        });
+                    },
+                    modal: {
+                        ondismiss: function () { reject(new Error('Payment cancelled. Press Continue to try again.')); }
+                    }
+                });
+                checkout.on('payment.failed', function (response) {
+                    const reason = response && response.error && response.error.description;
+                    reject(new Error('Payment failed' + (reason ? ': ' + reason : '.') + ' Press Continue to try again.'));
+                });
+                checkout.open();
+            });
+        }
+
+        function completeOrder(items, order, result, address) {
+            const paidNames = items.map(function (item) { return item.name; });
+            const remaining = getCart().filter(function (item) { return paidNames.indexOf(item.name) === -1; });
+            localStorage.setItem(CART_KEY, JSON.stringify(remaining));
+            sessionStorage.removeItem(SELECTED_ITEMS_KEY);
+            sessionStorage.setItem('last_order', JSON.stringify({
+                orderId: result.orderId,
+                paymentId: result.paymentId,
+                receipt: order.receipt,
+                amount: order.amount / 100,
+                items: order.items,
+                address: paymentDeliveryAddress(address)
+            }));
+            window.location.replace('order-success.html');
         }
 
         document.getElementById('add-address-top').addEventListener('click', function () { openForm(null); });
@@ -1412,6 +1549,13 @@
             this.value = this.value.replace(/\D/g, '');
         });
         document.getElementById('continue-order').addEventListener('click', continueToPayment);
+        window.addEventListener('pageshow', function (event) {
+            if (!event.persisted) return;
+            continuing = false;
+            const button = document.getElementById('continue-order');
+            button.textContent = 'CONTINUE';
+            button.disabled = !selectedAddress() || !selectedCartItems().length;
+        });
         document.querySelectorAll('[data-address-close]').forEach(function (el) {
             el.addEventListener('click', function () { closeForm(false); });
         });
@@ -1469,6 +1613,9 @@
                 document.getElementById('continue-hint').textContent = error.message || 'Could not load saved addresses.';
                 renderPrices();
                 renderEstimate();
+            });
+            refreshCartPrices().catch(function (error) {
+                console.warn('Could not refresh cart prices.', error);
             });
         });
     </script>

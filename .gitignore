@@ -3,3 +3,6 @@ node_modules/
 dist/
 .env
 data/addresses.json
+data/orders.json
+api/shared/cart-pricing.js
+local.settings.json

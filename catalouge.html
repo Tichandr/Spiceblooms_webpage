@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Catalogue - SpiceBlooms Naturals | The Spiceblooms Naturals Signature Collection</title>
+    <link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
     <meta name="description"
         content="Explore the SpiceBlooms Naturals catalogue and browse our categories and products.">
 
@@ -803,6 +804,16 @@
 
             content.replaceChildren(status, categoriesContainer);
 
+            categoriesContainer.addEventListener('error', (event) => {
+                const target = event.target;
+                if (!(target instanceof HTMLImageElement)) return;
+                if (target.hasAttribute('data-catalog-img')) {
+                    target.outerHTML = '<div class="flex h-56 items-center justify-center bg-orange-50 text-primary"><span class="text-sm font-semibold">Image unavailable</span></div>';
+                } else {
+                    target.remove();
+                }
+            }, true);
+
             const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
                 '&': '&amp;',
                 '<': '&lt;',
@@ -825,7 +836,7 @@
                 const name = item.itemName || 'Untitled item';
                 const imageUrl = safeImageUrl(item.imageUri);
                 const image = imageUrl
-                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" class="h-56 w-full object-cover" loading="lazy">`
+                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" class="h-56 w-full object-cover" loading="lazy" data-catalog-img>`
                     : '<div class="flex h-56 items-center justify-center bg-orange-50 text-primary"><span class="text-sm font-semibold">Image unavailable</span></div>';
                 const oldPrice = item.oldPrice
                     ? `<span class="mr-2 text-sm text-gray-400 line-through">${escapeHtml(item.oldPrice)}</span>`

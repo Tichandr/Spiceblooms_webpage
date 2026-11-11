@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - SpiceBlooms</title>
+    <link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -199,8 +200,9 @@
             overflow: hidden;
         }
 
-        .combo-card[hidden] {
-            display: none;
+        .combo-card[hidden],
+        .product-card[hidden] {
+            display: none !important;
         }
 
         .combo-top {
@@ -1235,7 +1237,7 @@
                         </li>
                         <li>
                             <img src="assets/Naturals/Moringa%20Instant%20Rice%20Mix.png" alt="">
-                            <strong>Moringa Instant Ricemix</strong>
+                            <strong>Moringa Instant Rice Mix</strong>
                             <span class="combo-item-price">Rs 199</span>
                         </li>
                     </ul>
@@ -1244,7 +1246,7 @@
                             <span>199 + 199 + 199</span>
                             <strong>Rs 597/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Masala Karam","price":199,"image":"assets/products/masala-karam.png"},{"name":"Moringa Instant Ricemix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Masala Karam","price":199,"image":"assets/products/masala-karam.png"},{"name":"Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"}]'>Add combo</button>
                     </div>
                 </article>
 
@@ -1391,7 +1393,7 @@
                     <ul class="combo-list">
                         <li>
                             <img src="assets/Naturals/Moringa%20Instant%20Rice%20Mix.png" alt="">
-                            <strong>Moringa Instant Ricemix</strong>
+                            <strong>Moringa Instant Rice Mix</strong>
                             <span class="combo-item-price">Rs 199</span>
                         </li>
                         <li>
@@ -1405,7 +1407,7 @@
                             <span>199 + 199</span>
                             <strong>Rs 398/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Moringa Instant Ricemix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"},{"name":"Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon","price":199,"image":"assets/new_items/sambar.jpg"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"},{"name":"Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon","price":199,"image":"assets/new_items/sambar.jpg"}]'>Add combo</button>
                     </div>
                 </article>
             </div>
@@ -2180,7 +2182,7 @@
             const itemImage = getCatalogImage(name) || image;
 
             if (existingItem) {
-                existingItem.quantity += qty;
+                existingItem.quantity = Math.min(20, (parseInt(existingItem.quantity, 10) || 0) + qty);
                 existingItem.image = itemImage;
                 if (options && options.itemId) existingItem.itemId = options.itemId;
             } else {

@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SpiceBlooms - Where Flavor Gardens Come to life</title>
+<link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
@@ -1807,6 +1808,7 @@
         // Loading Animation
         window.addEventListener('load', function() {
             const loadingScreen = document.getElementById('loadingScreen');
+            if (!loadingScreen) return;
             
             // Show loading screen for 3 seconds
             setTimeout(function() {
@@ -1926,21 +1928,6 @@
             input.style.borderColor = "#e5e7eb";
             errorDiv.style.display = "none";
         }
-
-        // Form submission handler for Getform
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            const submitBtn = document.getElementById("submitBtn");
-            const btnText = document.getElementById("btnText");
-            const btnLoading = document.getElementById("btnLoading");
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            btnText.style.display = "none";
-            btnLoading.style.display = "inline";
-            
-            // Getform will handle the submission and redirect to thank you page
-            // The form will be submitted normally, no need to prevent default
-        });
     </script>
     <div id="home-cart-toast" class="home-cart-toast" hidden>
         <span>Added to cart.</span>
@@ -1982,7 +1969,7 @@
                     if (!item || !item.name) return;
                     const cart = getCart();
                     const existing = cart.find((row) => row.name === item.name);
-                    if (existing) existing.quantity += 1;
+                    if (existing) existing.quantity = Math.min(20, (parseInt(existing.quantity, 10) || 0) + 1);
                     else cart.push({ name: item.name, price: item.price, image: item.image, quantity: 1 });
                     saveCart(cart);
                     showToast();
@@ -1991,9 +1978,8 @@
             updateBadges();
         })();
     </script>
-    <script src="index.js?v=hero10"></script>
+    <script src="index.js?v=hero11"></script>
     <script src="auth.js"></script>
-    <script src="https://getform.io/f/bjjovrxb"></script>
     
 </body>
 

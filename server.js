@@ -3,9 +3,27 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const port = 3000;
+const { productKey, toNumber } = require("./cart-pricing.js");
+const createPayments = require("./api/shared/payments.js");
+
+const port = Number(process.env.PORT) || 3000;
 const root = __dirname;
 const addressStorePath = path.join(root, "data", "addresses.json");
+const orderStorePath = path.join(root, "data", "orders.json");
+const payments = createPayments({
+  productKey,
+  toNumber,
+  missingKeysMessage: "Payments are not configured. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env and restart the server."
+});
+
+(function loadEnv() {
+  const envPath = path.join(root, ".env");
+  if (!fs.existsSync(envPath)) return;
+  fs.readFileSync(envPath, "utf8").split(/\r?\n/).forEach((line) => {
+    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+    if (match && !(match[1] in process.env)) process.env[match[1]] = match[2].replace(/^["']|["']$/g, "");
+  });
+})();
 
 const mimeTypes = {
   ".html": "text/html",
@@ -17,6 +35,9 @@ const mimeTypes = {
   ".gif": "image/gif",
   ".webp": "image/webp",
   ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".json": "application/json",
+  ".txt": "text/plain",
   ".mp4": "video/mp4",
   ".webm": "video/webm",
   ".mov": "video/quicktime",
@@ -88,6 +109,7 @@ function validateAddress(input, countryHint) {
   const address = {
     name: clip(input.name, 80),
     phone: clip(input.phone, 24),
+    email: clip(input.email, 120),
     line1: clip(input.line1, 160),
     line2: clip(input.line2, 160),
     building: clip(input.building, 80),
@@ -111,6 +133,7 @@ function validateAddress(input, countryHint) {
   } else if (phoneDigits.length < 8 || phoneDigits.length > 16) {
     errors.phone = "Enter a valid mobile number.";
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address.email)) errors.email = "Enter a valid email address.";
   if (address.line1.length < 4) errors.line1 = "Enter address line 1.";
   if (address.area.length < 2) errors.area = "Enter the locality or area.";
   if (address.city.length < 2) errors.city = "Enter the city.";
@@ -157,6 +180,50 @@ function applyDefault(list, nextId, makeDefault) {
       item.isDefault = item.id === nextId;
     });
   }
+}
+
+function loadOrders() {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(orderStorePath, "utf8"));
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveOrders(orders) {
+  fs.mkdirSync(path.dirname(orderStorePath), { recursive: true });
+  fs.writeFileSync(orderStorePath, JSON.stringify(orders, null, 2));
+}
+
+async function handlePaymentApi(req, res, pathname) {
+  if (req.method !== "POST") {
+    sendJson(res, 405, { error: "Method not allowed." });
+    return;
+  }
+  const body = await readBody(req);
+  let result = { status: 404, payload: { error: "Not found." } };
+  if (pathname === "/api/payments/order") {
+    result = await payments.createOrder(body);
+    if (result.record) {
+      const orders = loadOrders();
+      orders[result.payload.orderId] = result.record;
+      saveOrders(orders);
+    }
+  } else if (pathname === "/api/payments/verify") {
+    result = payments.verifyPayment(body);
+    if (result.status === 200) {
+      const orders = loadOrders();
+      const order = orders[result.payload.orderId];
+      if (order) {
+        order.status = "paid";
+        order.paymentId = result.payload.paymentId;
+        order.paidAt = new Date().toISOString();
+        saveOrders(orders);
+      }
+    }
+  }
+  sendJson(res, result.status, result.payload);
 }
 
 async function handleAddressApi(req, res, pathname) {
@@ -247,6 +314,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (pathname.startsWith("/api/payments/")) {
+    handlePaymentApi(req, res, pathname).catch((error) => {
+      if (error.message === "invalid_json" || error.message === "too_large") {
+        sendJson(res, 400, { error: "Invalid payment request." });
+        return;
+      }
+      console.error("Payment API error:", error);
+      sendJson(res, 502, { error: "Payment service is unavailable. Try again." });
+    });
+    return;
+  }
+
   if (pathname.startsWith("/api/addresses")) {
     handleAddressApi(req, res, pathname).catch((error) => {
       if (error.message === "too_large") {
@@ -270,18 +349,16 @@ const server = http.createServer((req, res) => {
     pathname = "/index.html";
   }
 
-  if (/^\/blogs\d*\.html$/i.test(pathname)) {
-    res.writeHead(301, { Location: "/Blogs" + pathname });
-    res.end();
-    return;
-  }
-
   if (pathname === "/spiceblooms-logo.svg") {
     pathname = "/assets/spiceblooms-logo.svg";
   }
 
   const filePath = path.normalize(path.join(root, pathname));
-  if (!filePath.startsWith(root)) {
+  const relative = path.relative(root, filePath);
+  const blocked = relative.split(path.sep).some((part) => part.startsWith(".")) ||
+    /^(data|node_modules|api)([\\/]|$)/.test(relative) ||
+    relative === "server.js" || relative === "package.json" || relative === "package-lock.json";
+  if (!filePath.startsWith(root) || blocked) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
@@ -310,6 +387,14 @@ const server = http.createServer((req, res) => {
       res.end(content, isText ? "utf-8" : undefined);
     }
   });
+});
+
+server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(`Port ${port} is already in use. Stop the other server (or run: lsof -ti tcp:${port} | xargs kill) and try again.`);
+    process.exit(1);
+  }
+  throw error;
 });
 
 server.listen(port, () => {
