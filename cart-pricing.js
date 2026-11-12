@@ -50,9 +50,9 @@
     return null;
   }
 
-  async function loadPrices() {
+  async function loadPrices(force) {
     const cached = readCache();
-    if (cached) return cached;
+    if (!force && cached && Object.values(cached).every((item) => item.itemId)) return cached;
     if (!window.SpicebloomsApi || !window.SpicebloomsApi.getCatalogItems) {
       throw new Error("Prices are unavailable right now.");
     }
@@ -74,22 +74,33 @@
       const price = toNumber(item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice);
       if (!key || price === null || prices[key]) return;
       const mrp = toNumber(item.oldPrice !== undefined ? item.oldPrice : item.OldPrice);
-      prices[key] = { price: price, mrp: mrp && mrp > price ? mrp : 0 };
+      prices[key] = {
+        price: price,
+        mrp: mrp && mrp > price ? mrp : 0,
+        itemId: item.id,
+        brandName: item.brandName || "",
+        itemName: item.itemName,
+        itemQuantity: item.quantity || "",
+        imageUri: item.imageUri || ""
+      };
     });
     sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), prices: prices }));
     return prices;
   }
 
   /** Returns { cart, changed } with each known product priced from the catalog API. */
-  async function reprice(cart) {
-    const prices = await loadPrices();
+  async function reprice(cart, force) {
+    const prices = await loadPrices(force);
     let changed = false;
     const next = cart.map((item) => {
       const match = prices[productKey(item.name)];
       if (!match) return item;
-      if (Number(item.price) === match.price && Number(item.mrp || 0) === match.mrp) return item;
+      if (Number(item.price) === match.price && Number(item.mrp || 0) === match.mrp
+        && item.itemId === match.itemId && item.brandName === match.brandName
+        && item.itemName === match.itemName && item.itemQuantity === match.itemQuantity
+        && item.imageUri === match.imageUri) return item;
       changed = true;
-      return Object.assign({}, item, { price: match.price, mrp: match.mrp });
+      return Object.assign({}, item, match);
     });
     return { cart: next, changed: changed };
   }

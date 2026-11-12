@@ -657,15 +657,16 @@
                     <h2 class="addr-label">DELIVERY ESTIMATES</h2>
                     <div class="est-card">
                         <div class="est-thumb" id="estimate-thumb"></div>
-                        <p class="est-copy is-loading" id="delivery-estimate">Checking delivery estimate…</p>
+                        <p class="est-copy" id="delivery-estimate" aria-live="polite">Select an address to check delivery.</p>
                     </div>
                     <div class="bag-summary">
                         <h2>PRICE DETAILS (<span id="price-item-count">0 Items</span>)</h2>
                         <div class="bag-row"><span>Total MRP</span><span id="total-mrp">Rs 0/-</span></div>
                         <div class="bag-row"><span>Discount on MRP</span><span class="is-save" id="total-discount">-Rs 0/-</span></div>
-                        <div class="bag-row"><span>Delivery Fee</span><span id="delivery-fee">Rs 0/-</span></div>
-                        <div class="bag-total"><span>Total Amount</span><span id="total-price">Rs 0/-</span></div>
-                        <button type="button" class="bag-place" id="continue-order">CONTINUE</button>
+                        <div class="bag-row"><span>Delivery Fee</span><span id="delivery-fee" aria-live="polite">Pending</span></div>
+                        <button type="button" id="retry-delivery" class="text-sm underline mb-3" hidden>Retry delivery charges</button>
+                        <div class="bag-total"><span>Total Amount</span><span id="total-price" aria-live="polite">Pending</span></div>
+                        <button type="button" class="bag-place" id="continue-order" disabled>CONTINUE</button>
                         <p class="addr-hint" id="continue-hint"></p>
                     </div>
                 </aside>
@@ -832,7 +833,6 @@
         const SELECTED_ITEMS_KEY = 'cart_selected';
         const SELECTED_ADDRESS_KEY = 'checkout_selected_address';
         const LOCAL_ADDRESS_KEY = 'spiceblooms_addresses';
-        const DELIVERY_FEE = 0;
         const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const CATALOG = [
             { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png' },
@@ -858,7 +858,7 @@
         let formSnapshot = '';
 
         function money(value) {
-            return 'Rs ' + Math.max(0, Math.round(value)) + '/-';
+            return 'Rs ' + Math.max(0, Number(value)).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + '/-';
         }
 
         function escapeHtml(value) {
@@ -908,13 +908,13 @@
             const price = Number(item.price) || (catalog && catalog.price) || 0;
             const listed = item.mrp !== undefined ? Number(item.mrp) : (catalog && catalog.mrp);
             const mrp = listed && listed > price ? listed : 0;
-            return {
+            return Object.assign({}, item, {
                 name: item.name,
                 price: price,
                 quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
                 image: item.image || (catalog && catalog.image) || '',
                 mrp: mrp
-            };
+            });
         }
 
         function updateCartBadge() {
@@ -1185,19 +1185,21 @@
         }
 
         function renderEstimate() {
-            const estimate = document.getElementById('delivery-estimate');
             const thumb = document.getElementById('estimate-thumb');
             const items = selectedCartItems().map(enrich);
             const first = items[0];
             thumb.innerHTML = first && first.image ? '<img src="' + escapeHtml(first.image) + '" alt="">' : '';
-            estimate.classList.add('is-loading');
-            estimate.textContent = 'Checking delivery estimate…';
-            window.setTimeout(function () {
-                estimate.classList.remove('is-loading');
-                estimate.textContent = selectedAddress()
-                    ? 'Delivery estimate unavailable'
-                    : 'Select an address to check delivery.';
-            }, 250);
+            const address = selectedAddress();
+            if (!address || !items.length) {
+                shippingQuoteSequence++;
+                shippingQuote = null;
+                shippingQuoteKey = '';
+                shippingQuoteError = '';
+                shippingQuotePending = null;
+                renderShippingStatus();
+                return;
+            }
+            ensureShippingQuote(items, address).catch(function () {});
         }
 
         function renderPrices() {
@@ -1210,8 +1212,9 @@
             document.getElementById('total-mrp').textContent = money(mrpTotal);
             document.getElementById('total-discount').textContent = '- ' + money(discount);
             document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
-            document.getElementById('delivery-fee').textContent = money(DELIVERY_FEE);
-            document.getElementById('total-price').textContent = money(selling + DELIVERY_FEE);
+            const quote = currentShippingQuote();
+            document.getElementById('delivery-fee').textContent = quote ? money(quote.deliveryFee) : (shippingQuoteError ? 'Unavailable' : 'Pending');
+            document.getElementById('total-price').textContent = quote ? money(Math.round((selling + quote.deliveryFee) * 100) / 100) : 'Pending';
         }
 
         function cardHtml(item) {
@@ -1236,7 +1239,6 @@
             document.getElementById('default-address-list').innerHTML = defaults.map(cardHtml).join('');
             document.getElementById('other-address-list').innerHTML = others.map(cardHtml).join('');
             document.getElementById('default-prompt').classList.toggle('hidden', defaults.length > 0);
-            document.getElementById('continue-order').disabled = !selectedAddress() || !selectedCartItems().length;
             renderEstimate();
             renderPrices();
         }
@@ -1372,10 +1374,11 @@
             renderAddresses();
         }
 
-        async function refreshCartPrices() {
-            const result = await window.SpicebloomsPricing.reprice(getCart());
+        async function refreshCartPrices(force) {
+            const result = await window.SpicebloomsPricing.reprice(getCart(), force);
             if (result.changed) localStorage.setItem(CART_KEY, JSON.stringify(result.cart));
             renderPrices();
+            renderEstimate();
         }
 
         async function continueToPayment() {
@@ -1400,11 +1403,12 @@
                 return;
             }
             if (continuing) return;
+            const displayedFee = shippingQuote && shippingQuote.deliveryFee;
             continuing = true;
             button.disabled = true;
             button.textContent = 'CONTINUING…';
             try {
-                await refreshCartPrices();
+                await refreshCartPrices(true);
             } catch (error) {
                 continuing = false;
                 button.disabled = false;
@@ -1413,7 +1417,7 @@
                 return;
             }
             const items = selectedCartItems().map(enrich);
-            const total = items.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0) + DELIVERY_FEE;
+            const total = items.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0);
             if (!items.length || total <= 0) {
                 continuing = false;
                 button.disabled = false;
@@ -1425,15 +1429,16 @@
             sessionStorage.setItem('checkout_shipping_address', JSON.stringify(address));
             const resetButton = function (message) {
                 continuing = false;
-                button.disabled = false;
                 button.textContent = 'CONTINUE';
+                renderShippingStatus();
                 if (message) hint.textContent = message;
             };
             try {
-                await openRazorpayCheckout(items, address, email);
+                await openRazorpayCheckout(items, address, email, displayedFee);
                 resetButton('');
             } catch (error) {
                 resetButton(error.message || 'Could not start the payment. Try again.');
+                if (checkoutRecord('checkout_pending_order') || checkoutRecord('checkout_attempt')) monitorPendingCheckout();
             }
         }
 
@@ -1448,78 +1453,364 @@
             });
         }
 
-        async function postJson(path, body) {
-            let response;
-            try {
-                response = await fetch(path, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-            } catch (error) {
-                throw new Error('Payments are unavailable right now. Check your connection and try again.');
-            }
-            const type = response.headers.get('content-type') || '';
-            if (!type.includes('application/json')) throw new Error('Payments are unavailable right now. Please try again later.');
-            const payload = await response.json();
-            if (!response.ok) throw new Error(payload.error || 'Could not start the payment. Try again.');
-            return payload;
+        let shippingQuote = null;
+        let shippingQuoteKey = '';
+        let shippingQuoteError = '';
+        let shippingQuotePending = null;
+        let shippingQuoteSequence = 0;
+
+        function shippingKey(items, address) {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            return JSON.stringify({
+                owner: checkoutOwner(session),
+                address: address && [address.id, address.postcode, address.line1, address.line2, address.building, address.area, address.city, address.state, address.country],
+                items: items.map(function (item) { return [item.itemId, item.quantity]; }).sort()
+            });
         }
 
-        async function openRazorpayCheckout(items, address, email) {
+        function currentShippingQuote() {
+            return shippingQuote && shippingQuoteKey === shippingKey(selectedCartItems().map(enrich), selectedAddress())
+                && Date.parse(shippingQuote.expiresAt) > Date.now() ? shippingQuote : null;
+        }
+
+        function renderShippingStatus() {
+            const quote = currentShippingQuote();
+            const estimate = document.getElementById('delivery-estimate');
+            const hasSelection = selectedAddress() && selectedCartItems().length;
+            const loading = Boolean(hasSelection && shippingQuotePending && !quote);
+            estimate.classList.toggle('is-loading', loading);
+            estimate.textContent = !hasSelection ? 'Select an address to check delivery.'
+                : quote ? quote.rateAvailable === false ? 'Delivery estimate unavailable. No delivery fee charged.'
+                    : (quote.estimatedDeliveryDate ? 'Estimated delivery: ' + new Date(quote.estimatedDeliveryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Delivery available')
+                        + ' to ' + quote.pincode + (quote.courierName ? ' - ' + quote.courierName : '')
+                : shippingQuoteError || (loading ? 'Checking delivery charges...' : 'Refresh delivery charges to continue.');
+            document.getElementById('retry-delivery').hidden = !hasSelection || Boolean(quote) || loading;
+            document.getElementById('continue-order').disabled = continuing || !quote;
+            renderPrices();
+        }
+
+        async function ensureShippingQuote(items, address) {
+            const key = shippingKey(items, address);
+            if (shippingQuote && shippingQuoteKey === key && Date.parse(shippingQuote.expiresAt) > Date.now() + 15000) {
+                renderShippingStatus();
+                return shippingQuote;
+            }
+            if (shippingQuotePending && shippingQuotePending.key === key) return shippingQuotePending.promise;
+            const sequence = ++shippingQuoteSequence;
+            shippingQuote = null;
+            shippingQuoteKey = key;
+            shippingQuoteError = '';
+            const pending = { key: key, promise: null };
+            shippingQuotePending = pending;
+            pending.promise = (async function () {
+                try {
+                    if (!items.length || items.some(function (item) { return !item.itemId || !Number.isInteger(item.quantity) || item.quantity <= 0; })) {
+                        throw new Error('Refresh your bag to confirm the catalog items before checking delivery.');
+                    }
+                    const deliveryAddressId = await backendDeliveryAddress(address);
+                    const quote = await window.SpicebloomsApi.getShippingQuote({
+                        deliveryAddressId: deliveryAddressId,
+                        items: items.map(function (item) { return { itemId: item.itemId, quantity: item.quantity }; })
+                    });
+                    if (sequence !== shippingQuoteSequence || key !== shippingKey(selectedCartItems().map(enrich), selectedAddress())) {
+                        throw new Error('Your bag or address changed. Review the updated delivery charges.');
+                    }
+                    if (!quote || !quote.quoteId || typeof quote.deliveryFee !== 'number' || !Number.isFinite(quote.deliveryFee)
+                        || quote.deliveryFee < 0 || Math.abs(quote.deliveryFee * 100 - Math.round(quote.deliveryFee * 100)) > 0.000001
+                        || String(quote.pincode) !== String(address.postcode) || !(Date.parse(quote.expiresAt) > Date.now() + 15000)) {
+                        throw new Error('The backend did not return valid delivery charges. Please retry.');
+                    }
+                    shippingQuote = Object.assign({}, quote, { deliveryAddressId: deliveryAddressId });
+                    return shippingQuote;
+                } catch (error) {
+                    if (sequence === shippingQuoteSequence) shippingQuoteError = error.message || 'Could not load delivery charges. Please retry.';
+                    throw error;
+                } finally {
+                    if (shippingQuotePending === pending) shippingQuotePending = null;
+                    renderShippingStatus();
+                }
+            })();
+            renderShippingStatus();
+            return pending.promise;
+        }
+
+        async function backendDeliveryAddress(address) {
+            const payload = {
+                blockNumber: address.building || '',
+                houseNumber: [address.line1, address.line2].filter(Boolean).join(', '),
+                street: [address.area, address.state, address.country].filter(Boolean).join(', '),
+                city: address.city,
+                pincode: address.postcode,
+                isDefault: Boolean(address.isDefault)
+            };
+            const saved = await window.SpicebloomsApi.getAddresses();
+            if (!Array.isArray(saved)) throw new Error('Could not load your backend delivery addresses.');
+            const match = saved.find(function (item) {
+                return ['blockNumber', 'houseNumber', 'street', 'city', 'pincode'].every(function (field) {
+                    return String(item[field] || '').trim() === String(payload[field] || '').trim();
+                });
+            });
+            const result = match || await window.SpicebloomsApi.createAddress(null, payload);
+            if (!result || !result.id) throw new Error('Could not register your delivery address.');
+            return result.id;
+        }
+
+        let pendingPaymentPoll = null;
+
+        function checkoutRecord(key) {
+            try { return JSON.parse(sessionStorage.getItem(key) || 'null'); }
+            catch (error) { return null; }
+        }
+
+        function checkoutOwner(session) {
+            return String(session && ((session.user && session.user.id) || session.uid || session.email || session.phone) || '');
+        }
+
+        async function recoverPendingCheckout() {
+            const pending = checkoutRecord('checkout_pending_order') || checkoutRecord('checkout_attempt');
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            if (!pending || !session || !session.token) return null;
+            if (pending.owner && pending.owner !== checkoutOwner(session)) {
+                sessionStorage.removeItem('checkout_pending_order');
+                sessionStorage.removeItem('checkout_attempt');
+                return null;
+            }
+            let result;
+            try {
+                result = pending.orderId
+                    ? await window.SpicebloomsApi.getOrder(null, pending.orderId)
+                    : await window.SpicebloomsApi.getCheckout(pending.checkoutId);
+            } catch (error) {
+                if (error.status === 404) return { pending: pending, result: null };
+                throw error;
+            }
+            if (result && result.paymentStatus === 'Paid') {
+                if (!pending.items || !pending.address || !result.razorpayPaymentId) {
+                    throw new Error('Order ' + result.id + ' is already paid. Do not pay again; contact us for your receipt.');
+                }
+                completeOrder(pending.items, { orderId: result.id }, result, pending.address, result.razorpayPaymentId);
+                return { paid: true, result: result };
+            }
+            if (result && result.paymentStatus === 'Expired') {
+                sessionStorage.removeItem('checkout_pending_order');
+                sessionStorage.removeItem('checkout_attempt');
+                return null;
+            }
+            return { pending: pending, result: result };
+        }
+
+        function monitorPendingCheckout() {
+            if (pendingPaymentPoll !== null) return;
+            let checking = false;
+            const check = async function () {
+                if (checking) return;
+                checking = true;
+                try {
+                    const state = await recoverPendingCheckout();
+                    if (!state || state.paid) {
+                        clearInterval(pendingPaymentPoll);
+                        pendingPaymentPoll = null;
+                    }
+                } catch (error) {
+                    document.getElementById('continue-hint').textContent = 'Could not check your pending payment. Check its status before paying again. ' + error.message;
+                } finally { checking = false; }
+            };
+            pendingPaymentPoll = setInterval(check, 15000);
+            check();
+        }
+
+        async function openRazorpayCheckout(items, address, email, displayedFee) {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            if (!session || !session.token) throw new Error('Sign in again before placing your order.');
+            const recovered = await recoverPendingCheckout();
+            if (recovered && recovered.paid) return recovered.result;
+            if (recovered && (recovered.pending.paymentId || (recovered.result
+                && ['Creating', 'Processing'].includes(recovered.result.paymentStatus)))) {
+                throw new Error('Your previous payment is still processing. Do not pay again. Its status will update when confirmed.');
+            }
+            if (items.some(function (item) { return !item.itemId; })) {
+                throw new Error('A bag item could not be matched to the backend catalog. Remove it and add it again.');
+            }
             const phone = paymentPhone(address);
             const delivery = paymentDeliveryAddress(address);
-            const [order] = await Promise.all([
-                postJson('/api/payments/order', {
-                    items: items.map(function (item) { return { name: item.name, quantity: item.quantity }; }),
-                    customer: { email: email, phone: phone, name: address.name, address: delivery }
+            const quote = await ensureShippingQuote(items, address);
+            if (displayedFee !== undefined && displayedFee !== null && quote.deliveryFee > displayedFee) {
+                throw new Error('Delivery charges have changed. Review the updated total and continue again.');
+            }
+            await loadRazorpayScript();
+            if (quote !== currentShippingQuote()) throw new Error('Your bag or address changed. Review delivery charges before paying.');
+            const deliveryAddressId = quote.deliveryAddressId;
+            const subTotal = Math.round(items.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0) * 100) / 100;
+            const payload = {
+                deliveryAddressId: deliveryAddressId,
+                deliveryDate: quote.estimatedDeliveryDate || new Date().toISOString(),
+                shippingQuoteId: quote.quoteId,
+                items: items.map(function (item) {
+                    return {
+                        itemId: item.itemId,
+                        brandName: item.brandName || 'Spiceblooms Naturals',
+                        itemName: item.itemName || item.name,
+                        itemQuantity: item.itemQuantity || '',
+                        imageUri: item.imageUri || item.image,
+                        quantity: item.quantity,
+                        price: item.price
+                    };
                 }),
-                loadRazorpayScript()
-            ]);
-            sessionStorage.setItem('checkout_payment_total', String(order.total));
+                subTotal: subTotal,
+                serviceCharge: quote.deliveryFee,
+                total: Math.round((subTotal + quote.deliveryFee) * 100) / 100,
+                savings: Math.round(items.reduce(function (sum, item) { return sum + Math.max(0, (item.mrp || item.price) - item.price) * item.quantity; }, 0) * 100) / 100
+            };
+            const fingerprint = JSON.stringify({
+                owner: checkoutOwner(session), address: deliveryAddressId, date: payload.deliveryDate.slice(0, 10),
+                items: payload.items.map(function (item) { return [item.itemId, item.quantity, item.price]; }).sort(),
+                total: payload.total, savings: payload.savings, fee: payload.serviceCharge
+            });
+            const previous = checkoutRecord('checkout_attempt');
+            const attempt = previous && previous.fingerprint === fingerprint ? previous : {
+                checkoutId: crypto.randomUUID(), owner: checkoutOwner(session), fingerprint: fingerprint,
+                items: items, address: address
+            };
+            sessionStorage.setItem('checkout_attempt', JSON.stringify(attempt));
+            payload.checkoutId = attempt.checkoutId;
+            let order;
+            try {
+                order = await window.SpicebloomsApi.createOrder(null, payload);
+            } catch (error) {
+                if (error.status === 400) {
+                    shippingQuote = null;
+                    shippingQuoteError = error.message || 'Refresh delivery charges to continue.';
+                    renderShippingStatus();
+                }
+                throw error;
+            }
+            if (order && order.orderId) {
+                sessionStorage.setItem('checkout_pending_order', JSON.stringify(Object.assign({}, attempt, {
+                    orderId: order.orderId, razorpayOrderId: order.razorpayOrderId, paymentExpiresAt: order.paymentExpiresAt
+                })));
+            }
+            const deadline = Date.parse(order && order.paymentExpiresAt);
+            if (!order || !order.orderId || !order.razorpayOrderId || !order.keyId || !(Number(order.amount) > 0) || !Number.isFinite(deadline)) {
+                throw new Error('The backend did not return valid payment settings. Restart the updated API and try again.');
+            }
+            if (deadline <= Date.now()) throw new Error('This checkout has expired. Check its payment status before retrying.');
+            sessionStorage.setItem('checkout_payment_total', String(order.amount));
 
             return new Promise(function (resolve, reject) {
-                const checkout = new window.Razorpay({
+                let finished = false;
+                let processing = false;
+                let expiryTimer;
+                let checkout;
+                const cleanup = function () {
+                    clearTimeout(expiryTimer);
+                    document.removeEventListener('visibilitychange', checkDeadline);
+                };
+                const fail = function (error) {
+                    if (finished) return;
+                    finished = true;
+                    cleanup();
+                    reject(error);
+                };
+                const expire = async function () {
+                    if (finished || processing) return;
+                    processing = true;
+                    try {
+                        const state = await recoverPendingCheckout();
+                        if (state && state.paid) {
+                            finished = true;
+                            cleanup();
+                            resolve(state.result);
+                        } else {
+                            fail(new Error('Checkout time expired. Your bag is unchanged. Check payment status before trying again.'));
+                        }
+                    } catch (error) {
+                        fail(new Error('Checkout time expired. Payment status could not be checked. Do not pay again until it is confirmed.'));
+                    }
+                    checkout.close();
+                };
+                const checkDeadline = function () { if (Date.now() >= deadline) expire(); };
+                checkout = new window.Razorpay({
                     key: order.keyId,
-                    order_id: order.orderId,
-                    amount: order.amount,
+                    order_id: order.razorpayOrderId,
+                    amount: Math.round(Number(order.amount) * 100),
                     currency: order.currency,
                     name: 'Spiceblooms Naturals',
-                    description: items.length + (items.length === 1 ? ' item' : ' items'),
+                    description: order.description,
+                    timeout: Math.max(1, Math.floor((deadline - Date.now()) / 1000)),
                     image: new URL('assets/new-logo-naturals.png', window.location.href).href,
                     prefill: { name: address.name || '', email: email, contact: phone || '' },
                     notes: { delivery_address: delivery.slice(0, 250) },
                     theme: { color: '#1B3D2F' },
                     handler: function (response) {
-                        postJson('/api/payments/verify', response).then(function (result) {
-                            completeOrder(items, order, result, address);
+                        if (finished || processing) return;
+                        processing = true;
+                        cleanup();
+                        if (response.razorpay_order_id !== order.razorpayOrderId) {
+                            fail(new Error('Payment order did not match your checkout. Please contact us.'));
+                            return;
+                        }
+                        const pending = checkoutRecord('checkout_pending_order');
+                        if (pending) sessionStorage.setItem('checkout_pending_order', JSON.stringify(Object.assign({}, pending, {
+                            paymentId: response.razorpay_payment_id
+                        })));
+                        window.SpicebloomsApi.verifyOrderPayment(null, {
+                            orderId: order.orderId,
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpaySignature: response.razorpay_signature
+                        }).then(function (result) {
+                            if (!result || result.id !== order.orderId || result.paymentStatus !== 'Paid') {
+                                throw new Error('The backend has not confirmed this payment.');
+                            }
+                            completeOrder(items, order, result, address, response.razorpay_payment_id);
+                            finished = true;
+                            cleanup();
+                            resolve(result);
                         }).catch(function (error) {
-                            reject(new Error('Payment received but not verified yet (' + response.razorpay_payment_id + '). Please contact us. ' + error.message));
+                            fail(new Error('Payment received but not verified yet. Do not pay again. Contact us with order ' + order.orderId + ' and payment ' + response.razorpay_payment_id + '. ' + error.message));
                         });
                     },
                     modal: {
-                        ondismiss: function () { reject(new Error('Payment cancelled. Press Continue to try again.')); }
+                        ondismiss: function () { if (!processing) fail(new Error('Payment window closed. Your order remains pending until payment or expiry.')); }
                     }
                 });
                 checkout.on('payment.failed', function (response) {
                     const reason = response && response.error && response.error.description;
-                    reject(new Error('Payment failed' + (reason ? ': ' + reason : '.') + ' Press Continue to try again.'));
+                    fail(new Error('Payment failed' + (reason ? ': ' + reason : '.') + ' Press Continue to check its status and retry.'));
+                    checkout.close();
                 });
+                document.addEventListener('visibilitychange', checkDeadline);
+                expiryTimer = setTimeout(expire, Math.max(0, deadline - Date.now()));
                 checkout.open();
             });
         }
 
-        function completeOrder(items, order, result, address) {
-            const paidNames = items.map(function (item) { return item.name; });
-            const remaining = getCart().filter(function (item) { return paidNames.indexOf(item.name) === -1; });
+        function completeOrder(items, order, result, address, paymentId) {
+            sessionStorage.removeItem('checkout_pending_order');
+            sessionStorage.removeItem('checkout_attempt');
+            clearInterval(pendingPaymentPoll);
+            pendingPaymentPoll = null;
+            const previous = checkoutRecord('last_order');
+            if (previous && previous.orderId === result.id) {
+                window.location.replace('order-success.html');
+                return;
+            }
+            const quantities = new Map();
+            items.forEach(function (item) { quantities.set(item.name, (quantities.get(item.name) || 0) + item.quantity); });
+            const remaining = getCart().map(function (item) {
+                const paid = Math.min(Number(item.quantity) || 0, quantities.get(item.name) || 0);
+                quantities.set(item.name, (quantities.get(item.name) || 0) - paid);
+                return Object.assign({}, item, { quantity: (Number(item.quantity) || 0) - paid });
+            }).filter(function (item) { return item.quantity > 0; });
             localStorage.setItem(CART_KEY, JSON.stringify(remaining));
             sessionStorage.removeItem(SELECTED_ITEMS_KEY);
             sessionStorage.setItem('last_order', JSON.stringify({
-                orderId: result.orderId,
-                paymentId: result.paymentId,
-                receipt: order.receipt,
-                amount: order.amount / 100,
-                items: order.items,
+                orderId: result.id,
+                paymentId: paymentId,
+                receipt: order.orderId,
+                amount: result.total,
+                status: result.status,
+                items: items,
                 address: paymentDeliveryAddress(address)
             }));
             window.location.replace('order-success.html');
@@ -1549,12 +1840,16 @@
             this.value = this.value.replace(/\D/g, '');
         });
         document.getElementById('continue-order').addEventListener('click', continueToPayment);
+        document.getElementById('retry-delivery').addEventListener('click', renderEstimate);
+        window.addEventListener('storage', function (event) {
+            if (event.key === CART_KEY) renderEstimate();
+        });
         window.addEventListener('pageshow', function (event) {
             if (!event.persisted) return;
             continuing = false;
             const button = document.getElementById('continue-order');
             button.textContent = 'CONTINUE';
-            button.disabled = !selectedAddress() || !selectedCartItems().length;
+            renderEstimate();
         });
         document.querySelectorAll('[data-address-close]').forEach(function (el) {
             el.addEventListener('click', function () { closeForm(false); });
@@ -1603,6 +1898,7 @@
                 return;
             }
             updateCartBadge();
+            if (checkoutRecord('checkout_pending_order') || checkoutRecord('checkout_attempt')) monitorPendingCheckout();
             const cart = getCart();
             if (!cart.length) {
                 document.getElementById('empty-cart').classList.remove('hidden');
