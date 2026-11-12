@@ -4,7 +4,10 @@
  * React/Angular service with minimal changes.
  */
 (function () {
-  const API_BASE_URL = "https://spiceblooms-api-dev.azurewebsites.net";
+  const isLocal = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
+  const API_BASE_URL = isLocal
+    ? "https://localhost:7100"
+    : "https://spiceblooms-api-dev.azurewebsites.net";
   const PHONE_PREFIX = "91";
 
   class ApiError extends Error {
@@ -150,7 +153,9 @@
     sendOtp(phone) {
       return request("/api/Auth/otp/send", {
         method: "POST",
-        body: { phone: toApiPhone(phone) }
+        body: { phone: toApiPhone(phone) },
+        attachSessionToken: false,
+        retryUnauthorized: false
       });
     },
 
@@ -158,7 +163,9 @@
     verifyOtp({ phone, sessionId, otp }) {
       return request("/api/Auth/otp/verify", {
         method: "POST",
-        body: { phone: toApiPhone(phone), sessionId, otp }
+        body: { phone: toApiPhone(phone), sessionId, otp },
+        attachSessionToken: false,
+        retryUnauthorized: false
       });
     },
 
@@ -166,7 +173,9 @@
     firebaseLogin(firebaseIdToken) {
       return request("/api/Auth/firebase", {
         method: "POST",
-        body: { firebaseIdToken }
+        body: { firebaseIdToken },
+        attachSessionToken: false,
+        retryUnauthorized: false
       });
     },
 
@@ -210,6 +219,14 @@
       });
     },
 
+    getShippingQuote(quote) {
+      return authenticatedRequest("/api/Shipping/quote", { method: "POST", body: quote });
+    },
+
+    getShippingRates(requestBody) {
+      return authenticatedRequest("/api/Shipping/rates", { method: "POST", body: requestBody });
+    },
+
     /** POST /api/Orders (requires bearer token) */
     createOrder(token, order) {
       return authenticatedRequest("/api/Orders", {
@@ -240,6 +257,10 @@
     /** GET /api/Orders/{orderId} (requires bearer token) */
     getOrder(token, orderId) {
       return authenticatedRequest("/api/Orders/" + encodeURIComponent(orderId), { token });
+    },
+
+    getCheckout(checkoutId) {
+      return authenticatedRequest("/api/Orders/checkout/" + encodeURIComponent(checkoutId));
     }
   };
 })();

@@ -649,7 +649,7 @@
                     <section class="bag-card bag-pincode" aria-labelledby="pincode-title">
                         <div>
                             <h2 id="pincode-title">Check delivery time &amp; services</h2>
-                            <p id="pincode-status" class="bag-pincode-status">Enter a PIN code to check whether we can look up delivery for your area.</p>
+                            <p id="pincode-status" class="bag-pincode-status" aria-live="polite">Enter a PIN code to check delivery charges.</p>
                         </div>
                         <button type="button" class="bag-outline" id="pincode-open">ENTER PIN CODE</button>
                     </section>
@@ -684,8 +684,8 @@
                         <h2 id="price-details-title">PRICE DETAILS (<span id="price-item-count">0 Items</span>)</h2>
                         <div class="bag-row"><span>Total MRP</span><span id="total-mrp">Rs 0/-</span></div>
                         <div class="bag-row" id="discount-row"><span>Discount on MRP</span><span class="is-save" id="total-discount">-Rs 0/-</span></div>
-                        <div class="bag-row"><span>Delivery Fee</span><span id="delivery-fee">Rs 0/-</span></div>
-                        <div class="bag-total"><span>Total Amount</span><span id="total-price">Rs 0/-</span></div>
+                        <div class="bag-row"><span>Delivery Fee</span><span id="delivery-fee" aria-live="polite">Rs 0/-</span></div>
+                        <div class="bag-total"><span>Total Amount</span><span id="total-price" aria-live="polite">Rs 0/-</span></div>
                         <p class="bag-consent">By placing the order, you agree to SpiceBlooms Naturals’ <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
                         <button type="button" class="bag-place" id="place-order">PLACE ORDER</button>
                         <p id="checkout-hint" class="text-xs text-gray-500 text-center mt-3">Sign in is required before payment. Secure checkout powered by Razorpay</p>
@@ -781,7 +781,6 @@
         const SELECTED_KEY = 'cart_selected';
         const KNOWN_KEY = 'cart_known_names';
         const MAX_QTY = 20;
-        const DELIVERY_FEE = 0;
         const CATALOG = [
             { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png', pack: '100g pack' },
             { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png', pack: '100g pack' },
@@ -803,7 +802,7 @@
         let toastTimer = null;
 
         function money(value) {
-            return 'Rs ' + Math.max(0, Math.round(value)) + '/-';
+            return 'Rs ' + Math.max(0, Number(value)).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + '/-';
         }
 
         function escapeHtml(value) {
@@ -949,6 +948,94 @@
             };
         }
 
+        let bagDeliveryPin = sessionStorage.getItem('bag_delivery_pin') || '';
+        let bagDeliveryRate = null;
+        let bagDeliveryKey = '';
+        let bagDeliverySequence = 0;
+        let bagDeliveryPending = null;
+        let bagDeliveryLoading = false;
+        let bagDeliveryMessage = '';
+
+        function bagRateKey() {
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            return JSON.stringify({
+                pin: bagDeliveryPin,
+                owner: session && ((session.user && session.user.id) || session.uid || session.email || session.phone),
+                items: selectedItems().map(function (item) { return [item.itemId, item.quantity]; }).sort()
+            });
+        }
+
+        function renderBagDeliveryTotals() {
+            const rate = bagDeliveryRate && bagDeliveryKey === bagRateKey()
+                && Date.parse(bagDeliveryRate.expiresAt) > Date.now() ? bagDeliveryRate : null;
+            const selling = selectedItems().map(enrich).reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0);
+            const fee = rate ? rate.deliveryFee : 0;
+            document.getElementById('delivery-fee').textContent = bagDeliveryLoading ? 'Checking...' : money(fee);
+            document.getElementById('total-price').textContent = money(Math.round((selling + fee) * 100) / 100);
+            document.getElementById('pincode-status').textContent = bagDeliveryMessage || 'Enter a PIN code to check delivery charges.';
+        }
+
+        async function refreshBagDelivery(force) {
+            const key = bagRateKey();
+            const items = selectedItems();
+            const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
+            if (!bagDeliveryPin || !items.length || !session || !session.token || items.some(function (item) { return !item.itemId; })) {
+                bagDeliverySequence++;
+                bagDeliveryRate = null;
+                bagDeliveryPending = null;
+                bagDeliveryLoading = false;
+                bagDeliveryMessage = !bagDeliveryPin ? '' : !items.length ? 'Select an item to check delivery charges.'
+                    : !session || !session.token ? 'Sign in to check delivery charges for PIN ' + bagDeliveryPin + '.'
+                    : 'Refreshing bag items before checking delivery charges.';
+                renderBagDeliveryTotals();
+                return null;
+            }
+            if (!force && bagDeliveryRate && bagDeliveryKey === key && Date.parse(bagDeliveryRate.expiresAt) > Date.now() + 15000) {
+                renderBagDeliveryTotals();
+                return bagDeliveryRate;
+            }
+            if (bagDeliveryPending && bagDeliveryPending.key === key) return bagDeliveryPending.promise;
+            const sequence = ++bagDeliverySequence;
+            bagDeliveryKey = key;
+            bagDeliveryRate = null;
+            bagDeliveryLoading = true;
+            bagDeliveryMessage = 'Checking delivery charges for PIN ' + bagDeliveryPin + '...';
+            renderBagDeliveryTotals();
+            const pending = { key: key, promise: null };
+            bagDeliveryPending = pending;
+            pending.promise = (async function () {
+                try {
+                    const rate = await window.SpicebloomsApi.getShippingRates({
+                        pincode: bagDeliveryPin,
+                        items: items.map(function (item) { return { itemId: item.itemId, quantity: item.quantity }; })
+                    });
+                    if (sequence !== bagDeliverySequence || key !== bagRateKey()) return null;
+                    if (!rate || typeof rate.deliveryFee !== 'number' || !Number.isFinite(rate.deliveryFee) || rate.deliveryFee < 0
+                        || String(rate.pincode) !== bagDeliveryPin || !(Date.parse(rate.expiresAt) > Date.now())
+                        || Math.abs(rate.deliveryFee * 100 - Math.round(rate.deliveryFee * 100)) > 0.000001) {
+                        throw new Error('Invalid delivery rate response.');
+                    }
+                    bagDeliveryRate = rate;
+                    bagDeliveryMessage = rate.rateAvailable === false ? 'Delivery rates unavailable for PIN ' + bagDeliveryPin + '. No delivery fee added. You can still place your order.'
+                        : 'Delivery to ' + rate.pincode + ': ' + money(rate.deliveryFee) + (rate.courierName ? ' via ' + rate.courierName : '')
+                            + (rate.estimatedDeliveryDate ? '. Estimated ' + new Date(rate.estimatedDeliveryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + '.' : '');
+                    return rate;
+                } catch (error) {
+                    if (sequence === bagDeliverySequence) {
+                        bagDeliveryMessage = 'Could not load delivery charges for PIN ' + bagDeliveryPin + '. You can still continue; charges will be checked at your delivery address.';
+                    }
+                    return null;
+                } finally {
+                    if (sequence === bagDeliverySequence) {
+                        bagDeliveryLoading = false;
+                        bagDeliveryPending = null;
+                        renderBagDeliveryTotals();
+                    }
+                }
+            })();
+            return pending.promise;
+        }
+
         function renderCart() {
             const cart = getCart().map(enrich);
             const emptyCart = document.getElementById('empty-cart');
@@ -1015,8 +1102,8 @@
             document.getElementById('total-mrp').textContent = money(mrpTotal);
             document.getElementById('total-discount').textContent = '- ' + money(discount);
             document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
-            document.getElementById('delivery-fee').textContent = money(DELIVERY_FEE);
-            document.getElementById('total-price').textContent = money(selling + DELIVERY_FEE);
+            renderBagDeliveryTotals();
+            refreshBagDelivery();
             if (placeOrder) placeOrder.disabled = !hasSelected;
         }
 
@@ -1152,6 +1239,7 @@
         const pinError = document.getElementById('pincode-error');
         document.getElementById('pincode-open').addEventListener('click', function () {
             pinModal.hidden = false;
+            document.getElementById('pincode-input').value = bagDeliveryPin;
             document.getElementById('pincode-input').focus();
         });
         pinModal.querySelectorAll('[data-pincode-close]').forEach(function (el) {
@@ -1170,14 +1258,16 @@
                 pinError.textContent = 'Please enter your PIN code.';
                 return;
             }
-            if (!/^\d{6}$/.test(pin)) {
+            if (!/^[1-9]\d{5}$/.test(pin)) {
                 pinError.textContent = 'Enter a valid 6-digit PIN code.';
                 return;
             }
             pinError.textContent = '';
             pinModal.hidden = true;
             pinStatus.classList.remove('is-error');
-            pinStatus.textContent = 'We do not have a delivery-time lookup for PIN ' + pin + ' yet. You can still place your order.';
+            bagDeliveryPin = pin;
+            sessionStorage.setItem('bag_delivery_pin', pin);
+            refreshBagDelivery(true);
         });
 
         if (checkoutAuthModal) {
@@ -1200,6 +1290,10 @@
             if (placeOrder) placeOrder.textContent = 'PLACE ORDER';
             updateCartBadge();
             renderCart();
+        });
+
+        window.addEventListener('storage', function (event) {
+            if (event.key === CART_KEY || event.key === 'spiceblooms_session') renderCart();
         });
 
         window.addEventListener('DOMContentLoaded', function () {

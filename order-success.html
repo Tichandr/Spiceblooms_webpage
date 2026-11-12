@@ -96,6 +96,10 @@
                 document.getElementById('missing').classList.remove('hidden');
                 return;
             }
+            if (order.status === 'PaymentReview') {
+                document.querySelector('#confirmed h1').textContent = 'Payment received';
+                document.querySelector('#confirmed p').textContent = 'Your payment arrived after checkout expired. We will review the order before confirming delivery. Please do not pay again.';
+            }
             const escapeHtml = function (value) {
                 return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
                     return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];

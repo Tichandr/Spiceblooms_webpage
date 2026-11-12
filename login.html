@@ -664,7 +664,7 @@
 
   <script src="auth.js?v=gauth4"></script>
   <script src="api.js"></script>
-  <script src="firebase-config.js?v=gauth4"></script>
+  <script src="firebase-config.js?v=gauth5"></script>
   <script src="firebase-auth.js?v=gauth4"></script>
   <script>
     const PRODUCTS = [
@@ -898,7 +898,9 @@
       ? nextRaw
       : "index.html";
 
-    const googleMessage = (code) => {
+    const googleMessage = (error) => {
+      const code = error && error.code;
+      if (error && error.name === "ApiError") return "Could not complete the Spiceblooms session: " + error.message;
       if (code === "auth/not-configured") return "Google sign-in is almost ready. Use mobile OTP for now.";
       if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return "Google sign-in was cancelled.";
       if (code === "auth/popup-blocked") return "Allow popups for this site, then try Google again.";
@@ -906,7 +908,8 @@
       if (code === "auth/unauthorized-domain") return "Add this website domain in Firebase Authentication > Settings > Authorized domains, then try again.";
       if (code === "auth/operation-not-allowed" || code === "auth/configuration-not-found") return "Enable Google sign-in in the new Firebase project: Authentication > Sign-in method > Google.";
       if (code === "auth/account-exists-with-different-credential") return "This email is already used with another sign-in method. Try mobile OTP, or use the same Google account.";
-      return "Google sign-in could not complete. Try again, or use your mobile number.";
+      if (code) return "Google sign-in failed (" + code + "). Please try again.";
+      return error && error.message ? error.message : "Google sign-in could not complete. Try again, or use your mobile number.";
     };
 
     if (window.SpicebloomsAuth && window.SpicebloomsAuth.get()) {
@@ -916,7 +919,7 @@
         if (user) window.location.replace(safeNext);
       }).catch((error) => {
         const el = document.getElementById("google-error");
-        if (el) el.textContent = googleMessage(error && error.code);
+        if (el) el.textContent = googleMessage(error);
       });
     }
 
@@ -1138,7 +1141,7 @@
         stepNumber.classList.add("hidden");
         window.setTimeout(() => { window.location.href = safeNext; }, 900);
       } catch (error) {
-        googleError.textContent = googleMessage(error && error.code);
+        googleError.textContent = googleMessage(error);
         googleLabel.textContent = restoreLabel;
         googleBtn.disabled = false;
       }
