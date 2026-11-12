@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart - SpiceBlooms</title>
+    <link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="api.js"></script>
+    <script src="cart-pricing.js"></script>
 
     <script>
         tailwind.config = {
@@ -682,7 +684,7 @@
                         <h2 id="price-details-title">PRICE DETAILS (<span id="price-item-count">0 Items</span>)</h2>
                         <div class="bag-row"><span>Total MRP</span><span id="total-mrp">Rs 0/-</span></div>
                         <div class="bag-row" id="discount-row"><span>Discount on MRP</span><span class="is-save" id="total-discount">-Rs 0/-</span></div>
-                        <div class="bag-row"><span>Platform Fee</span><span id="platform-fee">Rs 0/-</span></div>
+                        <div class="bag-row"><span>Delivery Fee</span><span id="delivery-fee">Rs 0/-</span></div>
                         <div class="bag-total"><span>Total Amount</span><span id="total-price">Rs 0/-</span></div>
                         <p class="bag-consent">By placing the order, you agree to SpiceBlooms Naturals’ <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
                         <button type="button" class="bag-place" id="place-order">PLACE ORDER</button>
@@ -779,7 +781,7 @@
         const SELECTED_KEY = 'cart_selected';
         const KNOWN_KEY = 'cart_known_names';
         const MAX_QTY = 20;
-        const PLATFORM_FEE = 0;
+        const DELIVERY_FEE = 0;
         const CATALOG = [
             { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png', pack: '100g pack' },
             { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png', pack: '100g pack' },
@@ -810,10 +812,26 @@
             });
         }
 
+        function mergeDuplicates(cart) {
+            const merged = [];
+            const byKey = {};
+            cart.forEach(function (item) {
+                const key = window.SpicebloomsPricing.productKey(item.name);
+                const quantity = Math.max(1, parseInt(item.quantity, 10) || 1);
+                if (byKey[key]) {
+                    byKey[key].quantity = Math.min(MAX_QTY, byKey[key].quantity + quantity);
+                    return;
+                }
+                byKey[key] = Object.assign({}, item, { quantity: Math.min(MAX_QTY, quantity) });
+                merged.push(byKey[key]);
+            });
+            return merged;
+        }
+
         function getCart() {
             try {
                 const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-                return Array.isArray(cart) ? cart.filter(function (item) { return item && item.name; }) : [];
+                return Array.isArray(cart) ? mergeDuplicates(cart.filter(function (item) { return item && item.name; })) : [];
             } catch (error) {
                 return [];
             }
@@ -917,7 +935,8 @@
         function enrich(item) {
             const catalog = findCatalog(item);
             const price = Number(item.price) || (catalog && catalog.price) || 0;
-            const mrp = catalog && catalog.mrp && catalog.mrp > price ? catalog.mrp : 0;
+            const listed = item.mrp !== undefined ? Number(item.mrp) : (catalog && catalog.mrp);
+            const mrp = listed && listed > price ? listed : 0;
             return {
                 name: item.name,
                 price: price,
@@ -996,8 +1015,8 @@
             document.getElementById('total-mrp').textContent = money(mrpTotal);
             document.getElementById('total-discount').textContent = '- ' + money(discount);
             document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
-            document.getElementById('platform-fee').textContent = money(PLATFORM_FEE);
-            document.getElementById('total-price').textContent = money(selling + PLATFORM_FEE);
+            document.getElementById('delivery-fee').textContent = money(DELIVERY_FEE);
+            document.getElementById('total-price').textContent = money(selling + DELIVERY_FEE);
             if (placeOrder) placeOrder.disabled = !hasSelected;
         }
 
@@ -1175,9 +1194,23 @@
             });
         }
 
-        window.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('pageshow', function (event) {
+            if (!event.persisted) return;
+            const placeOrder = document.getElementById('place-order');
+            if (placeOrder) placeOrder.textContent = 'PLACE ORDER';
             updateCartBadge();
             renderCart();
+        });
+
+        window.addEventListener('DOMContentLoaded', function () {
+            localStorage.setItem(CART_KEY, JSON.stringify(getCart()));
+            updateCartBadge();
+            renderCart();
+            window.SpicebloomsPricing.reprice(getCart()).then(function (result) {
+                if (result.changed) saveCart(result.cart);
+            }).catch(function (error) {
+                console.warn('Could not refresh cart prices.', error);
+            });
         });
     </script>
     <script src="auth.js"></script>

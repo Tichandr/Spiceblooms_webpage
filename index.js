@@ -2,22 +2,25 @@
 const mobileMenuButton = document.getElementById("mobile-menu-button");
 const mobileMenu = document.getElementById("mobile-menu");
 
-mobileMenuButton.addEventListener("click", () => {
-  mobileMenu.classList.toggle("hidden");
-});
+if (mobileMenuButton && mobileMenu) {
+  mobileMenuButton.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+}
 
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
-    const target = document.querySelector(this.getAttribute("href"));
+    const href = this.getAttribute("href");
+    if (href === "#") return;
+    const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
-      // Close mobile menu if open
-      mobileMenu.classList.add("hidden");
+      if (mobileMenu) mobileMenu.classList.add("hidden");
     }
   });
 });
@@ -63,14 +66,6 @@ if (statsSection) {
   observer.observe(statsSection);
 }
 
-// Form submission
-const form = document.querySelector("form");
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  alert("Thank you for your message! We'll get back to you soon.");
-  form.reset();
-});
-
 // Add scroll-triggered animations
 const observerOptions = {
   threshold: 0.1,
@@ -95,8 +90,11 @@ document.querySelectorAll("section").forEach((section) => {
 });
 
 // Hero section is visible by default
-document.querySelector("#home").style.opacity = "1";
-document.querySelector("#home").style.transform = "translateY(0)";
+const heroSection = document.querySelector("#home");
+if (heroSection) {
+  heroSection.style.opacity = "1";
+  heroSection.style.transform = "translateY(0)";
+}
 
 (function initHeroVideo() {
   const section = document.getElementById("home");
@@ -161,12 +159,13 @@ const testimonialSlider = () => {
   const dots = document.querySelectorAll('.dot');
   let currentIndex = 0;
   const slideCount = slides.length;
+  if (!track || !slideCount || !dots.length) return;
   
   // Initialize
   dots[0].classList.add('bg-primary');
   
   // Auto rotate every 5 seconds
-  const autoSlide = setInterval(() => {
+  let autoSlide = setInterval(() => {
       currentIndex = (currentIndex + 1) % slideCount;
       updateSlider();
   }, 5000);

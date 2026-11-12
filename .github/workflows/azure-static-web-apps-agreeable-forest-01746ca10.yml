@@ -20,6 +20,8 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Share cart pricing with the API
+        run: cp cart-pricing.js api/shared/cart-pricing.js
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -30,7 +32,7 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
+          api_location: "api" # Azure Functions for Razorpay checkout
           output_location: "/" # Built app content directory - optional
           skip_app_build: true # Plain static HTML/CSS/JS site - no build step needed
           ###### End of Repository/Build Configurations ######

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - SpiceBlooms Naturals</title>
+    <link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "DM Sans", sans-serif;
+            color: #1A2E24;
+            background: #F6EFE4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px 28px;
+            box-shadow: 0 16px 40px rgba(80, 58, 32, 0.12);
+            text-align: center;
+        }
+        .logo { width: 120px; margin: 0 auto 12px; display: block; }
+        .tick {
+            width: 56px;
+            height: 56px;
+            margin: 8px auto 16px;
+            border-radius: 50%;
+            background: #1B3D2F;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 { margin: 0 0 8px; font-size: 26px; }
+        p { margin: 0 0 6px; color: #6E6A64; line-height: 1.5; }
+        .summary {
+            margin: 22px 0;
+            padding: 16px 18px;
+            border: 1px solid #E6DFD4;
+            border-radius: 16px;
+            text-align: left;
+        }
+        .row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 14px; }
+        .row span:first-child { color: #6E6A64; }
+        .row strong { text-align: right; word-break: break-word; }
+        .total { border-top: 1px solid #E6DFD4; margin-top: 8px; padding-top: 12px; font-size: 16px; }
+        .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .btn-primary { background: #1B3D2F; color: #fff; }
+        .btn-light { background: #F6EFE4; color: #1A2E24; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <img class="logo" src="assets/new-logo-naturals.png" alt="Spiceblooms Naturals">
+        <div id="confirmed">
+            <div class="tick" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h1>Order confirmed</h1>
+            <p>Thank you! Your payment was successful. Please save your payment ID below for reference.</p>
+            <div class="summary" id="summary"></div>
+        </div>
+        <div id="missing" class="hidden">
+            <h1>No recent order</h1>
+            <p>We couldn't find a recent order in this browser.</p>
+            <div class="summary" style="border:none;padding:0"></div>
+        </div>
+        <div class="actions">
+            <a class="btn btn-primary" href="products.html">Continue shopping</a>
+            <a class="btn btn-light" href="index.html">Home</a>
+        </div>
+    </main>
+    <script>
+        (function () {
+            let order = null;
+            try { order = JSON.parse(sessionStorage.getItem('last_order') || 'null'); } catch (error) { order = null; }
+            if (!order || !order.orderId) {
+                document.getElementById('confirmed').classList.add('hidden');
+                document.getElementById('missing').classList.remove('hidden');
+                return;
+            }
+            const escapeHtml = function (value) {
+                return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+                    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+                });
+            };
+            const rows = (order.items || []).map(function (item) {
+                return '<div class="row"><span>' + escapeHtml(item.name) + ' × ' + escapeHtml(item.quantity) + '</span><strong>Rs ' + escapeHtml(Math.round(item.price * item.quantity)) + '/-</strong></div>';
+            }).join('');
+            document.getElementById('summary').innerHTML = rows +
+                '<div class="row total"><span>Total paid</span><strong>Rs ' + escapeHtml(Math.round(order.amount)) + '/-</strong></div>' +
+                '<div class="row"><span>Payment ID</span><strong>' + escapeHtml(order.paymentId) + '</strong></div>' +
+                (order.address ? '<div class="row"><span>Delivering to</span><strong>' + escapeHtml(order.address) + '</strong></div>' : '');
+        })();
+    </script>
+</body>
+</html>
