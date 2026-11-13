@@ -18,7 +18,7 @@
     sambar: ["sambar powder"],
     royya: ["royya karam"],
     idli: ["idli karam podi"],
-    karivepaku: ["karivepaku podi"],
+    karivepaku: ["karivepaku podi", "curryleaf", "curry leaf"],
     rasam: ["rasam powder"],
     chicken: ["chicken powder"],
     abc: ["abc health drink"],
@@ -72,7 +72,9 @@
     items.forEach((item) => {
       const key = productKey(item.itemName || item.ItemName);
       const price = toNumber(item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice);
-      if (!key || price === null || prices[key]) return;
+      if (!key || price === null) return;
+      const current = prices[key];
+      if (current && current.price >= price) return;
       const mrp = toNumber(item.oldPrice !== undefined ? item.oldPrice : item.OldPrice);
       prices[key] = {
         price: price,

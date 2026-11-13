@@ -13,7 +13,7 @@
     if (!window.SpicebloomsApi || typeof window.SpicebloomsApi.firebaseLogin !== "function") {
       throw new Error("The SpiceBlooms API client is unavailable. Reload the page and try again.");
     }
-    const firebaseIdToken = await user.getIdToken();
+    const firebaseIdToken = await user.getIdToken(true);
     const apiSession = await window.SpicebloomsApi.firebaseLogin(firebaseIdToken);
     if (!apiSession || !apiSession.token) {
       throw new Error("Could not sign in to the SpiceBlooms service. Please try again.");
@@ -75,7 +75,7 @@
       return null;
     },
     async signIn() {
-      const { auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await loadFirebase();
+      const { auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, firebaseSignOut } = await loadFirebase();
       const provider = new GoogleAuthProvider();
       provider.addScope("email");
       provider.addScope("profile");
@@ -86,7 +86,12 @@
       }
       try {
         const result = await signInWithPopup(auth, provider);
-        await writeSession(result.user);
+        try {
+          await writeSession(result.user);
+        } catch (error) {
+          await firebaseSignOut(auth).catch(() => {});
+          throw error;
+        }
         return result.user;
       } catch (error) {
         const code = error && error.code;
