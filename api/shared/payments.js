@@ -35,7 +35,10 @@ function createPayments({ productKey, toNumber, missingKeysMessage = "Payments a
       list.forEach((item) => {
         const key = productKey(item.itemName || item.ItemName);
         const price = toNumber(item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice);
-        if (key && price !== null && !prices[key]) prices[key] = { price, name: item.itemName || item.ItemName };
+        if (!key || price === null) return;
+        const current = prices[key];
+        if (current && current.price >= price) return;
+        prices[key] = { price, name: item.itemName || item.ItemName };
       });
       loaded += list.length;
       total = Number(data && data.totalListCount) || loaded;
