@@ -1011,12 +1011,14 @@
                     });
                     if (sequence !== bagDeliverySequence || key !== bagRateKey()) return null;
                     if (!rate || typeof rate.deliveryFee !== 'number' || !Number.isFinite(rate.deliveryFee) || rate.deliveryFee < 0
+                        || (rate.freeDeliveryApplied === true && rate.deliveryFee !== 0)
                         || String(rate.pincode) !== bagDeliveryPin || !(Date.parse(rate.expiresAt) > Date.now())
                         || Math.abs(rate.deliveryFee * 100 - Math.round(rate.deliveryFee * 100)) > 0.000001) {
                         throw new Error('Invalid delivery rate response.');
                     }
                     bagDeliveryRate = rate;
-                    bagDeliveryMessage = rate.rateAvailable === false ? 'Delivery rates unavailable for PIN ' + bagDeliveryPin + '. No delivery fee added. You can still place your order.'
+                    bagDeliveryMessage = rate.freeDeliveryApplied === true ? 'Free delivery on orders of Rs 477 or more to PIN ' + bagDeliveryPin + '.'
+                        : rate.rateAvailable === false ? 'Delivery rates unavailable for PIN ' + bagDeliveryPin + '. No delivery fee added. You can still place your order.'
                         : 'Delivery to ' + rate.pincode + ': ' + money(rate.deliveryFee) + (rate.courierName ? ' via ' + rate.courierName : '')
                             + (rate.estimatedDeliveryDate ? '. Estimated ' + new Date(rate.estimatedDeliveryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + '.' : '');
                     return rate;

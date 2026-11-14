@@ -1480,7 +1480,8 @@
             const loading = Boolean(hasSelection && shippingQuotePending && !quote);
             estimate.classList.toggle('is-loading', loading);
             estimate.textContent = !hasSelection ? 'Select an address to check delivery.'
-                : quote ? quote.rateAvailable === false ? 'Delivery estimate unavailable. No delivery fee charged.'
+                : quote ? quote.freeDeliveryApplied === true ? 'Free delivery on orders of Rs 477 or more to ' + quote.pincode + '.'
+                    : quote.rateAvailable === false ? 'Delivery estimate unavailable. No delivery fee charged.'
                     : (quote.estimatedDeliveryDate ? 'Estimated delivery: ' + new Date(quote.estimatedDeliveryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Delivery available')
                         + ' to ' + quote.pincode + (quote.courierName ? ' - ' + quote.courierName : '')
                 : shippingQuoteError || (loading ? 'Checking delivery charges...' : 'Refresh delivery charges to continue.');
@@ -1516,6 +1517,7 @@
                         throw new Error('Your bag or address changed. Review the updated delivery charges.');
                     }
                     if (!quote || !quote.quoteId || typeof quote.deliveryFee !== 'number' || !Number.isFinite(quote.deliveryFee)
+                        || (quote.freeDeliveryApplied === true && quote.deliveryFee !== 0)
                         || quote.deliveryFee < 0 || Math.abs(quote.deliveryFee * 100 - Math.round(quote.deliveryFee * 100)) > 0.000001
                         || String(quote.pincode) !== String(address.postcode) || !(Date.parse(quote.expiresAt) > Date.now() + 15000)) {
                         throw new Error('The backend did not return valid delivery charges. Please retry.');
