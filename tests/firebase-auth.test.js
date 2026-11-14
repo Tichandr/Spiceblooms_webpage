@@ -8,12 +8,16 @@ const root = path.join(__dirname, "..");
 const source = fs.readFileSync(path.join(root, "firebase-auth.js"), "utf8");
 const loginHtml = fs.readFileSync(path.join(root, "login.html"), "utf8");
 
-function googleAuth(navigator, popupError) {
+function googleAuth(navigator, popupError, backendError) {
   const calls = [];
+  const tokenRefreshes = [];
   let session;
   const user = {
     uid: "google-user", email: "customer@example.com", displayName: "Customer",
-    getIdToken: async () => "firebase-token"
+    getIdToken: async (forceRefresh) => {
+      tokenRefreshes.push(forceRefresh);
+      return "firebase-token";
+    }
   };
   const appModule = { getApps: () => [], initializeApp: () => ({}) };
   const authModule = {
@@ -29,13 +33,14 @@ function googleAuth(navigator, popupError) {
       return { user };
     },
     signInWithRedirect: async () => { calls.push("redirect"); },
-    signOut: async () => {}
+    signOut: async () => { calls.push("signout"); }
   };
   const window = {
     SPICEBLOOMS_FIREBASE: { apiKey: "test", authDomain: "test.firebaseapp.com", projectId: "test", appId: "test" },
     SpicebloomsApi: {
       firebaseLogin: async (token) => {
         calls.push(token);
+        if (backendError) throw backendError;
         return { token: "backend-token", refreshToken: "refresh-token", expiry: 123 };
       }
     },
@@ -46,7 +51,7 @@ function googleAuth(navigator, popupError) {
     loadModule: async (url) => url.endsWith("/firebase-app.js") ? appModule : authModule
   };
   vm.runInNewContext(source.replace(/\bimport\(/g, "loadModule("), context);
-  return { auth: window.SpicebloomsGoogleAuth, calls, session: () => session };
+  return { auth: window.SpicebloomsGoogleAuth, calls, tokenRefreshes, session: () => session };
 }
 
 test("prepared iOS sign-in opens the popup synchronously and exchanges the backend token", async () => {
@@ -61,9 +66,21 @@ test("prepared iOS sign-in opens the popup synchronously and exchanges the backe
     assert.deepEqual(flow.calls, ["popup"]);
     assert.equal((await signIn).uid, "google-user");
     assert.deepEqual(flow.calls, ["popup", "firebase-token"]);
+    assert.deepEqual(flow.tokenRefreshes, [true]);
     assert.equal(flow.session().token, "backend-token");
     assert.equal(flow.session().refreshToken, "refresh-token");
   }
+});
+
+test("prepared iOS sign-in signs out Firebase when the backend session exchange fails", async () => {
+  const error = new Error("Backend authentication unavailable");
+  const flow = googleAuth({ userAgent: "Mozilla/5.0 (iPhone)" }, undefined, error);
+  await flow.auth.completeRedirect();
+  const signIn = flow.auth.signIn();
+  assert.deepEqual(flow.calls, ["popup"]);
+  await assert.rejects(signIn, (actual) => actual === error);
+  assert.deepEqual(flow.calls, ["popup", "firebase-token", "signout"]);
+  assert.equal(flow.session(), undefined);
 });
 
 test("iOS popup failures remain visible without a cross-site redirect fallback", async () => {

@@ -69,12 +69,88 @@
             scroll-behavior: smooth;
         }
 
-        /* Ensures product cards align in same height */
-        .product-card {
+        /* Equal product cards: same width per row, same height, button pinned to the bottom */
+        #all-products .grid {
+            align-items: stretch;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        #all-products .product-card {
             display: flex;
             flex-direction: column;
             height: 100%;
-            /* Equalizes height in grid layout */
+            min-width: 0;
+        }
+
+        #all-products .product-card > .relative {
+            flex: 0 0 auto;
+            height: clamp(190px, 46vw, 250px);
+        }
+
+        #all-products .product-image {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            background: #fff8f2;
+        }
+
+        #all-products .product-card > .p-6 {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 300px;
+            min-width: 0;
+        }
+
+        #all-products .product-card h3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.6em;
+            line-height: 1.3;
+        }
+
+        #all-products .product-card p.text-gray-600 {
+            min-height: 4.5em;
+            margin-bottom: 2.1rem;
+        }
+
+        #all-products .product-card p.text-gray-600 + button {
+            margin-top: -1.85rem;
+        }
+
+        #all-products .product-card .p-6 > .mt-auto,
+        #all-products .product-card .p-6 > .flex.items-center {
+            margin-top: auto;
+        }
+
+        @media (min-width: 768px) {
+            #all-products .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            #all-products .product-card > .relative {
+                height: 230px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #all-products .grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            #all-products .product-card > .relative {
+                height: 250px;
+            }
+        }
+
+        .combo-card {
+            height: 100%;
+        }
+
+        .combo-foot {
+            margin-top: auto;
         }
 
         /* Line clamping (truncate text) */
@@ -1368,7 +1444,7 @@
                         </li>
                         <li>
                             <img src="assets/Naturals/Karivepaku%20podi.png" alt="">
-                            <strong>Karivepaku Podi Aromatic Curry Leaf Blast</strong>
+                            <strong>Spiceblooms Naturals Karivepaku Podi</strong>
                             <span class="combo-item-price">Rs 199</span>
                         </li>
                     </ul>
@@ -1377,7 +1453,7 @@
                             <span>199 + 199</span>
                             <strong>Rs 398/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Rasam Powder","price":199,"image":"assets/new_items/rasampowder.jpg"},{"name":"Madhuri Spices Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Rasam Powder","price":199,"image":"assets/new_items/rasampowder.jpg"},{"name":"Spiceblooms Naturals Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}]'>Add combo</button>
                     </div>
                 </article>
 
@@ -1388,7 +1464,7 @@
                     <h3>Breakfast Table</h3>
                     <div class="combo-stack">
                         <img src="assets/Naturals/Moringa%20Instant%20Rice%20Mix.png" alt="">
-                        <img class="is-photo" src="assets/new_items/sambar.jpg" alt="">
+                        <img src="https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png" alt="">
                     </div>
                     <ul class="combo-list">
                         <li>
@@ -1397,8 +1473,8 @@
                             <span class="combo-item-price">Rs 199</span>
                         </li>
                         <li>
-                            <img class="is-photo" src="assets/new_items/sambar.jpg" alt="">
-                            <strong>Sambar Powder Authentic Andhra Taste</strong>
+                            <img src="https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png" alt="">
+                            <strong>Sambar Powder</strong>
                             <span class="combo-item-price">Rs 199</span>
                         </li>
                     </ul>
@@ -1407,7 +1483,7 @@
                             <span>199 + 199</span>
                             <strong>Rs 398/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"},{"name":"Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon","price":199,"image":"assets/new_items/sambar.jpg"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"},{"name":"Sambar Powder","price":199,"image":"https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png"}]'>Add combo</button>
                     </div>
                 </article>
             </div>
@@ -1682,8 +1758,8 @@
                 <div data-product-id="sambar" data-search="sambar powder authentic andhra"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
-                        <img src="assets/new_items/sambar.jpg"
-                            alt="Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon"
+                        <img src="https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png"
+                            alt="Sambar Powder"
                             class="product-image packshot w-full h-64">
                         <div class="absolute top-4 right-4">
                             <span
@@ -1692,13 +1768,13 @@
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <h3 class="text-xl font-bold text-dark mb-2" data-catalog-name>
-                           Spiceblooms Naturals Sambar Powder Authentic Andhra Taste in Every Spoon
+                           Sambar Powder
                         </h3>
 
                         <!-- Description with Read More -->
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-2" data-catalog-description>
                             Sambar is not just food it’s a tradition that brings families together around the dining
-                            table. WithSpiceblooms Naturals Sambar Powder, you can now prepare restaurant-style aromatic,
+                            table. With Spiceblooms Naturals Sambar Powder, you can now prepare restaurant-style aromatic,
                             flavorful sambar right in your kitchen.
                             Crafted using a time-honored Andhra recipe, our sambar powder is a blend of handpicked
                             lentils, spices, and herbs, roasted to perfection and ground fresh to lock in flavor. Every
@@ -1832,10 +1908,9 @@
                         </div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-dark mb-2" data-catalog-name>Spiceblooms Naturals Karivepaku Podi - Aromatic Curry
-                            Leaf Blast</h3>
+                        <h3 class="text-xl font-bold text-dark mb-2" data-catalog-name>Spiceblooms Naturals Karivepaku Podi</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-karivepaku" data-catalog-description>
-                            Savor the aromatic goodness of curry leaves withSpiceblooms Naturals Karivepaku Podi. Handcrafted
+                            Savor the aromatic goodness of curry leaves with Spiceblooms Naturals Karivepaku Podi. Handcrafted
                             with fresh curry leaves and secret spices, this podi is not only delicious but also great
                             for hair health and digestion. Pair it with hot rice and ghee for a simple yet
                             soul-satisfying meal.
@@ -1867,8 +1942,7 @@
 
 
 
-                <!--
-                Product Card 13 Rasam Powder
+                <!-- Product Card 13 Rasam Powder -->
                 <div data-product-id="rasam" data-search="rasam powder tangy peppery"
                     class="product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col">
                     <div class="relative overflow-hidden">
@@ -1911,7 +1985,6 @@
                         </div>
                     </div>
                 </div>
-                -->
 
                 <!-- Product Card Chicken Powder -->
                 <div data-product-id="chicken" data-search="chicken powder instant rice mix"
@@ -2255,10 +2328,10 @@
             { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'assets/Naturals/Kandi%20Podi.png', badge: 'Premium', desc: 'Roasted to perfection. Protein-rich and fiber-loaded, made from premium dals and spices. No preservatives and no artificial flavours.', points: ['Roasted toor dal blend', 'Protein and fiber rich', 'No artificial flavours', '100g pack'] },
             { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'assets/products/masala-karam.png', badge: 'Premium', desc: 'Signature Andhra heat with balanced spice and aroma. Perfect for daily curries or special dishes. No preservatives or artificial color. Small-batch roasted and ground.', points: ['Signature Andhra heat', 'Balanced spice and aroma', 'Small-batch roasted', '100g pack'] },
             { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png', badge: 'Premium', desc: 'Twenty-one timeless spices, slow-roasted and finely ground, bring authentic aroma and warmth to every dish. Finish dals, curries, biryani, and grilled meats with a pinch.', points: ['Blend of 21 spices', 'Slow-roasted and finely ground', 'Finish dals, curries, and biryani', '100g pack'] },
-            { id: 'sambar', name: 'Spiceblooms Naturals Sambar Powder Authentic Andhra Taste in Every Spoon', cartName: 'Madhuri Spices Sambar Powder Authentic Andhra Taste in Every Spoon', price: 199, image: 'assets/new_items/sambar.jpg', badge: 'Premium', desc: 'Crafted from a time-honored Andhra recipe. A blend of handpicked lentils, spices, and herbs, roasted to lock in flavor so you can make aromatic sambar at home.', points: ['Authentic Andhra sambar taste', 'Handpicked lentils and spices', 'Roasted fresh to lock in flavor', '100g pack'] },
+            { id: 'sambar', name: 'Sambar Powder', cartName: 'Sambar Powder', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png', badge: 'Premium', desc: 'Crafted from a time-honored Andhra recipe. A blend of handpicked lentils, spices, and herbs, roasted to lock in flavor so you can make aromatic sambar at home.', points: ['Authentic Andhra sambar taste', 'Handpicked lentils and spices', 'Roasted fresh to lock in flavor', '100g pack'] },
             { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png', badge: 'Premium', desc: 'Bring the authentic taste of Andhra coastal cooking home. This spicy prawn-flavoured chilli mix is perfect with hot rice and ghee, or as a punchy side with snacks.', points: ['Traditional prawn chilli mix', 'Coastal Andhra heat', 'Best with hot rice and ghee', '100g pack'] },
             { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Madhuri Spices Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg', badge: 'Premium', desc: 'A blend of lentils and spices made for hot idlis and crispy dosas. Add a little ghee or oil and enjoy the classic taste of Andhra breakfast.', points: ['Made for idli and dosa', 'Classic Andhra breakfast taste', 'Add ghee or oil and serve', '100g pack'] },
-            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi Aromatic Curry Leaf Blast', cartName: 'Madhuri Spices Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png', badge: 'Premium', desc: 'Handcrafted with fresh curry leaves and secret spices. Aromatic, delicious, and traditionally used for digestion and hair health. Mix with hot rice and ghee.', points: ['Fresh curry leaf aroma', 'Mix with hot rice and ghee', 'Traditionally used for digestion', '100g pack'] },
+            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi', cartName: 'Spiceblooms Naturals Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png', badge: 'Premium', desc: 'Handcrafted with fresh curry leaves and secret spices. Aromatic, delicious, and traditionally used for digestion and hair health. Mix with hot rice and ghee.', points: ['Fresh curry leaf aroma', 'Mix with hot rice and ghee', 'Traditionally used for digestion', '100g pack'] },
             { id: 'rasam', name: 'Madhuri Spices Rasam Powder Tangy and Peppery Delight', cartName: 'Madhuri Spices Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg', badge: 'Premium', desc: 'Pepper, cumin, and special lentils create a tangy, peppery, aromatic rasam. Add to tomato or tamarind water for a comforting bowl.', points: ['Tangy and peppery blend', 'Add to tomato or tamarind water', 'Comforting everyday rasam', '100g pack'] },
             { id: 'chicken', name: 'Chicken Powder Instant Rice Mix', cartName: 'Chicken Powder Instant Rice Mix', price: 199, image: 'assets/Naturals/Chicken%20powder.png', badge: 'New', desc: 'A savoury chicken-flavoured instant rice mix with authentic homestyle taste. Mix 2 to 3 spoons with hot steamed rice and a spoon of ghee for a quick weekday meal or tiffin.', points: ['Instant rice mix', 'Savoury roast-chicken flavour', 'Ready in minutes', '100g pack'] },
             { id: 'abc', name: 'ABC Health Drink', cartName: 'ABC Health Drink', price: 199, image: 'assets/Naturals/ABC%20Health%20Drink.png', badge: 'New', desc: 'A nourishing almonds, beetroot, and carrot health drink you can mix instantly with hot milk. Made with natural ingredients and no added preservatives.', points: ['Almonds, beetroot, and carrot', 'Mix instantly with hot milk', 'No added preservatives', '100g pack'] }
@@ -2307,8 +2380,7 @@
             'garam-21': ['21 garam masala'],
             sambar: ['sambar powder'],
             royya: ['royya karam'],
-            idli: ['idli karam podi'],
-            karivepaku: ['karivepaku podi'],
+            karivepaku: ['karivepaku podi', 'curryleaf powder', 'curry leaf powder'],
             rasam: ['rasam powder'],
             chicken: ['chicken powder'],
             abc: ['abc health drink']
@@ -2345,23 +2417,7 @@
                 const itemName = normalizeCatalogName(getCatalogItemName(item));
                 return searchNames.includes(itemName);
             });
-            if (exactMatches.length === 1) return exactMatches[0];
-            if (exactMatches.length > 1) {
-                const catalogSignatures = exactMatches.map(function (item) {
-                    return JSON.stringify([
-                        normalizeCatalogName(getCatalogItemName(item)),
-                        getCatalogImageUri(item.imageUri || item.ImageUri),
-                        item.oldPrice !== undefined ? item.oldPrice : item.OldPrice,
-                        item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice
-                    ]);
-                });
-                if (catalogSignatures.every(function (signature) {
-                    return signature === catalogSignatures[0];
-                })) {
-                    return exactMatches[0];
-                }
-                return null;
-            }
+            if (exactMatches.length) return preferHighestPrice(exactMatches);
 
             const shortestNameLength = matches.reduce(function (shortest, item) {
                 return Math.min(shortest, normalizeCatalogName(getCatalogItemName(item)).length);
@@ -2376,6 +2432,18 @@
             if (value === null || value === undefined || value === '') return null;
             const parsed = Number(String(value).replace(/[^\d.]/g, ''));
             return Number.isFinite(parsed) ? parsed : null;
+        }
+
+        function catalogActualPrice(item) {
+            return parseCatalogPrice(item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice);
+        }
+
+        /** When the catalog lists one product more than once, use the higher price. */
+        function preferHighestPrice(items) {
+            if (!items.length) return null;
+            return items.reduce(function (best, item) {
+                return (catalogActualPrice(item) || 0) > (catalogActualPrice(best) || 0) ? item : best;
+            });
         }
 
         function formatCatalogPrice(value) {
@@ -2445,6 +2513,11 @@
             if (cardName) cardName.textContent = name;
             if (cardDescription && description) cardDescription.textContent = description;
             if (cardImage && image) {
+                const previous = cardImage.getAttribute('src');
+                cardImage.onerror = function () {
+                    cardImage.onerror = null;
+                    if (previous && previous !== image) cardImage.src = previous;
+                };
                 cardImage.src = image;
                 cardImage.alt = name;
             }
@@ -2460,6 +2533,105 @@
                 priceElements.oldPrice.textContent = showOldPrice ? formatCatalogPrice(oldPrice) : '';
             }
             return true;
+        }
+
+        function addMissingCatalogCards() {
+            const grid = document.querySelector('#all-products .grid');
+            if (!grid) return;
+            const used = {};
+            Object.keys(API_CATALOG_PRODUCTS).forEach(function (productId) {
+                const item = findCatalogProductItem(productId);
+                if (item) used[normalizeCatalogName(getCatalogItemName(item))] = true;
+            });
+            const bestByName = {};
+            catalogImageItems.forEach(function (item) {
+                const key = normalizeCatalogName(getCatalogItemName(item));
+                if (!key || used[key] || key === 'podi combo') return;
+                const current = bestByName[key];
+                if (!current || (catalogActualPrice(item) || 0) > (catalogActualPrice(current) || 0)) {
+                    bestByName[key] = item;
+                }
+            });
+            Object.keys(bestByName).forEach(function (key) {
+                const item = bestByName[key];
+                const id = key.replace(/\s+/g, '-');
+                if (document.querySelector('#all-products [data-product-id="' + id + '"]')) return;
+                const name = getCatalogItemName(item);
+                const image = getCatalogImageUri(item.imageUri || item.ImageUri);
+                const description = item.description || item.Description || '';
+                const price = catalogActualPrice(item);
+                const oldPrice = parseCatalogPrice(item.oldPrice !== undefined ? item.oldPrice : item.OldPrice);
+                PRODUCT_CATALOG.push({
+                    id: id,
+                    name: name,
+                    cartName: name,
+                    price: price || 0,
+                    mrp: oldPrice && price && oldPrice > price ? oldPrice : 0,
+                    image: image,
+                    desc: description,
+                    itemId: item.id || item.Id,
+                    badge: 'New',
+                    points: []
+                });
+
+                const card = document.createElement('div');
+                card.setAttribute('data-product-id', id);
+                card.setAttribute('data-search', key);
+                card.className = 'product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100';
+                const imageWrap = document.createElement('div');
+                imageWrap.className = 'relative overflow-hidden';
+                const img = document.createElement('img');
+                img.className = 'product-image packshot w-full h-64';
+                img.alt = name;
+                if (image) {
+                    img.onerror = function () {
+                        img.onerror = null;
+                        img.removeAttribute('src');
+                        img.alt = name + '. Image unavailable';
+                    };
+                    img.src = image;
+                }
+                imageWrap.appendChild(img);
+                const body = document.createElement('div');
+                body.className = 'p-6';
+                const heading = document.createElement('h3');
+                heading.className = 'text-xl font-bold text-dark mb-2';
+                heading.setAttribute('data-catalog-name', '');
+                heading.textContent = name;
+                const desc = document.createElement('p');
+                desc.className = 'text-gray-600 mb-4';
+                desc.setAttribute('data-catalog-description', '');
+                desc.textContent = description;
+                const prices = document.createElement('div');
+                prices.className = 'flex items-center justify-between';
+                const oldEl = document.createElement('span');
+                oldEl.className = 'text-gray-400 line-through text-lg';
+                oldEl.setAttribute('data-catalog-old-price', '');
+                const showOld = oldPrice !== null && price !== null && oldPrice > price;
+                oldEl.hidden = !showOld;
+                oldEl.textContent = showOld ? formatCatalogPrice(oldPrice) : '';
+                const actualEl = document.createElement('span');
+                actualEl.className = 'text-2xl font-bold text-primary';
+                actualEl.setAttribute('data-catalog-actual-price', '');
+                actualEl.textContent = price !== null ? formatCatalogPrice(price) : '';
+                prices.appendChild(oldEl);
+                prices.appendChild(actualEl);
+                const actions = document.createElement('div');
+                actions.className = 'mt-4 flex gap-2';
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold';
+                button.textContent = 'Add to Cart';
+                button.addEventListener('click', function () { addProductToCart(id); });
+                actions.appendChild(button);
+                body.appendChild(heading);
+                body.appendChild(desc);
+                body.appendChild(prices);
+                body.appendChild(actions);
+                card.appendChild(imageWrap);
+                card.appendChild(body);
+                grid.appendChild(card);
+            });
         }
 
         function findCatalogItem(name) {
@@ -2688,12 +2860,15 @@
                 }
 
                 const failedProducts = Object.keys(API_CATALOG_PRODUCTS).filter(function (productId) {
+                    const card = document.querySelector('#all-products [data-product-id="' + productId + '"]');
+                    if (!card) return false;
                     const item = findCatalogProductItem(productId);
                     if (!item) return true;
                     applyCatalogProductItem(productId, item);
                     return false;
                 });
                 applyCatalogImages();
+                addMissingCatalogCards();
                 if (status) {
                     if (failedProducts.length) {
                         status.textContent = 'Some products could not be matched to the catalog API. Showing their available images and details instead.';

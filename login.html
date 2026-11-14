@@ -230,31 +230,49 @@
     .auth {
       display: flex;
       align-items: stretch;
+      min-width: 0;
       padding: 0;
       background: transparent;
+      overflow-y: auto;
     }
 
     .auth-box {
       display: flex;
       flex-direction: column;
       width: 100%;
+      height: auto;
+      min-height: 100%;
       padding: 28px 36px 32px;
       background: #fff;
       border: 1px solid rgba(27, 61, 47, 0.08);
       box-shadow: 0 16px 40px rgba(80, 58, 32, 0.08);
+      overflow: visible;
     }
 
     .auth-top {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
       gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .auth-top a {
+      display: block;
+      flex: 0 1 auto;
+      min-width: 0;
+      line-height: 0;
     }
 
     .logo {
       display: block;
-      width: 196px;
-      height: auto;
+      width: auto;
+      height: 108px;
+      max-width: min(220px, 46vw);
+      object-fit: contain;
+      object-position: left center;
       background: transparent;
       filter: brightness(1.16) contrast(1.18) saturate(1.28);
     }
@@ -262,6 +280,7 @@
     .signup-btn {
       display: inline-flex;
       align-items: center;
+      flex-shrink: 0;
       gap: 8px;
       padding: 8px 14px;
       border: 1px solid var(--line);
@@ -291,8 +310,10 @@
       justify-content: center;
       width: 100%;
       max-width: 400px;
-      flex: 1;
+      flex: 1 0 auto;
       min-height: 0;
+      position: relative;
+      z-index: 1;
       margin: 28px auto 8px;
       padding: 44px 32px;
       border-radius: 24px;
@@ -525,33 +546,52 @@
       .quote.is-swap { animation: none; }
     }
 
+    @media (max-height: 820px) and (min-width: 861px) {
+      .page { padding: 14px; gap: 14px; }
+      .logo { height: 92px; }
+      .auth-box { padding: 16px 24px 20px; }
+      .auth-main { margin: 16px auto 4px; padding: 28px 24px; }
+      .auth-main h1 { font-size: 32px; }
+      .lead { margin-bottom: 16px; }
+    }
+
     @media (max-width: 860px) {
       .page {
         grid-template-columns: 1fr;
         height: auto;
+        min-height: 100vh;
         max-height: none;
         overflow: visible;
-        gap: 20px;
+        gap: 16px;
         padding: 16px;
       }
       .stage,
       .auth,
-      .auth-box { height: auto; }
-      .stage { height: 52vh; min-height: 340px; }
+      .auth-box { height: auto; min-height: 0; }
+      .auth { overflow: visible; }
+      .stage { height: 46vh; min-height: 280px; max-height: 460px; }
       .stage-copy { left: 14px; right: 14px; bottom: 14px; gap: 8px; }
-      .quote { padding: 14px 14px 12px; }
-      .quote-text { font-size: 15px; }
+      .quote { max-width: none; padding: 14px 14px 12px; }
+      .quote-text { font-size: clamp(16px, 4.2vw, 20px); }
       .kicker { margin-bottom: 6px; }
       .quote-name { margin-top: 10px; }
       .progress { margin-top: 10px; }
-      .auth-box { padding: 22px 18px 24px; }
+      .auth-box { padding: 20px 16px 24px; }
       .auth-main {
         flex: none;
-        margin: 24px auto 8px;
-        padding: 32px 22px 28px;
-        min-height: 380px;
+        margin: 20px auto 0;
+        padding: 28px 18px 24px;
+        min-height: 0;
       }
-      .logo { width: 156px; }
+      .logo { height: 84px; max-width: 170px; }
+    }
+
+    @media (max-width: 420px) {
+      .page { padding: 12px; gap: 12px; }
+      .stage { height: 40vh; min-height: 240px; }
+      .quote-text { font-size: 15px; }
+      .auth-main h1 { font-size: 30px; }
+      .signup-btn { padding: 8px 12px; }
     }
   </style>
 </head>

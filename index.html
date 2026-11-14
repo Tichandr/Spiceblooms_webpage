@@ -93,10 +93,13 @@
         max-width: 100%;
         overflow: hidden;
         line-height: 0;
-        background: #f6e4a8 url("assets/dussehra-sale-banner.jpg") center / cover no-repeat;
+        background: #f3ead6;
         aspect-ratio: 1980 / 794;
+        /* Explicit min-height so the frame never collapses on older browsers */
+        min-height: 120px;
     }
 
+    /* Always-visible poster image — shows even if video fails to load */
     .hero-canva-poster {
         display: block;
         width: 100%;
@@ -107,30 +110,22 @@
     }
 
     .hero-canva-video {
+        display: block;
         position: absolute;
         inset: 0;
-        z-index: 1;
         width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center center;
         pointer-events: none;
         border: 0;
-        background: transparent;
+        z-index: 1;
     }
 
-    .hero-canva.is-static .hero-canva-video {
-        display: none;
-    }
-
-    @media (max-width: 767px) {
-        .hero-canva-frame {
-            min-height: clamp(168px, 46vw, 280px);
-        }
-
+    @media (max-width: 480px) {
         .hero-canva-video,
         .hero-canva-poster {
-            object-position: center 46%;
+            object-position: center 40%;
         }
     }
 
@@ -138,12 +133,6 @@
         .hero-canva-video {
             display: none;
         }
-    }
-
-    .hero-canva-hit {
-        position: absolute;
-        inset: 0;
-        z-index: 2;
     }
 
     .home-shop {
@@ -1106,29 +1095,23 @@
     <!-- Hero Section -->
     <section id="home" class="hero-canva">
         <div class="hero-canva-frame">
-            <img class="hero-canva-poster"
-                src="assets/dussehra-sale-banner.jpg"
-                width="1920"
-                height="698"
-                alt="SpiceBlooms Dussehra sale, up to 40 percent off"
-                fetchpriority="high"
-                decoding="async">
-            <video id="hero-video"
+            <!-- Poster: always visible, shows while/if video fails -->
+            <img
+                class="hero-canva-poster"
+                src="assets/diwali-sale-banner.jpg"
+                alt="Spiceblooms Diwali Sale"
+                draggable="false">
+            <!-- Video: autoplays silently on top of the poster -->
+            <video
+                id="hero-video"
                 class="hero-canva-video"
                 autoplay
                 muted
                 loop
                 playsinline
-                preload="auto"
-                poster="assets/dussehra-sale-banner.jpg"
-                disablepictureinpicture
-                disableremoteplayback
-                controlslist="nodownload nofullscreen noremoteplayback"
-                tabindex="-1"
-                aria-hidden="true">
-                <source src="assets/videos/dussehra-sale.mp4" type="video/mp4">
+                preload="auto">
+                <source src="assets/videos/SpicebloomsDiwali.mp4" type="video/mp4">
             </video>
-            <a class="hero-canva-hit" href="products.html" aria-label="Shop the Dussehra sale, up to 40 percent off"></a>
         </div>
     </section>
 
@@ -1261,7 +1244,7 @@
                     <div class="home-product-body">
                         <h3>Karivepaku Podi</h3>
                         <p class="home-product-price">Rs 199/-</p>
-                        <button type="button" class="home-add" data-home-add='{"name":"Madhuri Spices Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}'>
+                        <button type="button" class="home-add" data-home-add='{"name":"Spiceblooms Naturals Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}'>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
