@@ -2247,32 +2247,37 @@
         }
 
         let catalogImageItems = [];
+        let catalogLoaded = false;
 
         function catalogInStock(item) {
             return !item || (item.inStock !== undefined ? item.inStock : item.InStock) !== false;
         }
 
-        function setStockButton(button, available) {
+        function setStockButton(button, available, unavailableLabel) {
             if (!button) return;
             if (!button.dataset.stockLabel) button.dataset.stockLabel = button.innerHTML;
             button.disabled = !available;
-            button.innerHTML = available ? button.dataset.stockLabel : 'Sold out';
+            button.innerHTML = available ? button.dataset.stockLabel : unavailableLabel || 'Sold out';
         }
 
         function refreshStockControls() {
             document.querySelectorAll('[data-wishlist-add]').forEach(function (button) {
                 const product = getProductById(button.getAttribute('data-wishlist-add'));
-                if (product) setStockButton(button, product.inStock !== false);
+                if (product) setStockButton(button, product.inStock !== false, product.catalogUnavailable ? 'Unavailable' : 'Sold out');
             });
             const detail = document.getElementById('product-detail');
             const product = detail && getProductById(detail.dataset.activeId);
-            if (product) setStockButton(detail.querySelector('[data-pd-add]'), product.inStock !== false);
+            if (product) setStockButton(detail.querySelector('[data-pd-add]'), product.inStock !== false, product.catalogUnavailable ? 'Unavailable' : 'Sold out');
         }
 
         function addToCart(name, price, image, options) {
             const catalogItem = options && options.itemId
                 ? catalogImageItems.find(function (item) { return (item.id || item.Id) === options.itemId; })
                 : findCatalogItem(name);
+            if (catalogLoaded && !catalogItem) {
+                window.alert(name + ' is not available in the current catalog. Please choose another product.');
+                return;
+            }
             if (!catalogInStock(catalogItem)) {
                 window.alert(name + ' is sold out. Please choose another product.');
                 return;
@@ -2324,8 +2329,11 @@
         }
 
         function addCombo(products) {
-            if (products.some(function (item) { return !catalogInStock(findComboCatalogItem(item)); })) {
-                window.alert('This combo contains a sold-out product. Please choose another combo.');
+            if (products.some(function (item) {
+                const match = findComboCatalogItem(item);
+                return (catalogLoaded && !match) || !catalogInStock(match);
+            })) {
+                window.alert('This combo contains a sold-out or unavailable product. Please choose another combo.');
                 return;
             }
             products.forEach(function (item) {
@@ -2533,6 +2541,7 @@
             product.cartName = name;
             product.itemId = item.id || item.Id;
             product.inStock = catalogInStock(item);
+            product.catalogUnavailable = false;
             if (description) product.desc = description;
             if (image) product.image = image;
             if (priceNumber !== null) product.price = priceNumber;
@@ -2897,11 +2906,20 @@
                     catalogImageItems.push(...result.itemList);
                 }
 
+                catalogLoaded = true;
                 const failedProducts = Object.keys(API_CATALOG_PRODUCTS).filter(function (productId) {
                     const card = document.querySelector('#all-products [data-product-id="' + productId + '"]');
                     if (!card) return false;
                     const item = findCatalogProductItem(productId);
-                    if (!item) return true;
+                    if (!item) {
+                        const product = getProductById(productId);
+                        if (product) {
+                            product.inStock = false;
+                            product.catalogUnavailable = true;
+                        }
+                        setStockButton(card.querySelector('button[onclick*="addProductToCart"], [data-product-add]'), false, 'Unavailable');
+                        return true;
+                    }
                     applyCatalogProductItem(productId, item);
                     return false;
                 });
@@ -2910,7 +2928,7 @@
                 refreshStockControls();
                 if (status) {
                     if (failedProducts.length) {
-                        status.textContent = 'Some products could not be matched to the catalog API. Showing their available images and details instead.';
+                        status.textContent = 'Some products are unavailable in the current catalog. Their images and details remain visible, but they cannot be purchased.';
                         status.hidden = false;
                     } else {
                         status.hidden = true;
@@ -2983,7 +3001,7 @@
                     '<div class="wishlist-body">' +
                     '<strong>' + item.name + '</strong>' +
                     '<span class="wishlist-price">Rs ' + item.price + '/-</span>' +
-                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '" ' + (item.inStock === false ? 'disabled' : '') + '>' + (item.inStock === false ? 'Sold out' : 'Add to Cart') + '</button>' +
+                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '" ' + (item.inStock === false ? 'disabled' : '') + '>' + (item.catalogUnavailable ? 'Unavailable' : item.inStock === false ? 'Sold out' : 'Add to Cart') + '</button>' +
                     '</div>' +
                     '</article>';
             }).join('');
@@ -3101,7 +3119,7 @@
             const desc = detail.querySelector('[data-pd-desc]');
             const points = detail.querySelector('[data-pd-points]');
             const qtyInput = detail.querySelector('[data-pd-qty]');
-            setStockButton(detail.querySelector('[data-pd-add]'), product.inStock !== false);
+            setStockButton(detail.querySelector('[data-pd-add]'), product.inStock !== false, product.catalogUnavailable ? 'Unavailable' : 'Sold out');
 
             img.src = product.image;
             img.alt = product.name;

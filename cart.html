@@ -941,6 +941,7 @@
                 price: price,
                 quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
                 inStock: item.inStock !== false,
+                catalogUnavailable: item.catalogUnavailable === true,
                 image: item.image || (catalog && catalog.image) || '',
                 mrp: mrp,
                 pack: catalog && catalog.pack ? catalog.pack : '',
@@ -956,6 +957,8 @@
         let bagDeliveryPending = null;
         let bagDeliveryLoading = false;
         let bagDeliveryMessage = '';
+        let bagCatalogReady = false;
+        let bagCatalogLoading = false;
 
         function bagRateKey() {
             const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
@@ -1073,7 +1076,8 @@
                     '<div class="bag-copy">' +
                     '<h3>' + escapeHtml(item.brand) + '</h3>' +
                     '<p>' + escapeHtml(item.name) + '</p>' +
-                    (item.inStock === false ? '<p>Sold out - remove or deselect this item to continue.</p>' : '') +
+                    (item.catalogUnavailable ? '<p>Unavailable in the current catalog - remove or deselect this item to continue.</p>'
+                        : item.inStock === false ? '<p>Sold out - remove or deselect this item to continue.</p>' : '') +
                     (item.pack ? '<div class="bag-meta">' + escapeHtml(item.pack) + '</div>' : '') +
                     '<div class="bag-price"><strong>' + money(item.price) + '</strong>' +
                     (item.mrp ? '<s>' + money(item.mrp) + '</s>' : '') +
@@ -1109,7 +1113,10 @@
             document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
             renderBagDeliveryTotals();
             refreshBagDelivery();
-            if (placeOrder) placeOrder.disabled = !hasSelected || priced.some(function (item) { return item.inStock === false; });
+            if (placeOrder) {
+                placeOrder.disabled = !bagCatalogReady || !hasSelected || priced.some(function (item) { return item.inStock === false; });
+                placeOrder.textContent = bagCatalogLoading ? 'CHECKING AVAILABILITY...' : 'PLACE ORDER';
+            }
         }
 
         function removeIndexes(indexes, message) {
@@ -1127,6 +1134,10 @@
         function proceedToAddress() {
             const items = selectedItems();
             const placeOrder = document.getElementById('place-order');
+            if (!bagCatalogReady) {
+                showToast('Product availability has not been confirmed. Wait for the check, or reload the page to retry.', false);
+                return;
+            }
             if (!items.length) {
                 showToast('Select at least one item to place the order.', false);
                 return;
@@ -1294,12 +1305,30 @@
             });
         }
 
+        async function refreshBagCatalog() {
+            bagCatalogReady = false;
+            bagCatalogLoading = true;
+            renderCart();
+            try {
+                await window.SpicebloomsPricing.loadPrices(true);
+                const result = await window.SpicebloomsPricing.reprice(getCart());
+                if (result.changed) saveCart(result.cart);
+                bagCatalogReady = true;
+            } catch (error) {
+                console.warn('Could not refresh product availability.', error);
+                showToast('Could not confirm product availability. Reload the page before placing the order.', false);
+            } finally {
+                bagCatalogLoading = false;
+                renderCart();
+            }
+        }
+
         window.addEventListener('pageshow', function (event) {
             if (!event.persisted) return;
             const placeOrder = document.getElementById('place-order');
             if (placeOrder) placeOrder.textContent = 'PLACE ORDER';
             updateCartBadge();
-            renderCart();
+            refreshBagCatalog();
         });
 
         window.addEventListener('storage', function (event) {
@@ -1309,12 +1338,7 @@
         window.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem(CART_KEY, JSON.stringify(getCart()));
             updateCartBadge();
-            renderCart();
-            window.SpicebloomsPricing.reprice(getCart()).then(function (result) {
-                if (result.changed) saveCart(result.cart);
-            }).catch(function (error) {
-                console.warn('Could not refresh cart prices.', error);
-            });
+            refreshBagCatalog();
         });
     </script>
     <script src="auth.js"></script>
