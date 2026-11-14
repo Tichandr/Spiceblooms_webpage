@@ -21,6 +21,8 @@ No frontend build step is required. On `localhost`, `127.0.0.1`, or IPv6 loopbac
 
 Catalog responses include `inStock`; an explicit `false` shows sold-out products without hiding them and disables product/detail/combo/wishlist purchase buttons. Cart repricing propagates stock status, reloads older caches without it, and allows sold-out items to be removed or deselected. Shipping and payment steps reject selected sold-out items; the backend also rechecks availability before payment creation. Missing stock metadata preserves compatibility with older API responses.
 
+Product card and detail descriptions preserve line breaks from the catalog's plain-text `Description` property. Use JSON `\n` for a new line and `\n\n` between paragraphs; HTML tags are not interpreted. Existing card previews may still truncate long descriptions.
+
 The Bag refreshes catalog availability on every page load and browser-history return, and keeps checkout disabled until that check succeeds. Products missing from a successful catalog response are labelled unavailable instead of retaining purchasable fallback data. This is distinct from an explicit sold-out flag. Local development uses `https://localhost:7100`; changing a deployed Cosmos record affects the local site only when the local API reads that same database and returns the item.
 
 The backend now writes new delivery addresses inside user documents while retaining its existing address endpoint DTOs and legacy address records. The checkout's backend address registration and matching use the same IDs/fields, so no storefront address migration is required. Deploy the stock UI with the backend `Add-Address-to-Users-Document` update.
