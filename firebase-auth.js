@@ -7,6 +7,7 @@
   };
 
   let firebasePromise = null;
+  let firebaseClient = null;
 
   async function writeSession(user) {
     if (!window.SpicebloomsAuth || !user) return;
@@ -44,7 +45,7 @@
         import(SDK + "/firebase-auth.js")
       ]).then(([appMod, authMod]) => {
         const app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(cfg());
-        return {
+        firebaseClient = {
           auth: authMod.getAuth(app),
           GoogleAuthProvider: authMod.GoogleAuthProvider,
           signInWithPopup: authMod.signInWithPopup,
@@ -52,14 +53,23 @@
           getRedirectResult: authMod.getRedirectResult,
           firebaseSignOut: authMod.signOut
         };
+        return firebaseClient;
+      }).catch((error) => {
+        firebasePromise = null;
+        throw error;
       });
     }
     return firebasePromise;
   }
 
-  function preferRedirect() {
+  function isIOS() {
     const ua = navigator.userAgent || "";
-    return /iPhone|iPad|iPod|Android/i.test(ua);
+    return /iPhone|iPad|iPod/i.test(ua) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  }
+
+  function preferRedirect() {
+    return !isIOS() && /Android/i.test(navigator.userAgent || "");
   }
 
   window.SpicebloomsGoogleAuth = {
@@ -75,7 +85,8 @@
       return null;
     },
     async signIn() {
-      const { auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, firebaseSignOut } = await loadFirebase();
+      // Keep the prepared popup call in the click gesture on iOS.
+      const { auth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, firebaseSignOut } = firebaseClient || await loadFirebase();
       const provider = new GoogleAuthProvider();
       provider.addScope("email");
       provider.addScope("profile");
@@ -95,7 +106,7 @@
         return result.user;
       } catch (error) {
         const code = error && error.code;
-        if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+        if (!isIOS() && (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment")) {
           await signInWithRedirect(auth, provider);
           return null;
         }

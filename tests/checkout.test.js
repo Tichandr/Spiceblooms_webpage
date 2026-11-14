@@ -113,6 +113,29 @@ test('bag guests are prompted to sign in without exposing merchant credentials',
   assert.match(flow.element('pincode-status').textContent, /Sign in/);
 });
 
+test('bag free-delivery response replaces a paid rate and quantity changes restore normal charges', async () => {
+  const flow = bagRates((body) => ({
+    deliveryFee: body.items[0].quantity >= 3 ? 0 : 74.72,
+    freeDeliveryApplied: body.items[0].quantity >= 3,
+    rateAvailable: body.items[0].quantity < 3,
+    pincode: '500091', expiresAt: new Date(Date.now() + 300000).toISOString()
+  }));
+  const products = (quantity) => [{ itemId: 'catalog-1', quantity, price: 159, mrp: 205 }];
+  flow.setItems(products(2));
+  await flow.refresh();
+  assert.equal(flow.element('delivery-fee').textContent, 'Rs 74.72/-');
+  flow.setItems(products(3));
+  await flow.refresh();
+  assert.equal(flow.element('delivery-fee').textContent, 'Rs 0/-');
+  assert.equal(flow.element('total-price').textContent, 'Rs 477/-');
+  assert.match(flow.element('pincode-status').textContent, /Free delivery on orders of Rs 477 or more/);
+  flow.setItems(products(2));
+  await flow.refresh();
+  assert.equal(flow.element('delivery-fee').textContent, 'Rs 74.72/-');
+  assert.equal(flow.element('total-price').textContent, 'Rs 392.72/-');
+  assert.doesNotMatch(flow.element('pincode-status').textContent, /Free delivery/);
+});
+
 function checkout(mode = "success") {
   const calls = [];
   const localStorage = storage([["cart", JSON.stringify([item, { name: "Unpurchased item", quantity: 1 }])]]);
@@ -136,6 +159,7 @@ function checkout(mode = "success") {
   let activeAddress = address;
   let quoteHandler;
   let fee = mode === 'no-rates' ? 0 : 49.5;
+  let subtotal = 310;
   class ClockDate extends Date {
     constructor(...args) { super(...(args.length ? args : [now])); }
     static now() { return now; }
@@ -177,9 +201,9 @@ function checkout(mode = "success") {
       } else if (url.includes("/api/Orders/checkout/") || url.endsWith("/api/Orders/backend-order")) {
         payload = { id: "backend-order", paymentStatus: mode === "paid-on-return" ? "Paid"
           : mode === "expired-on-return" ? "Expired" : mode === "processing-on-return" ? "Processing" : "Pending",
-          status: "Confirmed", total: 310 + fee, razorpayPaymentId: mode === "paid-on-return" ? "pay_test" : null };
+          status: "Confirmed", total: subtotal + fee, razorpayPaymentId: mode === "paid-on-return" ? "pay_test" : null };
       } else if (url.endsWith("/api/Orders/verify-payment")) {
-        payload = { id: "backend-order", paymentStatus: mode === "unconfirmed" ? "Pending" : "Paid", total: 310 + fee,
+        payload = { id: "backend-order", paymentStatus: mode === "unconfirmed" ? "Pending" : "Paid", total: subtotal + fee,
           status: mode === "late-review" ? "PaymentReview" : "Confirmed" };
         if (mode === "verify-failure") {
           status = 503;
@@ -187,7 +211,8 @@ function checkout(mode = "success") {
         }
       } else if (url.endsWith("/api/Orders")) {
         if (mode === "lost-response") throw new TypeError("Order response lost");
-        payload = { orderId: "backend-order", razorpayOrderId: "order_test", amount: 310 + fee,
+        subtotal = body.subTotal;
+        payload = { orderId: "backend-order", razorpayOrderId: "order_test", amount: subtotal + fee,
           currency: "INR", keyId: "rzp_test_public", description: "Test order", paymentExpiresAt: new Date(now + 1800000).toISOString() };
         if (mode === "refresh" && !refreshed) status = 401;
         if (mode === "missing-key") delete payload.keyId;
@@ -223,6 +248,7 @@ function checkout(mode = "success") {
     advance: (milliseconds) => { now += milliseconds; },
     selectAddress: (value) => { activeAddress = value; },
     setQuoteHandler: (handler) => { quoteHandler = handler; },
+    setItems: (items) => { selectedItems = items; },
     quote: () => context.ensureShippingQuote(selectedItems, activeAddress),
     expire: async () => { now += 1800001; await [...timers.values()][0](); },
     run: (items = [item], displayedFee) => { selectedItems = items; return context.openRazorpayCheckout(items, activeAddress, "test@example.com", displayedFee); }
@@ -440,6 +466,28 @@ test('missing Shiprocket rates display zero delivery fee and do not block checko
   assert.equal(order.shippingQuoteId, 'signed-shipping-quote');
   assert.equal(flow.options().amount, 31000);
   assert.equal(flow.destination(), 'order-success.html');
+});
+
+test('checkout displays free delivery and submits the signed zero-fee quote unchanged', async () => {
+  const flow = checkout();
+  const products = [{ ...item, price: 159, quantity: 3 }];
+  flow.setItems(products);
+  flow.setQuoteHandler(() => ({
+    quoteId: 'free-delivery-quote', deliveryFee: 0, pincode: address.postcode,
+    freeDeliveryApplied: true, rateAvailable: false, expiresAt: new Date(Date.now() + 300000).toISOString()
+  }));
+  await flow.quote();
+  assert.equal(flow.element('delivery-fee').textContent, 'Rs 0/-');
+  assert.match(flow.element('delivery-estimate').textContent, /Free delivery on orders of Rs 477 or more/);
+  assert.equal(flow.element('continue-order').disabled, false);
+  await flow.run(products, 49.5);
+  const order = flow.calls.find((call) => call.url.endsWith('/api/Orders')).body;
+  assert.equal(order.subTotal, 477);
+  assert.equal(order.serviceCharge, 0);
+  assert.equal(order.total, 477);
+  assert.equal(order.shippingQuoteId, 'free-delivery-quote');
+  assert.equal(flow.element('total-price').textContent, 'Rs 477/-');
+  assert.equal(flow.options().amount, 47700);
 });
 
 test('an old quote response cannot replace the newly selected address fee', async () => {
