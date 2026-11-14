@@ -5,10 +5,14 @@
  */
 (function () {
   const isLocal = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
-  const API_BASE_URL = isLocal
-    ? "https://localhost:7100"
-    : "https://spiceblooms-api-dev.azurewebsites.net";
+  const LOCAL_API = "https://localhost:7100";
+  const REMOTE_API = "https://spiceblooms-api-dev.azurewebsites.net";
+  let localApiDown = false;
   const PHONE_PREFIX = "91";
+
+  function apiBase() {
+    return isLocal && !localApiDown ? LOCAL_API : REMOTE_API;
+  }
 
   class ApiError extends Error {
     constructor(message, status, details) {
@@ -99,13 +103,18 @@
     if (accessToken) headers.Authorization = "Bearer " + accessToken;
 
     let response;
+    const base = apiBase();
     try {
-      response = await fetch(API_BASE_URL + path, {
+      response = await fetch(base + path, {
         method,
         headers,
         body: body !== undefined ? JSON.stringify(body) : undefined
       });
     } catch (error) {
+      if (base === LOCAL_API) {
+        localApiDown = true;
+        return request(path, { method, body, token, attachSessionToken, retryUnauthorized });
+      }
       throw new ApiError("Network error. Please check your connection and try again.", 0, error);
     }
 
@@ -261,6 +270,44 @@
 
     getCheckout(checkoutId) {
       return authenticatedRequest("/api/Orders/checkout/" + encodeURIComponent(checkoutId));
+    },
+
+    /** GET /api/Users/me -> UserDto for the signed-in user */
+    getMe() {
+      return authenticatedRequest("/api/Users/me");
+    },
+
+    /** PUT /api/Users/me -> updated UserDto */
+    updateMe({ fullName, email, phone }) {
+      return authenticatedRequest("/api/Users/me", {
+        method: "PUT",
+        body: {
+          fullName,
+          email,
+          phone: phone ? toApiPhone(phone) : ""
+        }
+      });
+    },
+
+    updateAddress(addressId, address) {
+      return authenticatedRequest("/api/Users/me/addresses/" + encodeURIComponent(addressId), {
+        method: "PUT",
+        body: address
+      });
+    },
+
+    deleteAddress(addressId) {
+      return authenticatedRequest("/api/Users/me/addresses/" + encodeURIComponent(addressId), {
+        method: "DELETE"
+      });
+    },
+
+    getWallet() {
+      return authenticatedRequest("/api/Wallet");
+    },
+
+    getWalletTransactions() {
+      return authenticatedRequest("/api/Wallet/transactions");
     }
   };
 })();

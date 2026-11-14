@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account - Spiceblooms Naturals</title>
+<link rel="icon" type="image/png" href="assets/new-logo-naturals.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#FF6B35',
+                    secondary: '#F7931E',
+                    accent: '#FFB800',
+                    dark: '#2D2D2D',
+                    light: '#F8F9FA'
+                },
+                fontFamily: {
+                    body: ['Inter', 'system-ui', 'sans-serif']
+                }
+            }
+        }
+    }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    .gradient-bg { background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFB800 100%); }
+    .profile-nav a.is-active { background: #FF6B35; color: #fff; }
+    .field-error { min-height: 1.1rem; }
+</style>
+</head>
+<body class="font-body text-dark bg-light">
+    <nav class="fixed top-3 left-3 right-3 md:top-6 md:left-6 md:right-6 z-50 rounded-[30px] overflow-hidden bg-white/80 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgba(27,61,47,0.08)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-24">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Spiceblooms Naturals home">
+                    <img src="/assets/new-logo-naturals.png" alt="Spiceblooms Naturals" width="804" height="872" class="h-12 md:h-[84px] w-auto object-contain">
+                </a>
+                <div class="hidden md:flex items-center gap-x-6">
+                    <a href="index.html" class="text-gray-700 hover:text-primary">Home</a>
+                    <a href="products.html" class="text-gray-700 hover:text-primary">Products</a>
+                    <a href="cart.html" class="text-gray-700 hover:text-primary">Cart</a>
+                    <a href="profile.html" class="text-primary font-semibold">Profile</a>
+                    <button type="button" data-sign-out class="px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90">Sign out</button>
+                </div>
+                <button class="md:hidden inline-flex items-center justify-center p-2 min-w-[44px] min-h-[44px]" id="mobile-menu-button" aria-label="Open menu" type="button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-orange-100">
+                <a href="index.html" class="block px-3 py-2 text-gray-700">Home</a>
+                <a href="products.html" class="block px-3 py-2 text-gray-700">Products</a>
+                <a href="cart.html" class="block px-3 py-2 text-gray-700">Cart</a>
+                <a href="profile.html" class="block px-3 py-2 font-semibold text-primary">Profile</a>
+                <button type="button" data-sign-out class="w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 md:pt-40 pb-16">
+        <p id="page-status" class="mb-4 text-sm text-gray-600" role="status">Loading your account…</p>
+        <div id="account" hidden>
+            <header class="mb-8 flex items-center gap-4">
+                <div id="avatar" class="gradient-bg flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-xl font-bold text-white" aria-hidden="true">SB</div>
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-primary">Account management</p>
+                    <h1 id="welcome-name" class="text-3xl font-bold">Your account</h1>
+                    <p class="text-gray-600">Details below are saved on your Spiceblooms account.</p>
+                </div>
+            </header>
+
+            <div class="grid gap-6 lg:grid-cols-[240px_1fr]">
+                <nav class="profile-nav flex gap-2 overflow-x-auto lg:flex-col" aria-label="Account sections">
+                    <a href="#personal" class="is-active whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-orange-50">Personal information</a>
+                    <a href="#addresses" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-orange-50">My addresses</a>
+                    <a href="#orders" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-orange-50">My orders</a>
+                    <a href="#payments" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-orange-50">Payment history</a>
+                    <a href="#wishlist" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-orange-50">My wishlist</a>
+                    <a href="#settings" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-orange-50">Account settings</a>
+                </nav>
+
+                <div class="space-y-6">
+                    <section id="personal" class="rounded-3xl border border-orange-100 bg-white p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold">Personal information</h2>
+                        <p class="mt-1 text-sm text-gray-600">Name, email, and mobile number for this account.</p>
+                        <form id="profile-form" class="mt-5 grid gap-4 sm:grid-cols-2">
+                            <label class="block sm:col-span-2">
+                                <span class="text-sm font-semibold">Name</span>
+                                <input id="full-name" name="fullName" required maxlength="80" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary" autocomplete="name">
+                            </label>
+                            <label class="block">
+                                <span class="text-sm font-semibold">Email</span>
+                                <input id="email" name="email" type="email" maxlength="120" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary" autocomplete="email">
+                            </label>
+                            <label class="block">
+                                <span class="text-sm font-semibold">Mobile number</span>
+                                <input id="phone" name="phone" inputmode="numeric" maxlength="10" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary" autocomplete="tel" placeholder="10-digit mobile number">
+                            </label>
+                            <p id="profile-message" class="field-error text-sm sm:col-span-2" role="status"></p>
+                            <button type="submit" class="rounded-full bg-primary px-6 py-3 font-semibold text-white hover:bg-primary/90 sm:w-max">Save personal information</button>
+                        </form>
+                    </section>
+
+                    <section id="addresses" class="rounded-3xl border border-orange-100 bg-white p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold">My addresses</h2>
+                        <p class="mt-1 text-sm text-gray-600">Shipping addresses saved to your account. The default address is used at checkout.</p>
+                        <div id="address-list" class="mt-4 space-y-3"></div>
+                        <form id="address-form" class="mt-5 grid gap-3 sm:grid-cols-2">
+                            <h3 class="text-lg font-semibold sm:col-span-2">Add an address</h3>
+                            <label class="block">
+                                <span class="text-sm font-semibold">House or flat number</span>
+                                <input id="house-number" required maxlength="80" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary">
+                            </label>
+                            <label class="block">
+                                <span class="text-sm font-semibold">Building</span>
+                                <input id="block-number" maxlength="80" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary">
+                            </label>
+                            <label class="block sm:col-span-2">
+                                <span class="text-sm font-semibold">Street</span>
+                                <input id="street" required maxlength="120" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary">
+                            </label>
+                            <label class="block">
+                                <span class="text-sm font-semibold">City</span>
+                                <input id="city" required maxlength="60" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary">
+                            </label>
+                            <label class="block">
+                                <span class="text-sm font-semibold">PIN code</span>
+                                <input id="pincode" required inputmode="numeric" maxlength="6" pattern="[1-9][0-9]{5}" class="mt-1 w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-primary">
+                            </label>
+                            <label class="flex items-center gap-2 text-sm font-semibold sm:col-span-2">
+                                <input id="is-default" type="checkbox" class="h-4 w-4 accent-primary">
+                                Use as the default shipping address
+                            </label>
+                            <p id="address-message" class="field-error text-sm sm:col-span-2" role="status"></p>
+                            <button type="submit" class="rounded-full bg-primary px-6 py-3 font-semibold text-white hover:bg-primary/90 sm:w-max">Save address</button>
+                        </form>
+                    </section>
+
+                    <section id="orders" class="rounded-3xl border border-orange-100 bg-white p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold">My orders</h2>
+                        <p class="mt-1 text-sm text-gray-600">Orders placed with this account.</p>
+                        <div id="order-list" class="mt-4 space-y-3"></div>
+                    </section>
+
+                    <section id="payments" class="rounded-3xl border border-orange-100 bg-white p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold">Payment history</h2>
+                        <p class="mt-1 text-sm text-gray-600">Payment status from your orders, and wallet transactions on this account.</p>
+                        <div id="payment-list" class="mt-4 space-y-3"></div>
+                    </section>
+
+                    <section id="wishlist" class="rounded-3xl border border-orange-100 bg-white p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold">My wishlist</h2>
+                        <p class="mt-1 text-sm text-gray-600">Products you saved with the heart on the products page.</p>
+                        <div id="wishlist-list" class="mt-4 grid gap-3 sm:grid-cols-2"></div>
+                    </section>
+
+                    <section id="settings" class="rounded-3xl border border-orange-100 bg-white p-6 shadow-sm">
+                        <h2 class="text-2xl font-bold">Account settings</h2>
+                        <p class="mt-1 text-sm text-gray-600">How you sign in, and the contact details used for this account.</p>
+                        <dl id="settings-list" class="mt-4 space-y-3 text-sm"></dl>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="auth.js"></script>
+    <script src="api.js"></script>
+    <script>
+        document.getElementById("mobile-menu-button").addEventListener("click", function () {
+            document.getElementById("mobile-menu").classList.toggle("hidden");
+        });
+
+        const session = window.SpicebloomsAuth.get();
+        if (!session || !session.token) {
+            window.location.replace("login.html?next=profile.html");
+        }
+
+        const WISHLIST_KEY = "spiceblooms_wishlist";
+        const SAVED_PRODUCTS = {
+            moringa: ["Moringa Instant Rice Mix", "https://spicebloomsstorage.blob.core.windows.net/product-images/Moringa-Instant-Ricemix.png"],
+            dhanya: ["Dhaniya Powder", "https://spicebloomsstorage.blob.core.windows.net/product-images/Dhanya-Podi.png"],
+            pesara: ["Pesara Podi", "https://spicebloomsstorage.blob.core.windows.net/product-images/Pesara-Podi.png"],
+            turmeric: ["Turmeric Powder", "https://spicebloomsstorage.blob.core.windows.net/product-images/Turmeric-Powder.png"],
+            kandi: ["Kandi Podi", "https://spicebloomsstorage.blob.core.windows.net/product-images/Kandi-Podi.png"],
+            "masala-karam": ["Masala Karam", "https://spicebloomsstorage.blob.core.windows.net/product-images/Masala-Karam.png"],
+            "garam-21": ["21 Garam Masala", "https://spicebloomsstorage.blob.core.windows.net/product-images/21-Garam-Masala.png"],
+            sambar: ["Sambar Powder", "https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png"],
+            royya: ["Royya Karam", "https://spicebloomsstorage.blob.core.windows.net/product-images/Roya-Karam.png"],
+            karivepaku: ["Curry Leaf Powder", "https://spicebloomsstorage.blob.core.windows.net/product-images/CurryLeaf-Powder.png"],
+            rasam: ["Rasam Powder", "https://spicebloomsstorage.blob.core.windows.net/product-images/Rasam-Powder.png"],
+            chicken: ["Chicken Powder", "https://spicebloomsstorage.blob.core.windows.net/product-images/Chicken-Podwer.png"],
+            "lakadang-turmeric": ["Lakadang Turmeric", "https://spicebloomsstorage.blob.core.windows.net/product-images/Lakadang.png"]
+        };
+
+        const status = document.getElementById("page-status");
+        const account = document.getElementById("account");
+
+        const text = (value) => String(value || "").trim();
+        const money = (value) => {
+            const amount = Number(String(value || "").replace(/[^\d.]/g, ""));
+            return Number.isFinite(amount) && String(value || "").trim() !== "" ? "Rs " + amount.toLocaleString("en-IN") : "";
+        };
+        const when = (value) => {
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        };
+        const phoneDigits = (value) => {
+            const digits = text(value).replace(/\D/g, "");
+            return digits.length > 10 ? digits.slice(-10) : digits;
+        };
+        const initials = (name) => {
+            const parts = text(name).split(/\s+/).filter(Boolean);
+            const letters = (parts[0] ? parts[0][0] : "S") + (parts[1] ? parts[1][0] : "");
+            return letters.toUpperCase();
+        };
+        const message = (id, content, ok) => {
+            const el = document.getElementById(id);
+            el.textContent = content;
+            el.className = "field-error text-sm sm:col-span-2 " + (ok ? "text-green-700" : "text-red-700");
+        };
+        const emptyNote = (target, content) => {
+            target.replaceChildren();
+            const p = document.createElement("p");
+            p.className = "rounded-2xl bg-orange-50 px-4 py-3 text-sm text-gray-700";
+            p.textContent = content;
+            target.appendChild(p);
+        };
+
+        function showUser(user) {
+            const name = text(user.fullName || user.FullName) || "Your account";
+            document.getElementById("welcome-name").textContent = name;
+            document.getElementById("avatar").textContent = initials(name);
+            document.getElementById("full-name").value = text(user.fullName || user.FullName);
+            document.getElementById("email").value = text(user.email || user.Email);
+            document.getElementById("phone").value = phoneDigits(user.phone || user.Phone);
+            const current = window.SpicebloomsAuth.get() || {};
+            window.SpicebloomsAuth.set(Object.assign({}, current, {
+                name: text(user.fullName || user.FullName) || current.name,
+                email: text(user.email || user.Email) || current.email,
+                phone: phoneDigits(user.phone || user.Phone) || current.phone,
+                user: Object.assign({}, current.user, user)
+            }));
+            renderSettings(user);
+        }
+
+        function renderSettings(user) {
+            const current = window.SpicebloomsAuth.get() || {};
+            const method = current.provider === "google" ? "Google" : "Mobile OTP";
+            const rows = [
+                ["Sign-in method", method],
+                ["Name on the account", text(user.fullName || user.FullName) || "Not saved yet"],
+                ["Email", text(user.email || user.Email) || "Not saved yet"],
+                ["Mobile", phoneDigits(user.phone || user.Phone) ? "+91 " + phoneDigits(user.phone || user.Phone) : "Not saved yet"],
+                ["Password", "Spiceblooms signs you in with Google or a one-time code. This account does not keep a separate password."]
+            ];
+            const list = document.getElementById("settings-list");
+            list.replaceChildren();
+            rows.forEach(function (row) {
+                const wrap = document.createElement("div");
+                wrap.className = "rounded-2xl bg-light px-4 py-3";
+                const term = document.createElement("dt");
+                term.className = "font-semibold text-gray-500";
+                term.textContent = row[0];
+                const detail = document.createElement("dd");
+                detail.className = "mt-1 text-dark";
+                detail.textContent = row[1];
+                wrap.append(term, detail);
+                list.appendChild(wrap);
+            });
+        }
+
+        function addressLines(address) {
+            return [
+                text(address.houseNumber || address.HouseNumber),
+                text(address.blockNumber || address.BlockNumber),
+                text(address.street || address.Street),
+                [text(address.city || address.City), text(address.pincode || address.Pincode)].filter(Boolean).join(" ")
+            ].filter(Boolean).join(", ");
+        }
+
+        function renderAddresses(addresses) {
+            const list = document.getElementById("address-list");
+            if (!addresses.length) {
+                emptyNote(list, "No addresses saved yet. Add one below and it will appear here.");
+                return;
+            }
+            list.replaceChildren();
+            addresses.forEach(function (address) {
+                const id = address.id || address.Id;
+                const card = document.createElement("article");
+                card.className = "flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-gray-100 px-4 py-3";
+                const copy = document.createElement("div");
+                const title = document.createElement("p");
+                title.className = "font-semibold";
+                title.textContent = (address.isDefault || address.IsDefault) ? "Default shipping address" : "Shipping address";
+                const body = document.createElement("p");
+                body.className = "mt-1 text-sm text-gray-600";
+                body.textContent = addressLines(address);
+                copy.append(title, body);
+                const actions = document.createElement("div");
+                actions.className = "flex gap-2";
+                if (!(address.isDefault || address.IsDefault)) {
+                    const makeDefault = document.createElement("button");
+                    makeDefault.type = "button";
+                    makeDefault.className = "rounded-full border border-primary px-3 py-1 text-sm font-semibold text-primary";
+                    makeDefault.textContent = "Make default";
+                    makeDefault.addEventListener("click", function () { saveAddressUpdate(address, true); });
+                    actions.appendChild(makeDefault);
+                }
+                const remove = document.createElement("button");
+                remove.type = "button";
+                remove.className = "rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold";
+                remove.textContent = "Remove";
+                remove.addEventListener("click", function () { removeAddress(id); });
+                actions.appendChild(remove);
+                card.append(copy, actions);
+                list.appendChild(card);
+            });
+        }
+
+        function orderItems(order) {
+            const items = order.orderItems || order.orderedItems || order.items || [];
+            return items.map(function (item) {
+                return text(item.itemName || item.name) + (item.quantity ? " × " + item.quantity : "");
+            }).filter(Boolean).join(", ");
+        }
+
+        function renderOrders(orders) {
+            const list = document.getElementById("order-list");
+            if (!orders.length) {
+                emptyNote(list, "No orders yet. After you pay, the order will show here.");
+                return;
+            }
+            list.replaceChildren();
+            orders.forEach(function (order) {
+                const card = document.createElement("article");
+                card.className = "rounded-2xl border border-gray-100 px-4 py-3";
+                const title = document.createElement("p");
+                title.className = "font-semibold";
+                title.textContent = (text(order.status || order.orderStatus) || "Order") + (order.orderDate || order.date ? " · " + when(order.orderDate || order.date) : "");
+                const items = document.createElement("p");
+                items.className = "mt-1 text-sm text-gray-600";
+                items.textContent = orderItems(order) || "Items will appear when the order details are available.";
+                const meta = document.createElement("p");
+                meta.className = "mt-1 text-sm";
+                const bits = [];
+                if (order.total) bits.push("Total " + money(order.total));
+                if (order.deliveryDate) bits.push("Estimated delivery " + when(order.deliveryDate));
+                if (order.paymentStatus) bits.push("Payment " + text(order.paymentStatus));
+                meta.textContent = bits.join(" · ");
+                card.append(title, items, meta);
+                list.appendChild(card);
+            });
+        }
+
+        function renderPayments(orders, walletRows) {
+            const list = document.getElementById("payment-list");
+            const rows = [];
+            orders.forEach(function (order) {
+                if (!order.paymentStatus && !order.razorpayPaymentId && !order.total) return;
+                rows.push({
+                    title: "Order payment",
+                    detail: [text(order.paymentStatus) || "Status pending", money(order.total), order.razorpayPaymentId ? "Payment ID " + order.razorpayPaymentId : ""].filter(Boolean).join(" · "),
+                    when: order.orderDate || order.date
+                });
+            });
+            walletRows.forEach(function (row) {
+                rows.push({
+                    title: text(row.description || row.transactionType) || "Wallet transaction",
+                    detail: [text(row.status), money(row.amount)].filter(Boolean).join(" · "),
+                    when: row.transactionDate
+                });
+            });
+            if (!rows.length) {
+                emptyNote(list, "No payments yet. Completed order payments and wallet transactions will show here.");
+                return;
+            }
+            list.replaceChildren();
+            rows.forEach(function (row) {
+                const card = document.createElement("article");
+                card.className = "rounded-2xl border border-gray-100 px-4 py-3";
+                const title = document.createElement("p");
+                title.className = "font-semibold";
+                title.textContent = row.title + (row.when ? " · " + when(row.when) : "");
+                const detail = document.createElement("p");
+                detail.className = "mt-1 text-sm text-gray-600";
+                detail.textContent = row.detail;
+                card.append(title, detail);
+                list.appendChild(card);
+            });
+        }
+
+        function readWishlist() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(WISHLIST_KEY) || "[]");
+                return Array.isArray(stored) ? stored.filter(Boolean) : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function renderWishlist() {
+            const list = document.getElementById("wishlist-list");
+            const ids = readWishlist();
+            if (!ids.length) {
+                emptyNote(list, "No saved products yet. Tap the heart on a product to keep it here.");
+                return;
+            }
+            list.replaceChildren();
+            ids.forEach(function (id) {
+                const known = SAVED_PRODUCTS[id];
+                const card = document.createElement("article");
+                card.className = "flex items-center gap-3 rounded-2xl border border-gray-100 p-3";
+                const img = document.createElement("img");
+                img.className = "h-16 w-16 rounded-xl object-contain bg-orange-50";
+                img.alt = "";
+                if (known) img.src = known[1];
+                else img.hidden = true;
+                const copy = document.createElement("div");
+                copy.className = "min-w-0 flex-1";
+                const name = document.createElement("p");
+                name.className = "font-semibold";
+                name.textContent = known ? known[0] : id;
+                const remove = document.createElement("button");
+                remove.type = "button";
+                remove.className = "mt-1 text-sm font-semibold text-primary";
+                remove.textContent = "Remove";
+                remove.addEventListener("click", function () {
+                    const next = readWishlist().filter(function (saved) { return saved !== id; });
+                    localStorage.setItem(WISHLIST_KEY, JSON.stringify(next));
+                    renderWishlist();
+                });
+                copy.append(name, remove);
+                card.append(img, copy);
+                list.appendChild(card);
+            });
+        }
+
+        async function loadOrders() {
+            const payload = await window.SpicebloomsApi.getOrders();
+            const list = Array.isArray(payload) ? payload : ((payload && (payload.orders || payload.itemList)) || []);
+            const detailed = await Promise.all(list.map(async function (entry) {
+                const id = entry.id || entry.orderId;
+                if (id && !entry.total && !entry.paymentStatus) {
+                    try { return await window.SpicebloomsApi.getOrder(null, id); } catch (error) { return entry; }
+                }
+                return entry;
+            }));
+            return detailed;
+        }
+
+        function walletRows(payload) {
+            const groups = Array.isArray(payload) ? payload : ((payload && payload.history) || []);
+            const rows = [];
+            groups.forEach(function (group) {
+                (group.rechargeDetails || group.details || (group.amount ? [group] : [])).forEach(function (row) {
+                    rows.push(row);
+                });
+            });
+            return rows;
+        }
+
+        async function refreshAddresses() {
+            const addresses = await window.SpicebloomsApi.getAddresses();
+            renderAddresses(Array.isArray(addresses) ? addresses : []);
+        }
+
+        async function saveAddressUpdate(address, isDefault) {
+            message("address-message", "Saving address…", true);
+            try {
+                await window.SpicebloomsApi.updateAddress(address.id || address.Id, {
+                    blockNumber: text(address.blockNumber || address.BlockNumber),
+                    houseNumber: text(address.houseNumber || address.HouseNumber),
+                    street: text(address.street || address.Street),
+                    city: text(address.city || address.City),
+                    pincode: text(address.pincode || address.Pincode),
+                    isDefault: isDefault
+                });
+                await refreshAddresses();
+                message("address-message", "Address updated.", true);
+            } catch (error) {
+                message("address-message", error.message, false);
+            }
+        }
+
+        async function removeAddress(id) {
+            message("address-message", "Removing address…", true);
+            try {
+                await window.SpicebloomsApi.deleteAddress(id);
+                await refreshAddresses();
+                message("address-message", "Address removed.", true);
+            } catch (error) {
+                message("address-message", error.message, false);
+            }
+        }
+
+        document.getElementById("profile-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const fullName = text(document.getElementById("full-name").value).replace(/\s+/g, " ");
+            const email = text(document.getElementById("email").value);
+            const phone = phoneDigits(document.getElementById("phone").value);
+            if (fullName.length < 2) {
+                message("profile-message", "Enter your name.", false);
+                return;
+            }
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                message("profile-message", "Enter a valid email address.", false);
+                return;
+            }
+            if (phone && phone.length !== 10) {
+                message("profile-message", "Enter a 10-digit mobile number.", false);
+                return;
+            }
+            message("profile-message", "Saving…", true);
+            try {
+                const saved = await window.SpicebloomsApi.updateMe({ fullName, email, phone });
+                showUser(saved || { fullName, email, phone });
+                message("profile-message", "Personal information saved.", true);
+            } catch (error) {
+                message("profile-message", error.message, false);
+            }
+        });
+
+        document.getElementById("address-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const payload = {
+                houseNumber: text(document.getElementById("house-number").value),
+                blockNumber: text(document.getElementById("block-number").value),
+                street: text(document.getElementById("street").value),
+                city: text(document.getElementById("city").value),
+                pincode: text(document.getElementById("pincode").value),
+                isDefault: document.getElementById("is-default").checked
+            };
+            if (!/^[1-9][0-9]{5}$/.test(payload.pincode)) {
+                message("address-message", "Enter a 6-digit PIN code.", false);
+                return;
+            }
+            message("address-message", "Saving address…", true);
+            try {
+                await window.SpicebloomsApi.createAddress(null, payload);
+                event.target.reset();
+                await refreshAddresses();
+                message("address-message", "Address saved to your account.", true);
+            } catch (error) {
+                message("address-message", error.message, false);
+            }
+        });
+
+        document.querySelectorAll(".profile-nav a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                document.querySelectorAll(".profile-nav a").forEach(function (item) {
+                    item.classList.toggle("is-active", item === link);
+                });
+            });
+        });
+
+        async function loadAccount() {
+            if (!session || !session.token) return;
+            try {
+                const user = await window.SpicebloomsApi.getMe();
+                showUser(user || {});
+                await refreshAddresses();
+                let orders = [];
+                try { orders = await loadOrders(); } catch (error) { orders = []; }
+                renderOrders(orders);
+                let wallet = [];
+                try { wallet = walletRows(await window.SpicebloomsApi.getWalletTransactions()); }
+                catch (error) {
+                    try { wallet = walletRows(await window.SpicebloomsApi.getWallet()); } catch (inner) { wallet = []; }
+                }
+                renderPayments(orders, wallet);
+                renderWishlist();
+                status.hidden = true;
+                account.hidden = false;
+            } catch (error) {
+                status.textContent = error.message || "Sign in again to open your account.";
+            }
+        }
+
+        loadAccount();
+    </script>
+</body>
+</html>

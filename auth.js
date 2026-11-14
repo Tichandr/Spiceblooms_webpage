@@ -40,6 +40,12 @@
   };
 
   const session = read();
+  document.querySelectorAll("[data-sign-in]").forEach((el) => {
+    el.classList.toggle("hidden", Boolean(session));
+  });
+  document.querySelectorAll("[data-profile-link]").forEach((el) => {
+    el.classList.toggle("hidden", !session);
+  });
   document.querySelectorAll("[data-sign-out]").forEach((btn) => {
     if (!session) return;
     btn.classList.remove("hidden");
