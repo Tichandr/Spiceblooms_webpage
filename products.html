@@ -631,6 +631,67 @@
             object-fit: contain;
         }
 
+        [data-catalog-gallery] {
+            flex-direction: column;
+        }
+
+        .catalog-gallery-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 8px;
+        }
+
+        .catalog-gallery-controls[hidden],
+        .catalog-image-message[hidden] {
+            display: none;
+        }
+
+        .catalog-gallery-controls button {
+            border: 1px solid #6B7280;
+            border-radius: 8px;
+            min-width: 44px;
+            min-height: 44px;
+            background: #fff;
+        }
+
+        .catalog-image-message {
+            padding: 24px;
+            text-align: center;
+            color: #4B5563;
+        }
+
+        .variant-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .variant-options[hidden] {
+            display: none;
+        }
+
+        .variant-options label {
+            display: flex;
+            flex: 1 1 100px;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .variant-options select {
+            width: 100%;
+            min-height: 44px;
+            padding: 8px;
+            border: 1px solid #6B7280;
+            border-radius: 8px;
+            background: #fff;
+            color: #2D2D2D;
+        }
+
         .pd-head {
             display: flex;
             align-items: center;
@@ -1195,6 +1256,7 @@
                     </div>
                     <p class="pd-desc" data-pd-desc></p>
                     <ul class="pd-points" data-pd-points></ul>
+                    <div class="variant-options" data-pd-variants hidden></div>
                     <div class="pd-actions">
                         <div class="pd-qty">
                             <button type="button" data-pd-qty-minus aria-label="Decrease quantity">-</button>
@@ -2203,6 +2265,7 @@
     </div>
 
     <script src="api.js"></script>
+    <script src="catalog-variants.js"></script>
     <script>
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -2265,7 +2328,7 @@
         function refreshStockControls() {
             document.querySelectorAll('[data-wishlist-add]').forEach(function (button) {
                 const product = getProductById(button.getAttribute('data-wishlist-add'));
-                if (product) setStockButton(button, product.inStock !== false, product.catalogUnavailable ? 'Unavailable' : 'Sold out');
+                if (product) setStockButton(button, !!product.variants || product.inStock !== false, product.catalogUnavailable ? 'Unavailable' : 'Sold out');
             });
             const detail = document.getElementById('product-detail');
             const product = detail && getProductById(detail.dataset.activeId);
@@ -2286,13 +2349,16 @@
             }
             const qty = options && options.quantity ? Math.max(1, parseInt(options.quantity, 10) || 1) : 1;
             const cart = getCart();
-            const existingItem = cart.find(item => item.name === name);
-            const itemImage = getCatalogImage(name) || image;
+            const itemId = catalogItem && (catalogItem.id || catalogItem.Id);
+            const existingItem = cart.find(item => itemId && item.itemId ? item.itemId === itemId : item.name === name);
+            const itemImage = catalogItem
+                ? getCatalogImageUri(catalogItem.imageUri || catalogItem.ImageUri) || image
+                : getCatalogImage(name) || image;
 
             if (existingItem) {
                 existingItem.quantity = Math.min(20, (parseInt(existingItem.quantity, 10) || 0) + qty);
                 existingItem.image = itemImage;
-                if (options && options.itemId) existingItem.itemId = options.itemId;
+                if (itemId) existingItem.itemId = itemId;
             } else {
                 const cartItem = {
                     name: name,
@@ -2300,7 +2366,12 @@
                     image: itemImage,
                     quantity: qty
                 };
-                if (options && options.itemId) cartItem.itemId = options.itemId;
+                if (itemId) cartItem.itemId = itemId;
+                if (catalogItem && catalogItem.productGroupId) {
+                    cartItem.productGroupId = catalogItem.productGroupId;
+                    cartItem.flavor = catalogItem.flavor;
+                    cartItem.itemQuantity = catalogItem.quantity;
+                }
                 cart.push(cartItem);
             }
 
@@ -2526,7 +2597,7 @@
                 console.error('Catalog product not found:', productId);
                 return false;
             }
-            const name = getCatalogItemName(item) || product.name;
+            const name = product.variants ? product.groupName : getCatalogItemName(item) || product.name;
             const image = getCatalogImageUri(item.imageUri || item.ImageUri);
             const description = item.description || item.Description;
             const oldPrice = item.oldPrice !== undefined ? item.oldPrice : item.OldPrice;
@@ -2540,7 +2611,7 @@
             }
 
             product.name = name;
-            product.cartName = name;
+            product.cartName = product.variants ? window.SpicebloomsVariants.cartName(item) : name;
             product.itemId = item.id || item.Id;
             product.inStock = catalogInStock(item);
             product.catalogUnavailable = false;
@@ -2566,6 +2637,13 @@
                 cardImage.src = image;
                 cardImage.alt = name;
             }
+            if (product.variants) {
+                product.image = image;
+                product.images = window.SpicebloomsVariants.images(item).map(getCatalogImageUri).filter(Boolean);
+                product.desc = description || '';
+                if (cardDescription) cardDescription.textContent = product.desc;
+                window.SpicebloomsVariants.renderGallery(cardImage, product.images, product.cartName);
+            }
             if (priceElements.actualPrice && priceNumber !== null) {
                 priceElements.actualPrice.textContent = formatCatalogPrice(actualPrice);
             }
@@ -2580,6 +2658,45 @@
             return true;
         }
 
+        function selectProductVariant(product, flavor, size) {
+            product.selectedFlavor = flavor;
+            product.selectedSize = size;
+            product.cartName = [product.groupName, flavor, size].join(' - ');
+            const item = window.SpicebloomsVariants.select(product.variants, flavor, size);
+            const card = document.querySelector('#all-products [data-product-id="' + product.id + '"]');
+            if (item) {
+                applyCatalogProductItem(product.id, item);
+            } else {
+                product.itemId = null;
+                product.inStock = false;
+                product.catalogUnavailable = true;
+                product.image = '';
+                product.images = [];
+                card.querySelector('[data-catalog-actual-price]').textContent = 'Unavailable';
+                card.querySelector('[data-catalog-old-price]').hidden = true;
+                setStockButton(card.querySelector('[data-product-add]'), false, 'Unavailable');
+                window.SpicebloomsVariants.renderGallery(card.querySelector('img'), [], product.name);
+            }
+            const detail = document.getElementById('product-detail');
+            const hosts = [card];
+            if (detail.dataset.activeId === product.id) {
+                hosts.push(detail);
+                detail.querySelector('[data-pd-desc]').textContent = product.desc;
+                detail.querySelector('[data-pd-price]').textContent = item ? formatCatalogPrice(product.price) : 'Unavailable';
+                const mrp = detail.querySelector('[data-pd-mrp]');
+                mrp.hidden = !item || !product.mrp || product.mrp <= product.price;
+                mrp.textContent = mrp.hidden ? '' : formatCatalogPrice(product.mrp);
+                window.SpicebloomsVariants.renderGallery(detail.querySelector('[data-pd-image]'), product.images, product.cartName);
+            }
+            hosts.forEach(function (host) {
+                host.querySelectorAll('[data-variant-option]').forEach(function (select) {
+                    select.value = select.dataset.variantOption === 'flavor' ? flavor : size;
+                });
+            });
+            renderWishlist();
+            refreshStockControls();
+        }
+
         function addMissingCatalogCards() {
             const grid = document.querySelector('#all-products .grid');
             if (!grid) return;
@@ -2590,6 +2707,7 @@
             });
             const bestByName = {};
             catalogImageItems.forEach(function (item) {
+                if (item.productGroupId || item.ProductGroupId) return;
                 const key = normalizeCatalogName(getCatalogItemName(item));
                 if (!key || used[key] || key === 'podi combo') return;
                 const current = bestByName[key];
@@ -2597,11 +2715,16 @@
                     bestByName[key] = item;
                 }
             });
+            const groups = window.SpicebloomsVariants.groupItems(catalogImageItems);
+            groups.forEach(function (group) {
+                bestByName['group-' + group.key] = window.SpicebloomsVariants.initial(group.variants);
+            });
             Object.keys(bestByName).forEach(function (key) {
                 const item = bestByName[key];
-                const id = key.replace(/\s+/g, '-');
+                const group = groups.find(function (group) { return key === 'group-' + group.key; });
+                const id = group ? window.SpicebloomsVariants.productId(group.key) : key.replace(/[^a-zA-Z0-9-]+/g, '-').toLowerCase();
                 if (document.querySelector('#all-products [data-product-id="' + id + '"]')) return;
-                const name = getCatalogItemName(item);
+                const name = group ? group.name : getCatalogItemName(item);
                 const image = getCatalogImageUri(item.imageUri || item.ImageUri);
                 const description = item.description || item.Description || '';
                 const price = catalogActualPrice(item);
@@ -2609,20 +2732,29 @@
                 PRODUCT_CATALOG.push({
                     id: id,
                     name: name,
-                    cartName: name,
+                    cartName: group ? window.SpicebloomsVariants.cartName(item) : name,
                     price: price || 0,
                     mrp: oldPrice && price && oldPrice > price ? oldPrice : 0,
                     image: image,
                     desc: description,
                     itemId: item.id || item.Id,
                     inStock: catalogInStock(item),
+                    variants: group && group.variants,
+                    groupName: group && group.name,
+                    selectedFlavor: group && window.SpicebloomsVariants.text(item, 'flavor'),
+                    selectedSize: group && window.SpicebloomsVariants.text(item, 'quantity'),
+                    images: group ? window.SpicebloomsVariants.images(item).map(getCatalogImageUri).filter(Boolean) : [],
                     badge: 'New',
                     points: []
                 });
 
                 const card = document.createElement('div');
                 card.setAttribute('data-product-id', id);
-                card.setAttribute('data-search', key);
+                card.setAttribute('data-search', group
+                    ? [group.name].concat(group.variants.map(function (variant) {
+                        return window.SpicebloomsVariants.text(variant, 'flavor') + ' ' + window.SpicebloomsVariants.text(variant, 'quantity');
+                    })).join(' ').toLowerCase()
+                    : key);
                 card.className = 'product-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100';
                 const imageWrap = document.createElement('div');
                 imageWrap.className = 'relative overflow-hidden';
@@ -2674,11 +2806,26 @@
                 actions.appendChild(button);
                 body.appendChild(heading);
                 body.appendChild(desc);
+                if (group) {
+                    const selectors = document.createElement('div');
+                    selectors.className = 'variant-options';
+                    window.SpicebloomsVariants.mountSelectors(selectors, group.variants, item, function (flavor, size) {
+                        selectProductVariant(getProductById(id), flavor, size);
+                    });
+                    body.appendChild(selectors);
+                }
                 body.appendChild(prices);
                 body.appendChild(actions);
                 card.appendChild(imageWrap);
                 card.appendChild(body);
                 grid.appendChild(card);
+                if (group) {
+                    window.SpicebloomsVariants.renderGallery(img, getProductById(id).images, window.SpicebloomsVariants.cartName(item));
+                }
+                card.addEventListener('click', function (event) {
+                    if (event.target.closest('button, select, label, input, a')) return;
+                    openProductDetail(id);
+                });
             });
         }
 
@@ -2927,6 +3074,10 @@
                 });
                 applyCatalogImages();
                 addMissingCatalogCards();
+                mountCardHearts();
+                renderWishlist();
+                applyCatalogFilters();
+                syncProductFromHash();
                 refreshStockControls();
                 if (status) {
                     if (failedProducts.length) {
@@ -2937,9 +3088,9 @@
                     }
                 }
             } catch (error) {
-                console.error('Unable to load product images from the catalog API.', error);
+                console.error('Unable to load products from the catalog API.', error);
                 if (status) {
-                    status.textContent = 'The latest product images could not be loaded. Showing available images instead.';
+                    status.textContent = 'The latest catalog could not be loaded. Some products or options may be unavailable. Please refresh or try again.';
                     status.hidden = false;
                 }
             }
@@ -3003,7 +3154,7 @@
                     '<div class="wishlist-body">' +
                     '<strong>' + item.name + '</strong>' +
                     '<span class="wishlist-price">Rs ' + item.price + '/-</span>' +
-                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '" ' + (item.inStock === false ? 'disabled' : '') + '>' + (item.catalogUnavailable ? 'Unavailable' : item.inStock === false ? 'Sold out' : 'Add to Cart') + '</button>' +
+                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '" ' + (item.variants ? '' : item.inStock === false ? 'disabled' : '') + '>' + (item.variants ? 'Choose options' : item.catalogUnavailable ? 'Unavailable' : item.inStock === false ? 'Sold out' : 'Add to Cart') + '</button>' +
                     '</div>' +
                     '</article>';
             }).join('');
@@ -3129,8 +3280,20 @@
             title.textContent = product.name;
             crumb.textContent = product.name;
             desc.textContent = product.desc;
-            price.textContent = 'Rs ' + product.price + '/-';
-            if (product.mrp) {
+            const selectors = detail.querySelector('[data-pd-variants]');
+            selectors.hidden = !product.variants;
+            if (product.variants) {
+                window.SpicebloomsVariants.mountSelectors(selectors, product.variants, {
+                    flavor: product.selectedFlavor, quantity: product.selectedSize
+                }, function (flavor, size) {
+                    selectProductVariant(product, flavor, size);
+                });
+                window.SpicebloomsVariants.renderGallery(img, product.images, product.cartName);
+            } else {
+                window.SpicebloomsVariants.renderGallery(img, product.image ? [product.image] : [], product.name);
+            }
+            price.textContent = product.catalogUnavailable ? 'Unavailable' : 'Rs ' + product.price + '/-';
+            if (product.mrp && (!product.variants || (!product.catalogUnavailable && product.mrp > product.price))) {
                 mrp.hidden = false;
                 mrp.textContent = 'Rs ' + product.mrp + '/-';
             } else {
@@ -3248,7 +3411,8 @@
                 if (addWish) {
                     event.preventDefault();
                     const product = getProductById(addWish.getAttribute('data-wishlist-add'));
-                    if (product) addToCart(product.cartName, product.price, product.image, { stay: true });
+                    if (product && product.variants) openProductDetail(product.id);
+                    else if (product) addToCart(product.cartName, product.price, product.image, { stay: true, itemId: product.itemId });
                 }
             });
 
