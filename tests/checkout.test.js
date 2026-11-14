@@ -327,6 +327,54 @@ test("missing session or catalog ID stops checkout before backend requests", asy
   const unmatched = checkout();
   await assert.rejects(unmatched.run([{ ...item, itemId: null }]), /backend catalog/);
   assert.equal(unmatched.calls.length, 0);
+  const soldOut = checkout();
+  await assert.rejects(soldOut.run([{ ...item, inStock: false }]), /sold out/);
+  assert.equal(soldOut.calls.length, 0);
+});
+
+test("repricing refreshes missing stock metadata and propagates sold-out and restocked products", async () => {
+  let inStock = false;
+  const sessionStorage = storage([["spiceblooms_catalog_prices", JSON.stringify({
+    at: Date.now(), prices: { turmeric: { itemId: "catalog-1", price: 155, mrp: 205 } }
+  })]]);
+  const context = {
+    sessionStorage,
+    window: { SpicebloomsApi: { getCatalogItems: async () => ({
+      totalListCount: 1, itemList: [{ id: "catalog-1", itemName: "Turmeric Powder",
+        actualPrice: "155", oldPrice: "205", inStock }]
+    }) } }
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(root, "cart-pricing.js"), "utf8"), context);
+  const pricing = context.window.SpicebloomsPricing;
+  const soldOut = await pricing.reprice([item]);
+  assert.equal(soldOut.cart[0].inStock, false);
+  assert.equal(soldOut.cart[0].quantity, 2);
+  inStock = true;
+  const restocked = await pricing.reprice(soldOut.cart, true);
+  assert.equal(restocked.changed, true);
+  assert.equal(restocked.cart[0].inStock, true);
+});
+
+test("ABC missing from the catalog is unavailable, and a fresh response restores its real stock status", async () => {
+  let items = [];
+  const context = {
+    sessionStorage: storage(),
+    window: { SpicebloomsApi: { getCatalogItems: async () => ({ totalListCount: items.length, itemList: items }) } }
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(root, "cart-pricing.js"), "utf8"), context);
+  const pricing = context.window.SpicebloomsPricing;
+  const missing = await pricing.reprice([{ name: "ABC Health Drink", price: 199, quantity: 1, inStock: true }], true);
+  assert.equal(missing.cart[0].catalogUnavailable, true);
+  assert.equal(missing.cart[0].inStock, false);
+  assert.equal((await pricing.reprice(missing.cart)).changed, false);
+  items = [{ id: "abc-real", itemName: "ABC Health Drink", actualPrice: "199", inStock: false }];
+  const soldOut = await pricing.reprice(missing.cart, true);
+  assert.equal(soldOut.cart[0].catalogUnavailable, false);
+  assert.equal(soldOut.cart[0].inStock, false);
+  assert.equal(soldOut.cart[0].itemId, "abc-real");
+  items[0].inStock = true;
+  const available = await pricing.reprice(soldOut.cart, true);
+  assert.equal(available.cart[0].inStock, true);
 });
 
 test("repricing preserves backend IDs and refreshes legacy pricing caches", async () => {

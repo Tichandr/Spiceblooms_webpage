@@ -940,6 +940,8 @@
                 name: item.name,
                 price: price,
                 quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
+                inStock: item.inStock !== false,
+                catalogUnavailable: item.catalogUnavailable === true,
                 image: item.image || (catalog && catalog.image) || '',
                 mrp: mrp,
                 pack: catalog && catalog.pack ? catalog.pack : '',
@@ -955,13 +957,15 @@
         let bagDeliveryPending = null;
         let bagDeliveryLoading = false;
         let bagDeliveryMessage = '';
+        let bagCatalogReady = false;
+        let bagCatalogLoading = false;
 
         function bagRateKey() {
             const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
             return JSON.stringify({
                 pin: bagDeliveryPin,
                 owner: session && ((session.user && session.user.id) || session.uid || session.email || session.phone),
-                items: selectedItems().map(function (item) { return [item.itemId, item.quantity]; }).sort()
+                items: selectedItems().map(function (item) { return [item.itemId, item.quantity, item.inStock !== false]; }).sort()
             });
         }
 
@@ -979,13 +983,14 @@
             const key = bagRateKey();
             const items = selectedItems();
             const session = window.SpicebloomsAuth && window.SpicebloomsAuth.get();
-            if (!bagDeliveryPin || !items.length || !session || !session.token || items.some(function (item) { return !item.itemId; })) {
+            if (!bagDeliveryPin || !items.length || !session || !session.token || items.some(function (item) { return !item.itemId || item.inStock === false; })) {
                 bagDeliverySequence++;
                 bagDeliveryRate = null;
                 bagDeliveryPending = null;
                 bagDeliveryLoading = false;
                 bagDeliveryMessage = !bagDeliveryPin ? '' : !items.length ? 'Select an item to check delivery charges.'
                     : !session || !session.token ? 'Sign in to check delivery charges for PIN ' + bagDeliveryPin + '.'
+                    : items.some(function (item) { return item.inStock === false; }) ? 'Remove or deselect sold-out items before checking delivery.'
                     : 'Refreshing bag items before checking delivery charges.';
                 renderBagDeliveryTotals();
                 return null;
@@ -1071,6 +1076,8 @@
                     '<div class="bag-copy">' +
                     '<h3>' + escapeHtml(item.brand) + '</h3>' +
                     '<p>' + escapeHtml(item.name) + '</p>' +
+                    (item.catalogUnavailable ? '<p>Unavailable in the current catalog - remove or deselect this item to continue.</p>'
+                        : item.inStock === false ? '<p>Sold out - remove or deselect this item to continue.</p>' : '') +
                     (item.pack ? '<div class="bag-meta">' + escapeHtml(item.pack) + '</div>' : '') +
                     '<div class="bag-price"><strong>' + money(item.price) + '</strong>' +
                     (item.mrp ? '<s>' + money(item.mrp) + '</s>' : '') +
@@ -1079,7 +1086,7 @@
                     '<div class="bag-qty">' +
                     '<button type="button" data-qty="' + index + '" data-delta="-1" aria-label="Decrease quantity" ' + (item.quantity <= 1 ? 'disabled' : '') + '>-</button>' +
                     '<span>' + item.quantity + '</span>' +
-                    '<button type="button" data-qty="' + index + '" data-delta="1" aria-label="Increase quantity" ' + (item.quantity >= MAX_QTY ? 'disabled' : '') + '>+</button>' +
+                    '<button type="button" data-qty="' + index + '" data-delta="1" aria-label="Increase quantity" ' + (item.quantity >= MAX_QTY || item.inStock === false ? 'disabled' : '') + '>+</button>' +
                     '</div></div>' +
                     '<button type="button" class="bag-remove" data-remove="' + index + '" aria-label="Remove ' + escapeHtml(item.name) + '">' +
                     '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' +
@@ -1106,7 +1113,10 @@
             document.getElementById('total-discount').classList.toggle('is-save', discount > 0);
             renderBagDeliveryTotals();
             refreshBagDelivery();
-            if (placeOrder) placeOrder.disabled = !hasSelected;
+            if (placeOrder) {
+                placeOrder.disabled = !bagCatalogReady || !hasSelected || priced.some(function (item) { return item.inStock === false; });
+                placeOrder.textContent = bagCatalogLoading ? 'CHECKING AVAILABILITY...' : 'PLACE ORDER';
+            }
         }
 
         function removeIndexes(indexes, message) {
@@ -1124,8 +1134,16 @@
         function proceedToAddress() {
             const items = selectedItems();
             const placeOrder = document.getElementById('place-order');
+            if (!bagCatalogReady) {
+                showToast('Product availability has not been confirmed. Wait for the check, or reload the page to retry.', false);
+                return;
+            }
             if (!items.length) {
                 showToast('Select at least one item to place the order.', false);
+                return;
+            }
+            if (items.some(function (item) { return item.inStock === false; })) {
+                showToast('Remove or deselect sold-out items before placing the order.', false);
                 return;
             }
 
@@ -1170,6 +1188,7 @@
                 const delta = parseInt(qtyBtn.getAttribute('data-delta'), 10);
                 const cart = getCart();
                 if (!cart[index]) return;
+                if (delta > 0 && cart[index].inStock === false) return;
                 const next = (parseInt(cart[index].quantity, 10) || 1) + delta;
                 if (next < 1 || next > MAX_QTY) return;
                 cart[index].quantity = next;
@@ -1286,12 +1305,30 @@
             });
         }
 
+        async function refreshBagCatalog() {
+            bagCatalogReady = false;
+            bagCatalogLoading = true;
+            renderCart();
+            try {
+                await window.SpicebloomsPricing.loadPrices(true);
+                const result = await window.SpicebloomsPricing.reprice(getCart());
+                if (result.changed) saveCart(result.cart);
+                bagCatalogReady = true;
+            } catch (error) {
+                console.warn('Could not refresh product availability.', error);
+                showToast('Could not confirm product availability. Reload the page before placing the order.', false);
+            } finally {
+                bagCatalogLoading = false;
+                renderCart();
+            }
+        }
+
         window.addEventListener('pageshow', function (event) {
             if (!event.persisted) return;
             const placeOrder = document.getElementById('place-order');
             if (placeOrder) placeOrder.textContent = 'PLACE ORDER';
             updateCartBadge();
-            renderCart();
+            refreshBagCatalog();
         });
 
         window.addEventListener('storage', function (event) {
@@ -1301,12 +1338,7 @@
         window.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem(CART_KEY, JSON.stringify(getCart()));
             updateCartBadge();
-            renderCart();
-            window.SpicebloomsPricing.reprice(getCart()).then(function (result) {
-                if (result.changed) saveCart(result.cart);
-            }).catch(function (error) {
-                console.warn('Could not refresh cart prices.', error);
-            });
+            refreshBagCatalog();
         });
     </script>
     <script src="auth.js"></script>
