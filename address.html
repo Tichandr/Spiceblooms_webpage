@@ -836,20 +836,20 @@
         const LOCAL_ADDRESS_KEY = 'spiceblooms_addresses';
         const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const CATALOG = [
-            { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'assets/Naturals/Moringa%20Instant%20Rice%20Mix.png' },
-            { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'assets/Naturals/Dhanya%20podi.png' },
-            { id: 'pesara', name: 'Pesara Podi', cartName: 'Pesara Podi', price: 199, mrp: 229, image: 'assets/Naturals/Pesara%20Podi.png' },
-            { id: 'turmeric', name: 'Turmeric Powder', cartName: 'Turmeric Powder', price: 199, mrp: 229, image: 'assets/Naturals/Turmeric%20powder.png' },
-            { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'assets/Naturals/Kandi%20Podi.png' },
-            { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'assets/products/masala-karam.png' },
-            { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png' },
+            { id: 'moringa', name: 'Spiceblooms Naturals Moringa Instant Rice Mix', cartName: 'Spiceblooms Naturals Moringa Instant Rice Mix', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Moringa-Instant-Ricemix.png' },
+            { id: 'dhanya', name: 'Dhanaya Podi', cartName: 'Dhanaya Podi', price: 199, mrp: 229, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Dhanya-Podi.png' },
+            { id: 'pesara', name: 'Pesara Podi', cartName: 'Pesara Podi', price: 199, mrp: 229, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Pesara-Podi.png' },
+            { id: 'turmeric', name: 'Turmeric Powder', cartName: 'Turmeric Powder', price: 199, mrp: 229, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Turmeric-Powder.png' },
+            { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Kandi-Podi.png' },
+            { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Masala-Karam.png' },
+            { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/21-Garam-Masala.png' },
             { id: 'sambar', name: 'Sambar Powder', cartName: 'Sambar Powder', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png' },
-            { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png' },
+            { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Roya-Karam.png' },
             { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Madhuri Spices Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg' },
-            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi', cartName: 'Spiceblooms Naturals Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png' },
-            { id: 'rasam', name: 'Madhuri Spices Rasam Powder Tangy and Peppery Delight', cartName: 'Madhuri Spices Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg' },
-            { id: 'chicken', name: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', cartName: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', price: 199, image: 'assets/Naturals/Chicken%20powder.png' },
-            { id: 'abc', name: 'Spiceblooms Naturals ABC Health Drink', cartName: 'Spiceblooms Naturals ABC Health Drink', price: 199, image: 'assets/Naturals/ABC%20Health%20Drink.png' }
+            { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi', cartName: 'Spiceblooms Naturals Karivepaku Podi', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/CurryLeaf-Powder.png' },
+            { id: 'rasam', name: 'Rasam Powder', cartName: 'Rasam Powder', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Rasam-Powder.png' },
+            { id: 'chicken', name: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', cartName: 'Spiceblooms Naturals Chicken Powder Instant Rice Mix', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Chicken-Podwer.png' },
+            { id: 'abc', name: 'Spiceblooms Naturals ABC Health Drink', cartName: 'Spiceblooms Naturals ABC Health Drink', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/ABC-Health-Drink.png' }
         ];
 
         let addresses = [];
