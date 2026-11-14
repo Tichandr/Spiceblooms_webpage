@@ -2248,7 +2248,35 @@
 
         let catalogImageItems = [];
 
+        function catalogInStock(item) {
+            return !item || (item.inStock !== undefined ? item.inStock : item.InStock) !== false;
+        }
+
+        function setStockButton(button, available) {
+            if (!button) return;
+            if (!button.dataset.stockLabel) button.dataset.stockLabel = button.innerHTML;
+            button.disabled = !available;
+            button.innerHTML = available ? button.dataset.stockLabel : 'Sold out';
+        }
+
+        function refreshStockControls() {
+            document.querySelectorAll('[data-wishlist-add]').forEach(function (button) {
+                const product = getProductById(button.getAttribute('data-wishlist-add'));
+                if (product) setStockButton(button, product.inStock !== false);
+            });
+            const detail = document.getElementById('product-detail');
+            const product = detail && getProductById(detail.dataset.activeId);
+            if (product) setStockButton(detail.querySelector('[data-pd-add]'), product.inStock !== false);
+        }
+
         function addToCart(name, price, image, options) {
+            const catalogItem = options && options.itemId
+                ? catalogImageItems.find(function (item) { return (item.id || item.Id) === options.itemId; })
+                : findCatalogItem(name);
+            if (!catalogInStock(catalogItem)) {
+                window.alert(name + ' is sold out. Please choose another product.');
+                return;
+            }
             const qty = options && options.quantity ? Math.max(1, parseInt(options.quantity, 10) || 1) : 1;
             const cart = getCart();
             const existingItem = cart.find(item => item.name === name);
@@ -2296,6 +2324,10 @@
         }
 
         function addCombo(products) {
+            if (products.some(function (item) { return !catalogInStock(findComboCatalogItem(item)); })) {
+                window.alert('This combo contains a sold-out product. Please choose another combo.');
+                return;
+            }
             products.forEach(function (item) {
                 addToCart(item.name, item.price, item.image, {
                     redirect: false,
@@ -2500,6 +2532,7 @@
             product.name = name;
             product.cartName = name;
             product.itemId = item.id || item.Id;
+            product.inStock = catalogInStock(item);
             if (description) product.desc = description;
             if (image) product.image = image;
             if (priceNumber !== null) product.price = priceNumber;
@@ -2509,6 +2542,7 @@
             const cardDescription = card.querySelector('[data-catalog-description], p[id^="desc-"], p.text-gray-600');
             const priceElements = getCatalogPriceElements(card);
             const cardImage = card.querySelector('.product-image');
+            setStockButton(card.querySelector('button[onclick*="addProductToCart"], [data-product-add]'), product.inStock);
 
             if (cardName) cardName.textContent = name;
             if (cardDescription && description) cardDescription.textContent = description;
@@ -2570,6 +2604,7 @@
                     image: image,
                     desc: description,
                     itemId: item.id || item.Id,
+                    inStock: catalogInStock(item),
                     badge: 'New',
                     points: []
                 });
@@ -2622,6 +2657,8 @@
                 button.type = 'button';
                 button.className = 'flex-1 bg-primary text-white px-4 py-2 rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors font-semibold';
                 button.textContent = 'Add to Cart';
+                button.setAttribute('data-product-add', '');
+                setStockButton(button, catalogInStock(item));
                 button.addEventListener('click', function () { addProductToCart(id); });
                 actions.appendChild(button);
                 body.appendChild(heading);
@@ -2775,6 +2812,7 @@
             });
 
             const totalElement = combo.querySelector('.combo-total strong');
+            setStockButton(button, products.every(function (product) { return catalogInStock(findComboCatalogItem(product)); }));
             const breakdownElement = combo.querySelector('.combo-total span');
             const validPrices = prices.filter(function (price) { return price !== null; });
             const total = validPrices.reduce(function (sum, price) { return sum + price; }, 0);
@@ -2869,6 +2907,7 @@
                 });
                 applyCatalogImages();
                 addMissingCatalogCards();
+                refreshStockControls();
                 if (status) {
                     if (failedProducts.length) {
                         status.textContent = 'Some products could not be matched to the catalog API. Showing their available images and details instead.';
@@ -2944,7 +2983,7 @@
                     '<div class="wishlist-body">' +
                     '<strong>' + item.name + '</strong>' +
                     '<span class="wishlist-price">Rs ' + item.price + '/-</span>' +
-                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '">Add to Cart</button>' +
+                    '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '" ' + (item.inStock === false ? 'disabled' : '') + '>' + (item.inStock === false ? 'Sold out' : 'Add to Cart') + '</button>' +
                     '</div>' +
                     '</article>';
             }).join('');
@@ -3062,6 +3101,7 @@
             const desc = detail.querySelector('[data-pd-desc]');
             const points = detail.querySelector('[data-pd-points]');
             const qtyInput = detail.querySelector('[data-pd-qty]');
+            setStockButton(detail.querySelector('[data-pd-add]'), product.inStock !== false);
 
             img.src = product.image;
             img.alt = product.name;

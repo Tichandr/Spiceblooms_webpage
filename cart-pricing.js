@@ -52,7 +52,7 @@
 
   async function loadPrices(force) {
     const cached = readCache();
-    if (!force && cached && Object.values(cached).every((item) => item.itemId)) return cached;
+    if (!force && cached && Object.values(cached).every((item) => item.itemId && typeof item.inStock === "boolean")) return cached;
     if (!window.SpicebloomsApi || !window.SpicebloomsApi.getCatalogItems) {
       throw new Error("Prices are unavailable right now.");
     }
@@ -78,6 +78,7 @@
       const mrp = toNumber(item.oldPrice !== undefined ? item.oldPrice : item.OldPrice);
       prices[key] = {
         price: price,
+        inStock: (item.inStock !== undefined ? item.inStock : item.InStock) !== false,
         mrp: mrp && mrp > price ? mrp : 0,
         itemId: item.id,
         brandName: item.brandName || "",
@@ -100,7 +101,7 @@
       if (Number(item.price) === match.price && Number(item.mrp || 0) === match.mrp
         && item.itemId === match.itemId && item.brandName === match.brandName
         && item.itemName === match.itemName && item.itemQuantity === match.itemQuantity
-        && item.imageUri === match.imageUri) return item;
+        && item.imageUri === match.imageUri && item.inStock === match.inStock) return item;
       changed = true;
       return Object.assign({}, item, match);
     });

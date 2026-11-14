@@ -19,6 +19,10 @@ No frontend build step is required. On `localhost`, `127.0.0.1`, or IPv6 loopbac
 
 ## Backend checkout
 
+Catalog responses include `inStock`; an explicit `false` shows sold-out products without hiding them and disables product/detail/combo/wishlist purchase buttons. Cart repricing propagates stock status, reloads older caches without it, and allows sold-out items to be removed or deselected. Shipping and payment steps reject selected sold-out items; the backend also rechecks availability before payment creation. Missing stock metadata preserves compatibility with older API responses.
+
+The backend now writes new delivery addresses inside user documents while retaining its existing address endpoint DTOs and legacy address records. The checkout's backend address registration and matching use the same IDs/fields, so no storefront address migration is required. Deploy the stock UI with the backend `Add-Address-to-Users-Document` update.
+
 Checkout registers or reuses the selected delivery address through the authenticated backend, then calls `POST /api/Orders` with catalog item IDs, quantities, and the displayed amounts. The backend returns its order ID, Razorpay order ID, amount in rupees, currency, and public `keyId`. After Razorpay checkout, the frontend calls `POST /api/Orders/verify-payment` using the same bearer-token and refresh flow. It clears purchased cart items only after the backend confirms `Paid`.
 
 Configure `Razorpay:KeyId` and `Razorpay:KeySecret` securely in the .NET backend. This checkout no longer uses the Node server's `/api/payments/*` endpoints or its `.env` payment credentials. Never expose the Razorpay secret in the browser.

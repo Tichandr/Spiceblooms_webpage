@@ -1519,7 +1519,7 @@
             return JSON.stringify({
                 owner: checkoutOwner(session),
                 address: address && [address.id, address.postcode, address.line1, address.line2, address.building, address.area, address.city, address.state, address.country],
-                items: items.map(function (item) { return [item.itemId, item.quantity]; }).sort()
+                items: items.map(function (item) { return [item.itemId, item.quantity, item.inStock !== false]; }).sort()
             });
         }
 
@@ -1562,6 +1562,9 @@
                 try {
                     if (!items.length || items.some(function (item) { return !item.itemId || !Number.isInteger(item.quantity) || item.quantity <= 0; })) {
                         throw new Error('Refresh your bag to confirm the catalog items before checking delivery.');
+                    }
+                    if (items.some(function (item) { return item.inStock === false; })) {
+                        throw new Error('A selected item is sold out. Remove it from your bag before checking delivery.');
                     }
                     const deliveryAddressId = await backendDeliveryAddress(address);
                     const quote = await window.SpicebloomsApi.getShippingQuote({
@@ -1687,6 +1690,9 @@
             }
             if (items.some(function (item) { return !item.itemId; })) {
                 throw new Error('A bag item could not be matched to the backend catalog. Remove it and add it again.');
+            }
+            if (items.some(function (item) { return item.inStock === false; })) {
+                throw new Error('A selected item is sold out. Remove it from your bag before placing the order.');
             }
             const phone = paymentPhone(address);
             const delivery = paymentDeliveryAddress(address);
