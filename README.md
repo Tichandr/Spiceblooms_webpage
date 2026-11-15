@@ -23,6 +23,12 @@ Catalog responses include `inStock`; an explicit `false` shows sold-out products
 
 Product card and detail descriptions preserve line breaks from the catalog's plain-text `Description` property. Use JSON `\n` for a new line and `\n\n` between paragraphs; HTML tags are not interpreted. Existing card previews may still truncate long descriptions.
 
+Catalog items with the same `productGroupId` appear as one product with flavour and pack-size selectors. Each combination remains a separate purchasable item ID; the Bag refreshes prices and stock by that exact ID, never by a different flavour's price. Grouped items require `productGroupName`, `flavor` and `quantity`. Older products without grouping metadata keep their existing behavior. Deploy the companion backend metadata changes before adding grouped Cosmos documents.
+
+`imageUri` is the primary image and `imageUris` lists additional photos for that specific flavour/pack. Card and detail galleries have previous/next buttons and support left/right arrow keys when a gallery button is focused. Controls appear only with multiple distinct images; no autoplay. Missing pack images display an explicit placeholder, not a different pack's photo. The supplied Peri Peri and Cheese 250 g photos are included under `assets/Naturals/edamame-*-250g.png`; Salty, 50 g and 1 kg photos still need uploading. Wishlist entries for grouped products open the detail selectors before purchase.
+
+The backend's `docs/catalog-variants.md` and `docs/edamame-items.json` describe the nine Edamame Cosmos documents, confirmed selling prices (Rs 50 / 250 / 900), original prices (Rs 80 / 300 / 1100), image setup, and safe activation. No live catalog records are inserted by this change.
+
 The Bag refreshes catalog availability on every page load and browser-history return, and keeps checkout disabled until that check succeeds. Products missing from a successful catalog response are labelled unavailable instead of retaining purchasable fallback data. This is distinct from an explicit sold-out flag. Local development uses `https://localhost:7100`; changing a deployed Cosmos record affects the local site only when the local API reads that same database and returns the item.
 
 The backend now writes new delivery addresses inside user documents while retaining its existing address endpoint DTOs and legacy address records. The checkout's backend address registration and matching use the same IDs/fields, so no storefront address migration is required. Deploy the stock UI with the backend `Add-Address-to-Users-Document` update.

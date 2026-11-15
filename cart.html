@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="api.js"></script>
     <script src="cart-pricing.js"></script>
+    <script src="catalog-variants.js"></script>
 
     <script>
         tailwind.config = {
@@ -944,8 +945,8 @@
                 catalogUnavailable: item.catalogUnavailable === true,
                 image: item.image || (catalog && catalog.image) || '',
                 mrp: mrp,
-                pack: catalog && catalog.pack ? catalog.pack : '',
-                id: catalog && catalog.id ? catalog.id : '',
+                pack: item.itemQuantity || (catalog && catalog.pack ? catalog.pack : ''),
+                id: item.productGroupId ? window.SpicebloomsVariants.productId(item.productGroupId) : (catalog && catalog.id ? catalog.id : ''),
                 brand: 'SpiceBlooms Naturals'
             };
         }
@@ -1072,7 +1073,9 @@
                 const save = item.mrp ? (item.mrp - item.price) * item.quantity : 0;
                 return '<article class="bag-item' + (checked ? '' : ' is-unselected') + '">' +
                     '<input type="checkbox" data-select="' + index + '" ' + (checked ? 'checked' : '') + ' aria-label="Select ' + escapeHtml(item.name) + '">' +
-                    '<div class="bag-thumb"><img src="' + escapeHtml(item.image) + '" alt="" width="92" height="108"></div>' +
+                    '<div class="bag-thumb">' + (item.image
+                        ? '<img src="' + escapeHtml(item.image) + '" alt="" width="92" height="108">'
+                        : '<span>Image unavailable</span>') + '</div>' +
                     '<div class="bag-copy">' +
                     '<h3>' + escapeHtml(item.brand) + '</h3>' +
                     '<p>' + escapeHtml(item.name) + '</p>' +

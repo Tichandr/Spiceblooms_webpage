@@ -43,7 +43,7 @@
   function readCache() {
     try {
       const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
-      if (cached && cached.at && Date.now() - cached.at < CACHE_MS && cached.prices) return cached.prices;
+      if (cached && cached.version === 2 && cached.at && Date.now() - cached.at < CACHE_MS && cached.prices) return cached.prices;
     } catch (error) {
       return null;
     }
@@ -74,10 +74,8 @@
       const key = productKey(item.itemName || item.ItemName);
       const price = toNumber(item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice);
       if (!key || price === null) return;
-      const current = prices[key];
-      if (current && current.price >= price) return;
       const mrp = toNumber(item.oldPrice !== undefined ? item.oldPrice : item.OldPrice);
-      prices[key] = {
+      const entry = {
         price: price,
         inStock: (item.inStock !== undefined ? item.inStock : item.InStock) !== false,
         catalogUnavailable: false,
@@ -86,10 +84,14 @@
         brandName: item.brandName || "",
         itemName: item.itemName,
         itemQuantity: item.quantity || "",
-        imageUri: item.imageUri || ""
+        imageUri: item.imageUri || "",
+        productGroupId: item.productGroupId || "",
+        flavor: item.flavor || ""
       };
+      prices["id:" + item.id] = entry;
+      if (!item.productGroupId && (!prices[key] || prices[key].price < price)) prices[key] = entry;
     });
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), prices: prices }));
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ version: 2, at: Date.now(), prices: prices }));
     return prices;
   }
 
@@ -98,7 +100,7 @@
     const prices = await loadPrices(force);
     let changed = false;
     const next = cart.map((item) => {
-      const match = prices[productKey(item.name)];
+      const match = item.itemId ? prices["id:" + item.itemId] : prices[productKey(item.name)];
       if (!match) {
         if (item.catalogUnavailable === true && item.inStock === false) return item;
         changed = true;
@@ -108,7 +110,8 @@
         && item.itemId === match.itemId && item.brandName === match.brandName
         && item.itemName === match.itemName && item.itemQuantity === match.itemQuantity
         && item.imageUri === match.imageUri && item.inStock === match.inStock
-        && item.catalogUnavailable === match.catalogUnavailable) return item;
+        && item.catalogUnavailable === match.catalogUnavailable
+        && item.productGroupId === match.productGroupId && item.flavor === match.flavor) return item;
       changed = true;
       return Object.assign({}, item, match);
     });

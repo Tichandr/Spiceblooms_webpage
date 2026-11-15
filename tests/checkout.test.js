@@ -401,6 +401,33 @@ test("repricing preserves backend IDs and refreshes legacy pricing caches", asyn
   assert.equal(requests, 2);
 });
 
+test("variant repricing keeps SKU identity, pack price and stock even after a catalog rename", async () => {
+  let items = [
+    { id: "peri-50", itemName: "Renamed Edamame", productGroupId: "edamame", flavor: "Peri Peri", quantity: "50 g", actualPrice: "50", oldPrice: "80", inStock: true },
+    { id: "cheese-1kg", itemName: "Renamed Edamame", productGroupId: "edamame", flavor: "Cheese", quantity: "1 kg", actualPrice: "900", oldPrice: "1100", inStock: false }
+  ];
+  const context = {
+    sessionStorage: storage(),
+    window: { SpicebloomsApi: { getCatalogItems: async () => ({ itemList: items, totalListCount: items.length }) } }
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(root, "cart-pricing.js"), "utf8"), context);
+  const pricing = context.window.SpicebloomsPricing;
+  const result = await pricing.reprice([
+    { name: "Edamame - Peri Peri - 50 g", itemId: "peri-50", quantity: 2 },
+    { name: "Edamame - Cheese - 1 kg", itemId: "cheese-1kg", quantity: 1 }
+  ], true);
+  assert.equal(result.cart[0].price, 50);
+  assert.equal(result.cart[0].itemQuantity, "50 g");
+  assert.equal(result.cart[0].inStock, true);
+  assert.equal(result.cart[0].quantity, 2);
+  assert.equal(result.cart[1].price, 900);
+  assert.equal(result.cart[1].inStock, false);
+  items = [items[1]];
+  const removed = await pricing.reprice(result.cart, true);
+  assert.equal(removed.cart[0].catalogUnavailable, true);
+  assert.equal(removed.cart[0].itemId, "peri-50");
+});
+
 test("closing unpaid checkout reuses the persisted retry ID", async () => {
   const flow = checkout("cancel");
   await assert.rejects(flow.run());
