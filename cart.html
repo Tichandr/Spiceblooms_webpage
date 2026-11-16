@@ -934,20 +934,22 @@
 
         function enrich(item) {
             const catalog = findCatalog(item);
-            const price = Number(item.price) || (catalog && catalog.price) || 0;
+            const retired = !window.SpicebloomsPricing.isCatalogItemAllowed(item);
+            const price = retired ? 0 : Number(item.price) || (catalog && catalog.price) || 0;
             const listed = item.mrp !== undefined ? Number(item.mrp) : (catalog && catalog.mrp);
             const mrp = listed && listed > price ? listed : 0;
             return {
                 name: item.name,
+                displayName: retired ? 'Retired product' : item.name,
                 price: price,
                 quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
-                inStock: item.inStock !== false,
-                catalogUnavailable: item.catalogUnavailable === true,
-                image: item.image || (catalog && catalog.image) || '',
-                mrp: mrp,
+                inStock: !retired && item.inStock !== false,
+                catalogUnavailable: retired || item.catalogUnavailable === true,
+                image: retired ? '' : item.image || (!item.itemId && catalog && catalog.image) || '',
+                mrp: retired ? 0 : mrp,
                 pack: item.itemQuantity || (catalog && catalog.pack ? catalog.pack : ''),
-                id: item.productGroupId ? window.SpicebloomsVariants.productId(item.productGroupId) : (catalog && catalog.id ? catalog.id : ''),
-                brand: 'SpiceBlooms Naturals'
+                id: retired ? '' : item.productGroupId ? window.SpicebloomsVariants.productId(item.productGroupId) : (catalog && catalog.id ? catalog.id : ''),
+                brand: retired ? 'Unavailable product' : 'SpiceBlooms Naturals'
             };
         }
 
@@ -1072,17 +1074,17 @@
                 const checked = selected.indexOf(item.name) !== -1;
                 const save = item.mrp ? (item.mrp - item.price) * item.quantity : 0;
                 return '<article class="bag-item' + (checked ? '' : ' is-unselected') + '">' +
-                    '<input type="checkbox" data-select="' + index + '" ' + (checked ? 'checked' : '') + ' aria-label="Select ' + escapeHtml(item.name) + '">' +
+                    '<input type="checkbox" data-select="' + index + '" ' + (checked ? 'checked' : '') + ' aria-label="Select ' + escapeHtml(item.displayName) + '">' +
                     '<div class="bag-thumb">' + (item.image
                         ? '<img src="' + escapeHtml(item.image) + '" alt="" width="92" height="108">'
                         : '<span>Image unavailable</span>') + '</div>' +
                     '<div class="bag-copy">' +
                     '<h3>' + escapeHtml(item.brand) + '</h3>' +
-                    '<p>' + escapeHtml(item.name) + '</p>' +
+                    '<p>' + escapeHtml(item.displayName) + '</p>' +
                     (item.catalogUnavailable ? '<p>Unavailable in the current catalog - remove or deselect this item to continue.</p>'
                         : item.inStock === false ? '<p>Sold out - remove or deselect this item to continue.</p>' : '') +
                     (item.pack ? '<div class="bag-meta">' + escapeHtml(item.pack) + '</div>' : '') +
-                    '<div class="bag-price"><strong>' + money(item.price) + '</strong>' +
+                    '<div class="bag-price"><strong>' + (item.catalogUnavailable ? 'Unavailable' : money(item.price)) + '</strong>' +
                     (item.mrp ? '<s>' + money(item.mrp) + '</s>' : '') +
                     (save > 0 ? '<em>Save ' + money(save) + '</em>' : '') +
                     '</div>' +
@@ -1091,7 +1093,7 @@
                     '<span>' + item.quantity + '</span>' +
                     '<button type="button" data-qty="' + index + '" data-delta="1" aria-label="Increase quantity" ' + (item.quantity >= MAX_QTY || item.inStock === false ? 'disabled' : '') + '>+</button>' +
                     '</div></div>' +
-                    '<button type="button" class="bag-remove" data-remove="' + index + '" aria-label="Remove ' + escapeHtml(item.name) + '">' +
+                    '<button type="button" class="bag-remove" data-remove="' + index + '" aria-label="Remove ' + escapeHtml(item.displayName) + '">' +
                     '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' +
                     '</button></article>';
             }).join('');
@@ -1314,7 +1316,7 @@
             renderCart();
             try {
                 await window.SpicebloomsPricing.loadPrices(true);
-                const result = await window.SpicebloomsPricing.reprice(getCart());
+                const result = await window.SpicebloomsPricing.reprice(getCart(), false);
                 if (result.changed) saveCart(result.cart);
                 bagCatalogReady = true;
             } catch (error) {

@@ -396,9 +396,55 @@ test("repricing preserves backend IDs and refreshes legacy pricing caches", asyn
   assert.equal(result.cart[0].price, 155);
   assert.equal(result.cart[0].quantity, 2);
   assert.equal((await pricing.reprice(result.cart)).changed, false);
-  assert.equal(requests, 1);
-  await pricing.reprice(result.cart, true);
   assert.equal(requests, 2);
+  await pricing.reprice(result.cart, true);
+  assert.equal(requests, 3);
+});
+
+test("catalog prices are public, uncached and independent of the signed-in customer", async () => {
+  for (const token of [null, "customer-a", "customer-b"]) {
+    const requests = [];
+    const context = {
+      URLSearchParams,
+      window: { location: { hostname: "spiceblooms.in" },
+        SpicebloomsAuth: { get: () => token && { token } } },
+      fetch: async (url, options) => {
+        requests.push(options);
+        return { ok: true, text: async () => JSON.stringify({
+          itemList: [{ id: "curry", actualPrice: requests.length === 1 ? 129 : 139 }], totalListCount: 1
+        }) };
+      }
+    };
+    vm.runInNewContext(apiSource, context);
+    assert.equal((await context.window.SpicebloomsApi.getCatalogItems()).itemList[0].actualPrice, 129);
+    assert.equal((await context.window.SpicebloomsApi.getCatalogItems()).itemList[0].actualPrice, 139);
+    assert.ok(requests.every(request => request.cache === "no-store" && !request.headers.Authorization));
+  }
+});
+
+test("fresh repricing ignores each user's session cache and excludes retired SKUs without substituting current ones", async () => {
+  const context = {
+    sessionStorage: storage([["spiceblooms_catalog_prices", JSON.stringify({
+      version: 2, at: Date.now(), prices: { "id:current": { itemId: "current", price: 199 } }
+    })]]),
+    window: { SpicebloomsApi: { getCatalogItems: async () => ({ totalListCount: 3, itemList: [
+      { id: "current", brandName: "SpiceBlooms", itemName: "Royya Karam", actualPrice: 179 },
+      { id: "old", brandName: "Madhuri", itemName: "Royya Karam", actualPrice: 199 },
+      { id: "other-old", brandName: "SpiceBlooms", itemName: "MADURI Masala Karam", actualPrice: 199 }
+    ] }) } }
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(root, "cart-pricing.js"), "utf8"), context);
+  const result = await context.window.SpicebloomsPricing.reprice([
+    { name: "Royya Karam", itemId: "current", price: 199 },
+    { name: "Madhuri Royya Karam", itemId: "old", price: 199 },
+    { name: "MADURI Masala Karam", itemId: "other-old", price: 199 },
+    { name: "Madhuri Royya Karam", price: 199 }
+  ]);
+  assert.equal(result.cart[0].price, 179);
+  assert.ok(result.cart.slice(1).every(item => item.inStock === false && item.catalogUnavailable));
+  assert.equal(result.cart[1].itemId, "old");
+  assert.equal(result.cart[3].itemId, undefined);
+  assert.equal(context.sessionStorage.getItem("spiceblooms_catalog_prices"), null);
 });
 
 test("variant repricing keeps SKU identity, pack price and stock even after a catalog rename", async () => {

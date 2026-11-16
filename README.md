@@ -19,6 +19,10 @@ No frontend build step is required. On `localhost`, `127.0.0.1`, or IPv6 loopbac
 
 ## Backend checkout
 
+The public catalog's `actualPrice` is the selling price for every customer; sign-in does not change it. Product cards, details, wishlists and combos stay hidden until fresh catalog prices load. A failed request pauses purchasing and offers Retry instead of showing hardcoded prices. Browser-history returns refresh the catalog. Catalog requests bypass HTTP caches and do not send a customer's authentication token. Cart/address pricing no longer reads the old ten-minute session cache; only the Bag's immediately completed refresh is reused within that check.
+
+Items whose brand or item name contains `Madhuri` or `Maduri` (case-insensitive) are retired. They are excluded from storefront catalog data and pricing, and the companion backend excludes them from catalog/deals/search/baskets and rejects new purchases. Current SpiceBlooms Royya Karam and Masala Karam remain. Old retired cart lines are unavailable and removable; historical orders and Cosmos records are not deleted. Deploy both backend and frontend changes, then reload already-open storefront tabs.
+
 Catalog responses include `inStock`; an explicit `false` shows sold-out products without hiding them and disables product/detail/combo/wishlist purchase buttons. Cart repricing propagates stock status, reloads older caches without it, and allows sold-out items to be removed or deselected. Shipping and payment steps reject selected sold-out items; the backend also rechecks availability before payment creation. Missing stock metadata preserves compatibility with older API responses.
 
 Product card and detail descriptions preserve line breaks from the catalog's plain-text `Description` property. Use JSON `\n` for a new line and `\n\n` between paragraphs; HTML tags are not interpreted. Existing card previews may still truncate long descriptions.
