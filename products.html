@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-catalog-state="loading">
 
 <head>
     <meta charset="UTF-8">
@@ -34,6 +34,13 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
+        html:not([data-catalog-state="ready"]) #all-products,
+        html:not([data-catalog-state="ready"]) #combos,
+        html:not([data-catalog-state="ready"]) #product-detail,
+        html:not([data-catalog-state="ready"]) #wishlist {
+            display: none !important;
+        }
+
         .gradient-bg {
             background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFB800 100%);
         }
@@ -1206,6 +1213,12 @@
         </div>
     </section>
 
+    <div class="max-w-7xl mx-auto px-4 py-6 text-center">
+        <p id="catalog-image-status" class="mb-3 text-sm text-brand" role="status">Loading current prices and availability...</p>
+        <button id="catalog-retry" type="button" class="px-4 py-2 border rounded-full" hidden>Retry loading products</button>
+        <noscript>Enable JavaScript to load current catalog prices and shop.</noscript>
+    </div>
+
     <div class="product-search-bar sticky top-[76px] md:top-[104px] z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div class="product-search-tools">
@@ -1350,7 +1363,7 @@
                             <span>199 + 199 + 199</span>
                             <strong>Rs 597/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Chicken Powder Instant Rice Mix","price":199,"image":"assets/Naturals/Chicken%20powder.png"},{"name":"Madhuri Spices 21 Garam Masala Tradition in Every Pinch","price":199,"image":"assets/Naturals/21%20Garam%20Masala%20Powder.png"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Chicken Powder Instant Rice Mix","price":199,"image":"assets/Naturals/Chicken%20powder.png"},{"name":"21 Garam Masala","price":199,"image":"assets/Naturals/21%20Garam%20Masala%20Powder.png"}]'>Add combo</button>
                     </div>
                 </article>
 
@@ -1386,7 +1399,7 @@
                             <span>199 + 199 + 199</span>
                             <strong>Rs 597/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Masala Karam","price":199,"image":"assets/products/masala-karam.png"},{"name":"Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"},{"name":"Masala Karam","price":199,"image":"assets/products/masala-karam.png"},{"name":"Moringa Instant Rice Mix","price":199,"image":"assets/Naturals/Moringa%20Instant%20Rice%20Mix.png"}]'>Add combo</button>
                     </div>
                 </article>
 
@@ -1517,7 +1530,7 @@
                             <span>199 + 199</span>
                             <strong>Rs 398/-</strong>
                         </div>
-                        <button type="button" class="combo-add" data-combo-add='[{"name":"Madhuri Spices Rasam Powder","price":199,"image":"assets/new_items/rasampowder.jpg"},{"name":"Spiceblooms Naturals Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}]'>Add combo</button>
+                        <button type="button" class="combo-add" data-combo-add='[{"name":"Rasam Powder","price":199,"image":"assets/new_items/rasampowder.jpg"},{"name":"Curry Leaf Powder","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}]'>Add combo</button>
                     </div>
                 </article>
 
@@ -1559,7 +1572,6 @@
     <!-- Products Grid -->
     <section id="all-products" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p id="catalog-image-status" class="mb-6 text-center text-sm text-red-700" role="status" hidden></p>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Product Card Moringa Instant Rice Mix -->
                 <div data-product-id="moringa" data-search="moringa instant rice mix moringa rice mix moringa instant mix spiceblooms naturals"
@@ -1788,8 +1800,8 @@
 
                         <!-- Description with Read More -->
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-1" data-catalog-description>
-                            For generations, Indian kitchens have trusted garam masala for depth and warmth. At Madhuri
-                            Spices, our 21 Garam Masala blends 21 timeless spices slow-roasted and finely ground to
+                            For generations, Indian kitchens have trusted garam masala for depth and warmth. At
+                            SpiceBlooms, our 21 Garam Masala blends 21 timeless spices slow-roasted and finely ground to
                             bring authentic aroma and taste to every dish, from curries and dals to biryanis and meats.
                         </p>
                         <button class="text-primary font-medium text-sm hover:underline self-start"
@@ -1884,8 +1896,7 @@
                         </div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Royya Karam - Traditional Prawn
-                            Chilli Mix</h3>
+                        <h3 class="text-xl font-bold text-dark mb-2">Royya Karam</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-royya">
                             Bring the authentic taste of Andhra's coastal cuisine to your home withSpiceblooms Naturals Royya
                             Karam. This spicy prawn-flavored chilli mix is a traditional recipe, perfect for adding a
@@ -2018,8 +2029,7 @@
                         </div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-dark mb-2">Madhuri Spices Rasam Powder - Tangy & Peppery
-                            Delight</h3>
+                        <h3 class="text-xl font-bold text-dark mb-2">Rasam Powder</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3" id="desc-rasam">
                             Warm your soul with the authentic taste of Andhra rasam usingSpiceblooms Naturals Rasam Powder.
                             Our blend of pepper, cumin, and special lentils creates a tangy, peppery, and incredibly
@@ -2265,6 +2275,7 @@
     </div>
 
     <script src="api.js"></script>
+    <script src="cart-pricing.js"></script>
     <script src="catalog-variants.js"></script>
     <script>
         // Mobile menu toggle
@@ -2313,6 +2324,7 @@
 
         let catalogImageItems = [];
         let catalogLoaded = false;
+        let catalogRequestId = 0;
 
         function catalogInStock(item) {
             return !item || (item.inStock !== undefined ? item.inStock : item.InStock) !== false;
@@ -2336,10 +2348,14 @@
         }
 
         function addToCart(name, price, image, options) {
+            if (!catalogLoaded) {
+                window.alert('Current prices and availability have not loaded. Please retry loading the catalog.');
+                return;
+            }
             const catalogItem = options && options.itemId
                 ? catalogImageItems.find(function (item) { return (item.id || item.Id) === options.itemId; })
                 : findCatalogItem(name);
-            if (catalogLoaded && !catalogItem) {
+            if (!window.SpicebloomsPricing.isCatalogItemAllowed(catalogItem)) {
                 window.alert(name + ' is not available in the current catalog. Please choose another product.');
                 return;
             }
@@ -2347,33 +2363,28 @@
                 window.alert(name + ' is sold out. Please choose another product.');
                 return;
             }
+            price = Number(catalogItem.actualPrice !== undefined ? catalogItem.actualPrice : catalogItem.ActualPrice);
+            if (!Number.isFinite(price) || price <= 0) {
+                window.alert('The current price is unavailable for this product. Please reload the catalog.');
+                return;
+            }
+            name = catalogItem.itemName || catalogItem.ItemName || name;
             const qty = options && options.quantity ? Math.max(1, parseInt(options.quantity, 10) || 1) : 1;
             const cart = getCart();
             const itemId = catalogItem && (catalogItem.id || catalogItem.Id);
             const existingItem = cart.find(item => itemId && item.itemId ? item.itemId === itemId : item.name === name);
-            const itemImage = catalogItem
-                ? getCatalogImageUri(catalogItem.imageUri || catalogItem.ImageUri) || image
-                : getCatalogImage(name) || image;
+            const itemImage = getCatalogImageUri(catalogItem.imageUri || catalogItem.ImageUri);
 
-            if (existingItem) {
-                existingItem.quantity = Math.min(20, (parseInt(existingItem.quantity, 10) || 0) + qty);
-                existingItem.image = itemImage;
-                if (itemId) existingItem.itemId = itemId;
-            } else {
-                const cartItem = {
-                    name: name,
-                    price: price,
-                    image: itemImage,
-                    quantity: qty
-                };
-                if (itemId) cartItem.itemId = itemId;
-                if (catalogItem && catalogItem.productGroupId) {
-                    cartItem.productGroupId = catalogItem.productGroupId;
-                    cartItem.flavor = catalogItem.flavor;
-                    cartItem.itemQuantity = catalogItem.quantity;
-                }
-                cart.push(cartItem);
-            }
+            const cartItem = existingItem || { quantity: 0 };
+            Object.assign(cartItem, {
+                name: name, price: price, image: itemImage, itemId: itemId,
+                quantity: Math.min(20, (parseInt(cartItem.quantity, 10) || 0) + qty),
+                inStock: true, catalogUnavailable: false,
+                productGroupId: catalogItem.productGroupId || '',
+                flavor: catalogItem.flavor || '',
+                itemQuantity: catalogItem.quantity || ''
+            });
+            if (!existingItem) cart.push(cartItem);
 
             saveCart(cart);
             if (options && options.stay) {
@@ -2402,17 +2413,23 @@
         }
 
         function addCombo(products) {
+            if (!catalogLoaded) {
+                window.alert('Current prices and availability have not loaded. Please retry loading the catalog.');
+                return;
+            }
             if (products.some(function (item) {
                 const match = findComboCatalogItem(item);
-                return (catalogLoaded && !match) || !catalogInStock(match);
+                const price = match && Number(match.actualPrice !== undefined ? match.actualPrice : match.ActualPrice);
+                return !window.SpicebloomsPricing.isCatalogItemAllowed(match) || !catalogInStock(match) || !Number.isFinite(price) || price <= 0;
             })) {
                 window.alert('This combo contains a sold-out or unavailable product. Please choose another combo.');
                 return;
             }
             products.forEach(function (item) {
+                const match = findComboCatalogItem(item);
                 addToCart(item.name, item.price, item.image, {
                     redirect: false,
-                    itemId: item.itemId
+                    itemId: match.id || match.Id
                 });
             });
             window.location.href = 'cart.html';
@@ -2440,12 +2457,12 @@
             { id: 'turmeric', name: 'Turmeric Powder', cartName: 'Turmeric Powder', price: 199, mrp: 229, image: 'assets/Naturals/Turmeric%20powder.png', badge: 'Premium', desc: 'Bright color and strong aroma. Hand-ground in small batches with no added color, preservatives, or starch. A kitchen staple that supports immunity and digestion.', points: ['Vibrant color and aroma', 'No added color or starch', 'Hand-ground in small batches', '100g pack'] },
             { id: 'kandi', name: 'Kandi Podi', cartName: 'Kandi Podi', price: 199, mrp: 229, image: 'assets/Naturals/Kandi%20Podi.png', badge: 'Premium', desc: 'Roasted to perfection. Protein-rich and fiber-loaded, made from premium dals and spices. No preservatives and no artificial flavours.', points: ['Roasted toor dal blend', 'Protein and fiber rich', 'No artificial flavours', '100g pack'] },
             { id: 'masala-karam', name: 'Masala Karam', cartName: 'Masala Karam', price: 199, mrp: 229, image: 'assets/products/masala-karam.png', badge: 'Premium', desc: 'Signature Andhra heat with balanced spice and aroma. Perfect for daily curries or special dishes. No preservatives or artificial color. Small-batch roasted and ground.', points: ['Signature Andhra heat', 'Balanced spice and aroma', 'Small-batch roasted', '100g pack'] },
-            { id: 'garam-21', name: 'Spiceblooms Naturals 21 Garam Masala Tradition in Every Pinch', cartName: 'Madhuri Spices 21 Garam Masala Tradition in Every Pinch', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png', badge: 'Premium', desc: 'Twenty-one timeless spices, slow-roasted and finely ground, bring authentic aroma and warmth to every dish. Finish dals, curries, biryani, and grilled meats with a pinch.', points: ['Blend of 21 spices', 'Slow-roasted and finely ground', 'Finish dals, curries, and biryani', '100g pack'] },
+            { id: 'garam-21', name: '21 Garam Masala', cartName: '21 Garam Masala', price: 199, image: 'assets/Naturals/21%20Garam%20Masala%20Powder.png', badge: 'Premium', desc: 'Twenty-one timeless spices, slow-roasted and finely ground, bring authentic aroma and warmth to every dish. Finish dals, curries, biryani, and grilled meats with a pinch.', points: ['Blend of 21 spices', 'Slow-roasted and finely ground', 'Finish dals, curries, and biryani', '100g pack'] },
             { id: 'sambar', name: 'Sambar Powder', cartName: 'Sambar Powder', price: 199, image: 'https://spicebloomsstorage.blob.core.windows.net/product-images/Sambar-Powder.png', badge: 'Premium', desc: 'Crafted from a time-honored Andhra recipe. A blend of handpicked lentils, spices, and herbs, roasted to lock in flavor so you can make aromatic sambar at home.', points: ['Authentic Andhra sambar taste', 'Handpicked lentils and spices', 'Roasted fresh to lock in flavor', '100g pack'] },
-            { id: 'royya', name: 'Madhuri Spices Royya Karam Traditional Prawn Chilli Mix', cartName: 'Madhuri Spices Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png', badge: 'Premium', desc: 'Bring the authentic taste of Andhra coastal cooking home. This spicy prawn-flavoured chilli mix is perfect with hot rice and ghee, or as a punchy side with snacks.', points: ['Traditional prawn chilli mix', 'Coastal Andhra heat', 'Best with hot rice and ghee', '100g pack'] },
-            { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Madhuri Spices Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg', badge: 'Premium', desc: 'A blend of lentils and spices made for hot idlis and crispy dosas. Add a little ghee or oil and enjoy the classic taste of Andhra breakfast.', points: ['Made for idli and dosa', 'Classic Andhra breakfast taste', 'Add ghee or oil and serve', '100g pack'] },
+            { id: 'royya', name: 'Royya Karam', cartName: 'Royya Karam', price: 199, image: 'assets/Naturals/Roya%20Karma.png', badge: 'Premium', desc: 'Bring the authentic taste of Andhra coastal cooking home. This spicy prawn-flavoured chilli mix is perfect with hot rice and ghee, or as a punchy side with snacks.', points: ['Traditional prawn chilli mix', 'Coastal Andhra heat', 'Best with hot rice and ghee', '100g pack'] },
+            { id: 'idli', name: 'Spiceblooms Naturals Idli Karam Podi Perfect Breakfast Companion', cartName: 'Spiceblooms Naturals Idli Karam Podi', price: 199, image: 'assets/new_items/idli.jpg', badge: 'Premium', desc: 'A blend of lentils and spices made for hot idlis and crispy dosas. Add a little ghee or oil and enjoy the classic taste of Andhra breakfast.', points: ['Made for idli and dosa', 'Classic Andhra breakfast taste', 'Add ghee or oil and serve', '100g pack'] },
             { id: 'karivepaku', name: 'Spiceblooms Naturals Karivepaku Podi', cartName: 'Spiceblooms Naturals Karivepaku Podi', price: 199, image: 'assets/Naturals/Karivepaku%20podi.png', badge: 'Premium', desc: 'Handcrafted with fresh curry leaves and secret spices. Aromatic, delicious, and traditionally used for digestion and hair health. Mix with hot rice and ghee.', points: ['Fresh curry leaf aroma', 'Mix with hot rice and ghee', 'Traditionally used for digestion', '100g pack'] },
-            { id: 'rasam', name: 'Madhuri Spices Rasam Powder Tangy and Peppery Delight', cartName: 'Madhuri Spices Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg', badge: 'Premium', desc: 'Pepper, cumin, and special lentils create a tangy, peppery, aromatic rasam. Add to tomato or tamarind water for a comforting bowl.', points: ['Tangy and peppery blend', 'Add to tomato or tamarind water', 'Comforting everyday rasam', '100g pack'] },
+            { id: 'rasam', name: 'Rasam Powder', cartName: 'Rasam Powder', price: 199, image: 'assets/new_items/rasampowder.jpg', badge: 'Premium', desc: 'Pepper, cumin, and special lentils create a tangy, peppery, aromatic rasam. Add to tomato or tamarind water for a comforting bowl.', points: ['Tangy and peppery blend', 'Add to tomato or tamarind water', 'Comforting everyday rasam', '100g pack'] },
             { id: 'chicken', name: 'Chicken Powder Instant Rice Mix', cartName: 'Chicken Powder Instant Rice Mix', price: 199, image: 'assets/Naturals/Chicken%20powder.png', badge: 'New', desc: 'A savoury chicken-flavoured instant rice mix with authentic homestyle taste. Mix 2 to 3 spoons with hot steamed rice and a spoon of ghee for a quick weekday meal or tiffin.', points: ['Instant rice mix', 'Savoury roast-chicken flavour', 'Ready in minutes', '100g pack'] },
             { id: 'abc', name: 'ABC Health Drink', cartName: 'ABC Health Drink', price: 199, image: 'assets/Naturals/ABC%20Health%20Drink.png', badge: 'New', desc: 'A nourishing almonds, beetroot, and carrot health drink you can mix instantly with hot milk. Made with natural ingredients and no added preservatives.', points: ['Almonds, beetroot, and carrot', 'Mix instantly with hot milk', 'No added preservatives', '100g pack'] }
         ];
@@ -2465,16 +2482,14 @@
         }
 
         function setComboCatalogImage(image, imageUri, itemName, onFallback) {
-            const fallbackImage = image.getAttribute('src');
+            image.hidden = false;
             image.alt = itemName;
             image.onerror = function () {
                 image.onerror = null;
-                if (!fallbackImage) {
-                    console.error('Catalog image failed to load and no fallback image is available:', imageUri);
-                    return;
-                }
-                image.src = fallbackImage;
-                onFallback(fallbackImage);
+                console.error('Catalog image failed to load:', imageUri);
+                image.removeAttribute('src');
+                image.alt = itemName + '. Image unavailable';
+                onFallback('');
             };
             image.src = imageUri;
         }
@@ -2603,6 +2618,9 @@
             const oldPrice = item.oldPrice !== undefined ? item.oldPrice : item.OldPrice;
             const actualPrice = item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice;
             const priceNumber = parseCatalogPrice(actualPrice);
+            if (!(item.id || item.Id) || priceNumber === null || priceNumber <= 0) {
+                throw new Error('Catalog product is missing a valid ID or price: ' + name);
+            }
             const card = document.querySelector('#all-products [data-product-id="' + productId + '"]');
 
             if (!card) {
@@ -2615,8 +2633,8 @@
             product.itemId = item.id || item.Id;
             product.inStock = catalogInStock(item);
             product.catalogUnavailable = false;
-            if (description) product.desc = description;
-            if (image) product.image = image;
+            product.desc = description || '';
+            product.image = image;
             if (priceNumber !== null) product.price = priceNumber;
             product.mrp = parseCatalogPrice(oldPrice);
 
@@ -2627,12 +2645,17 @@
             setStockButton(card.querySelector('button[onclick*="addProductToCart"], [data-product-add]'), product.inStock);
 
             if (cardName) cardName.textContent = name;
-            if (cardDescription && description) cardDescription.textContent = description;
+            if (cardDescription) cardDescription.textContent = product.desc;
+            if (cardImage && !image) {
+                cardImage.removeAttribute('src');
+                cardImage.alt = name + '. Image unavailable';
+            }
             if (cardImage && image) {
-                const previous = cardImage.getAttribute('src');
                 cardImage.onerror = function () {
                     cardImage.onerror = null;
-                    if (previous && previous !== image) cardImage.src = previous;
+                    console.error('Catalog image failed to load:', image);
+                    cardImage.removeAttribute('src');
+                    cardImage.alt = name + '. Image unavailable';
                 };
                 cardImage.src = image;
                 cardImage.alt = name;
@@ -2867,13 +2890,16 @@
         }
 
         function findComboCatalogItem(product) {
+            if (product.itemId) {
+                return catalogImageItems.find(function (item) { return (item.id || item.Id) === product.itemId; }) || null;
+            }
             const productName = normalizeCatalogName(product.name);
             const productId = Object.keys(API_CATALOG_PRODUCTS).find(function (id) {
                 return API_CATALOG_PRODUCTS[id].some(function (searchName) {
                     return productName.includes(searchName);
                 });
             });
-            return (productId && findCatalogProductItem(productId)) || findCatalogItem(product.name);
+            return productId ? findCatalogProductItem(productId) : findCatalogItem(product.name);
         }
 
         function renderComboItemPrice(priceElement, oldPrice, actualPrice) {
@@ -2916,16 +2942,16 @@
             products.forEach(function (product, index) {
                 const catalogItem = findComboCatalogItem(product);
                 const row = itemRows[index];
-                if (!catalogItem) {
-                    const actualPriceNumber = parseCatalogPrice(product.price);
-                    const oldPriceNumber = parseCatalogPrice(product.oldPrice);
-                    prices.push(actualPriceNumber);
-                    oldPrices.push(oldPriceNumber);
-                    renderComboItemPrice(
-                        row && row.querySelector('.combo-item-price'),
-                        product.oldPrice,
-                        product.price
-                    );
+                if (!catalogItem || catalogActualPrice(catalogItem) === null || catalogActualPrice(catalogItem) <= 0) {
+                    prices.push(null);
+                    oldPrices.push(null);
+                    if (row) {
+                        row.querySelector('strong').textContent = 'Unavailable product';
+                        row.querySelector('.combo-item-price').textContent = 'Unavailable';
+                        const image = row.querySelector('img');
+                        if (image) image.hidden = true;
+                    }
+                    if (stackImages[index]) stackImages[index].hidden = true;
                     return;
                 }
 
@@ -2939,7 +2965,7 @@
                     : catalogItem.OldPrice;
                 const actualPriceNumber = parseCatalogPrice(actualPrice);
                 const oldPriceNumber = parseCatalogPrice(oldPrice);
-                const itemImage = imageUri || product.image;
+                const itemImage = imageUri;
                 const updateComboImageFallback = function (fallbackImage) {
                     product.image = fallbackImage;
                     button.setAttribute('data-combo-add', JSON.stringify(products));
@@ -2960,6 +2986,7 @@
                     if (image && imageUri) {
                         setComboCatalogImage(image, imageUri, itemName, updateComboImageFallback);
                     }
+                    if (image && !imageUri) image.hidden = true;
                     if (name) name.textContent = itemName;
                     renderComboItemPrice(price, oldPrice, actualPriceNumber !== null ? actualPrice : product.price);
                 }
@@ -2967,20 +2994,24 @@
                 if (stackImages[index] && imageUri) {
                     setComboCatalogImage(stackImages[index], imageUri, itemName, updateComboImageFallback);
                 }
+                if (stackImages[index] && !imageUri) stackImages[index].hidden = true;
             });
 
             const totalElement = combo.querySelector('.combo-total strong');
-            setStockButton(button, products.every(function (product) { return catalogInStock(findComboCatalogItem(product)); }));
+            const hasAllPrices = prices.length === products.length && prices.every(function (price) { return price !== null; });
+            setStockButton(button, hasAllPrices && products.every(function (product) {
+                return catalogInStock(findComboCatalogItem(product));
+            }), hasAllPrices ? 'Sold out' : 'Unavailable');
             const breakdownElement = combo.querySelector('.combo-total span');
             const validPrices = prices.filter(function (price) { return price !== null; });
             const total = validPrices.reduce(function (sum, price) { return sum + price; }, 0);
-            if (breakdownElement && validPrices.length) {
-                breakdownElement.textContent = validPrices.map(function (price) {
+            if (breakdownElement) {
+                breakdownElement.textContent = hasAllPrices ? prices.map(function (price) {
                     return formatCatalogPrice(price);
-                }).join(' + ');
+                }).join(' + ') : 'Unavailable';
             }
-            if (totalElement && validPrices.length) {
-                totalElement.textContent = formatCatalogPrice(total);
+            if (totalElement) {
+                totalElement.textContent = hasAllPrices ? formatCatalogPrice(total) : 'Unavailable';
             }
 
             let oldTotalElement = combo.querySelector('[data-combo-old-total]');
@@ -3014,9 +3045,9 @@
                         return candidate.getAttribute('data-product-id') === product.id;
                     }
                 );
-                const item = findCatalogProductItem(product.id) || findCatalogItem(
-                    card ? card.getAttribute('data-search') : product.name
-                );
+                const item = product.itemId
+                    ? catalogImageItems.find(function (item) { return (item.id || item.Id) === product.itemId; })
+                    : findCatalogProductItem(product.id);
                 const imageUri = item ? getCatalogImageUri(item.imageUri || item.ImageUri) : '';
                 if (!imageUri) return;
 
@@ -3033,28 +3064,55 @@
         }
 
         async function loadCatalogProductImages() {
+            const requestId = ++catalogRequestId;
             const status = document.getElementById('catalog-image-status');
+            const retry = document.getElementById('catalog-retry');
             const pageSize = 50;
+            catalogLoaded = false;
+            document.documentElement.dataset.catalogState = 'loading';
+            status.hidden = false;
+            status.textContent = 'Loading current prices and availability...';
+            retry.hidden = true;
             try {
                 const firstPage = await window.SpicebloomsApi.getCatalogItems({ page: 1, pageSize: pageSize });
+                if (requestId !== catalogRequestId) return;
                 if (!firstPage || !Array.isArray(firstPage.itemList)) {
                     throw new Error('The catalog items API returned an unexpected response.');
                 }
 
-                catalogImageItems = firstPage.itemList.slice();
+                let items = firstPage.itemList.slice();
                 const total = Number(firstPage.totalListCount);
                 const pageCount = Number.isFinite(total) && total > 0
                     ? Math.ceil(total / pageSize)
                     : 1;
                 for (let page = 2; page <= pageCount; page += 1) {
                     const result = await window.SpicebloomsApi.getCatalogItems({ page: page, pageSize: pageSize });
+                    if (requestId !== catalogRequestId) return;
                     if (!result || !Array.isArray(result.itemList)) {
                         throw new Error('The catalog items API returned an unexpected response.');
                     }
                     if (result.itemList.length === 0) break;
-                    catalogImageItems.push(...result.itemList);
+                    items.push(...result.itemList);
                 }
 
+                items = items.filter(window.SpicebloomsPricing.isCatalogItemAllowed);
+                items.forEach(function (item) {
+                    if (!(item.id || item.Id) || catalogActualPrice(item) === null || catalogActualPrice(item) <= 0) {
+                        throw new Error('The catalog contains a product without a valid ID or price.');
+                    }
+                });
+                window.SpicebloomsVariants.groupItems(items);
+                const choices = PRODUCT_CATALOG.filter(function (product) { return product.variants; }).map(function (product) {
+                    return { id: product.id, flavor: product.selectedFlavor, size: product.selectedSize };
+                });
+                for (let index = PRODUCT_CATALOG.length - 1; index >= 0; index -= 1) {
+                    const product = PRODUCT_CATALOG[index];
+                    if (Object.prototype.hasOwnProperty.call(API_CATALOG_PRODUCTS, product.id)) continue;
+                    const card = document.querySelector('#all-products [data-product-id="' + product.id + '"]');
+                    if (card) card.remove();
+                    PRODUCT_CATALOG.splice(index, 1);
+                }
+                catalogImageItems = items;
                 catalogLoaded = true;
                 const failedProducts = Object.keys(API_CATALOG_PRODUCTS).filter(function (productId) {
                     const card = document.querySelector('#all-products [data-product-id="' + productId + '"]');
@@ -3065,8 +3123,19 @@
                         if (product) {
                             product.inStock = false;
                             product.catalogUnavailable = true;
+                            product.price = null;
+                            product.mrp = null;
+                            product.image = '';
+                        }
+                        const image = card.querySelector('.product-image');
+                        if (image) {
+                            image.removeAttribute('src');
+                            image.alt = 'Product unavailable';
                         }
                         setStockButton(card.querySelector('button[onclick*="addProductToCart"], [data-product-add]'), false, 'Unavailable');
+                        const prices = getCatalogPriceElements(card);
+                        if (prices.actualPrice) prices.actualPrice.textContent = 'Unavailable';
+                        if (prices.oldPrice) prices.oldPrice.hidden = true;
                         return true;
                     }
                     applyCatalogProductItem(productId, item);
@@ -3074,25 +3143,38 @@
                 });
                 applyCatalogImages();
                 addMissingCatalogCards();
+                choices.forEach(function (choice) {
+                    const product = getProductById(choice.id);
+                    if (product && product.variants
+                        && product.variants.some(function (item) { return window.SpicebloomsVariants.text(item, 'flavor') === choice.flavor; })
+                        && product.variants.some(function (item) { return window.SpicebloomsVariants.text(item, 'quantity') === choice.size; })) {
+                        selectProductVariant(product, choice.flavor, choice.size);
+                    }
+                });
                 mountCardHearts();
                 renderWishlist();
                 applyCatalogFilters();
                 syncProductFromHash();
                 refreshStockControls();
+                document.documentElement.dataset.catalogState = 'ready';
                 if (status) {
                     if (failedProducts.length) {
-                        status.textContent = 'Some products are unavailable in the current catalog. Their images and details remain visible, but they cannot be purchased.';
+                        status.textContent = 'Some products are unavailable in the current catalog and cannot be purchased.';
                         status.hidden = false;
                     } else {
                         status.hidden = true;
                     }
                 }
             } catch (error) {
+                if (requestId !== catalogRequestId) return;
+                catalogLoaded = false;
+                document.documentElement.dataset.catalogState = 'error';
                 console.error('Unable to load products from the catalog API.', error);
                 if (status) {
-                    status.textContent = 'The latest catalog could not be loaded. Some products or options may be unavailable. Please refresh or try again.';
+                    status.textContent = 'Current prices and availability could not be loaded. Purchasing is paused. Please retry.';
                     status.hidden = false;
                 }
+                retry.hidden = false;
             }
         }
 
@@ -3153,7 +3235,7 @@
                     '<img src="' + item.image + '" alt="' + item.name.replace(/"/g, '') + '">' +
                     '<div class="wishlist-body">' +
                     '<strong>' + item.name + '</strong>' +
-                    '<span class="wishlist-price">Rs ' + item.price + '/-</span>' +
+                    '<span class="wishlist-price">' + (item.catalogUnavailable ? 'Unavailable' : 'Rs ' + item.price + '/-') + '</span>' +
                     '<button type="button" class="wishlist-add" data-wishlist-add="' + item.id + '" ' + (item.variants ? '' : item.inStock === false ? 'disabled' : '') + '>' + (item.variants ? 'Choose options' : item.catalogUnavailable ? 'Unavailable' : item.inStock === false ? 'Sold out' : 'Add to Cart') + '</button>' +
                     '</div>' +
                     '</article>';
@@ -3260,7 +3342,10 @@
 
         function openProductDetail(id, pushHash) {
             const product = getProductById(id);
-            if (!product) return;
+            if (!product) {
+                if (catalogLoaded) closeProductDetail();
+                return;
+            }
 
             const detail = document.getElementById('product-detail');
             const img = detail.querySelector('[data-pd-image]');
@@ -3318,7 +3403,7 @@
             relatedWrap.innerHTML = related.map(function (item) {
                 return '<a class="pd-related-card" href="#product=' + item.id + '">' +
                     '<img src="' + item.image + '" alt="' + item.name.replace(/"/g, '') + '">' +
-                    '<div><strong>' + item.name + '</strong><span>Rs ' + item.price + '/-</span></div>' +
+                    '<div><strong>' + item.name + '</strong><span>' + (item.catalogUnavailable ? 'Unavailable' : 'Rs ' + item.price + '/-') + '</span></div>' +
                     '</a>';
             }).join('');
 
@@ -3357,10 +3442,11 @@
         // Initialize on page load
         window.addEventListener('DOMContentLoaded', function () {
             updateCartBadge();
-            document.querySelectorAll('[data-combo-add]').forEach(function (button) {
-                applyComboCatalogData(button);
-            });
             loadCatalogProductImages();
+            document.getElementById('catalog-retry').addEventListener('click', loadCatalogProductImages);
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) loadCatalogProductImages();
+            });
 
             document.querySelectorAll('[data-combo-filter]').forEach(function (btn) {
                 btn.addEventListener('click', function () {

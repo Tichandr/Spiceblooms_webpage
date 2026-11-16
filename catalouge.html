@@ -795,6 +795,7 @@
         })();
     </script>
     <script src="api.js"></script>
+    <script src="cart-pricing.js"></script>
     <script>
         (function () {
             const content = document.getElementById('catalog-content');
@@ -833,6 +834,7 @@
             };
 
             const renderItem = (item) => {
+                if (!window.SpicebloomsPricing.isCatalogItemAllowed(item)) return '';
                 const name = item.itemName || 'Untitled item';
                 const imageUrl = safeImageUrl(item.imageUri);
                 const image = imageUrl

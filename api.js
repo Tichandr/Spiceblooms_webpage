@@ -90,7 +90,8 @@
     body,
     token,
     attachSessionToken = true,
-    retryUnauthorized = true
+    retryUnauthorized = true,
+    cache = "default"
   } = {}) {
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
@@ -103,6 +104,7 @@
       response = await fetch(API_BASE_URL + path, {
         method,
         headers,
+        cache,
         body: body !== undefined ? JSON.stringify(body) : undefined
       });
     } catch (error) {
@@ -123,7 +125,8 @@
           body,
           token: refreshedSession.token,
           attachSessionToken: false,
-          retryUnauthorized: false
+          retryUnauthorized: false,
+          cache
         });
       }
       throw new ApiError(
@@ -203,7 +206,11 @@
       const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
       if (categoryId) params.set("categoryId", categoryId);
       if (subCategoryId) params.set("subCategoryId", subCategoryId);
-      return request("/api/Catalog/items?" + params.toString());
+      return request("/api/Catalog/items?" + params.toString(), {
+        cache: "no-store",
+        attachSessionToken: false,
+        retryUnauthorized: false
+      });
     },
 
     /** GET/POST /api/Users/me/addresses (requires bearer token) */

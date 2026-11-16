@@ -5,7 +5,7 @@
  */
 (function () {
   const CACHE_KEY = "spiceblooms_catalog_prices";
-  const CACHE_MS = 10 * 60 * 1000;
+  let currentPrices = null;
 
   const PRODUCT_KEYWORDS = {
     moringa: ["moringa instant rice mix", "moringa instant ricemix", "moringa rice mix"],
@@ -40,20 +40,13 @@
     return Number.isFinite(number) && number > 0 ? number : null;
   };
 
-  function readCache() {
-    try {
-      const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
-      if (cached && cached.version === 2 && cached.at && Date.now() - cached.at < CACHE_MS && cached.prices) return cached.prices;
-    } catch (error) {
-      return null;
-    }
-    return null;
+  function isCatalogItemAllowed(item) {
+    return !!item && ![item.brandName, item.BrandName, item.itemName, item.ItemName, item.name]
+      .some(value => /madhuri|maduri/i.test(String(value || "")));
   }
 
   async function loadPrices(force) {
-    const cached = readCache();
-    if (!force && cached && Object.values(cached).every((item) => item.itemId && typeof item.inStock === "boolean"
-      && item.catalogUnavailable === false)) return cached;
+    if (force === false && currentPrices) return currentPrices;
     if (!window.SpicebloomsApi || !window.SpicebloomsApi.getCatalogItems) {
       throw new Error("Prices are unavailable right now.");
     }
@@ -71,6 +64,7 @@
     }
     const prices = {};
     items.forEach((item) => {
+      if (!isCatalogItemAllowed(item)) return;
       const key = productKey(item.itemName || item.ItemName);
       const price = toNumber(item.actualPrice !== undefined ? item.actualPrice : item.ActualPrice);
       if (!key || price === null) return;
@@ -85,13 +79,15 @@
         itemName: item.itemName,
         itemQuantity: item.quantity || "",
         imageUri: item.imageUri || "",
+        image: item.imageUri || "",
         productGroupId: item.productGroupId || "",
         flavor: item.flavor || ""
       };
       prices["id:" + item.id] = entry;
       if (!item.productGroupId && (!prices[key] || prices[key].price < price)) prices[key] = entry;
     });
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ version: 2, at: Date.now(), prices: prices }));
+    currentPrices = prices;
+    sessionStorage.removeItem(CACHE_KEY);
     return prices;
   }
 
@@ -100,25 +96,29 @@
     const prices = await loadPrices(force);
     let changed = false;
     const next = cart.map((item) => {
-      const match = item.itemId ? prices["id:" + item.itemId] : prices[productKey(item.name)];
+      const match = item.itemId ? prices["id:" + item.itemId]
+        : isCatalogItemAllowed(item) ? prices[productKey(item.name)] : null;
       if (!match) {
         if (item.catalogUnavailable === true && item.inStock === false) return item;
         changed = true;
         return Object.assign({}, item, { inStock: false, catalogUnavailable: true });
       }
+      const name = isCatalogItemAllowed(item) ? item.name : match.itemName;
       if (Number(item.price) === match.price && Number(item.mrp || 0) === match.mrp
+        && item.name === name && item.image === match.image
         && item.itemId === match.itemId && item.brandName === match.brandName
         && item.itemName === match.itemName && item.itemQuantity === match.itemQuantity
         && item.imageUri === match.imageUri && item.inStock === match.inStock
         && item.catalogUnavailable === match.catalogUnavailable
         && item.productGroupId === match.productGroupId && item.flavor === match.flavor) return item;
       changed = true;
-      return Object.assign({}, item, match);
+      return Object.assign({}, item, match, { name: name });
     });
     return { cart: next, changed: changed };
   }
 
-  const api = { productKey: productKey, loadPrices: loadPrices, reprice: reprice, toNumber: toNumber };
+  const api = { productKey: productKey, loadPrices: loadPrices, reprice: reprice, toNumber: toNumber,
+    isCatalogItemAllowed: isCatalogItemAllowed };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (typeof window !== "undefined") window.SpicebloomsPricing = api;
 })();

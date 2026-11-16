@@ -7,6 +7,7 @@ const vm = require("node:vm");
 const root = path.join(__dirname, "..");
 const products = fs.readFileSync(path.join(root, "products.html"), "utf8");
 const variants = require("../catalog-variants.js");
+const pricing = require("../cart-pricing.js");
 
 test("variant groups select an exact flavour/size and reject ambiguous SKU metadata", () => {
   const items = ["Peri Peri", "Cheese", "Salty"].flatMap(flavor =>
@@ -36,7 +37,7 @@ test("Bag variant lines map back to their product family when moved to the wishl
   const bag = fs.readFileSync(path.join(root, "cart.html"), "utf8");
   const start = bag.indexOf("        function enrich(item)");
   const end = bag.indexOf("        let bagDeliveryPin", start);
-  const context = { findCatalog: () => null, window: { SpicebloomsVariants: variants } };
+  const context = { findCatalog: () => null, window: { SpicebloomsVariants: variants, SpicebloomsPricing: pricing } };
   vm.createContext(context);
   vm.runInContext(bag.slice(start, end), context);
   const row = context.enrich({
@@ -55,18 +56,18 @@ test("product additions and combos reject sold-out items without changing the ca
       getItem: () => "[]",
       setItem: (key, value) => saved.push([key, value])
     },
-    window: { alert: (message) => alerts.push(message), location: {} },
+    window: { alert: (message) => alerts.push(message), location: {}, SpicebloomsPricing: pricing },
     updateCartBadge: () => {},
     getCatalogImage: () => "",
     findCatalogItem: () => ({ inStock: false }),
-    findComboCatalogItem: (item) => ({ inStock: item.name !== "Sold out" })
+    findComboCatalogItem: (item) => ({ actualPrice: 155, inStock: item.name !== "Sold out" })
   };
   vm.createContext(context);
   const start = products.indexOf("        function getCart()");
   const end = products.indexOf("        function updateCartBadge()", start);
   assert.ok(start > 0 && end > start);
   vm.runInContext(products.slice(start, end), context);
-  vm.runInContext('catalogImageItems = [{ id: "sold-out", inStock: false }]', context);
+  vm.runInContext('catalogLoaded = true; catalogImageItems = [{ id: "sold-out", inStock: false }]', context);
   context.addToCart("Sold out", 155, "", { itemId: "sold-out" });
   context.addCombo([{ name: "Available" }, { name: "Sold out" }]);
   assert.equal(saved.length, 0);
@@ -78,7 +79,7 @@ test("adding variants preserves their exact SKU, photo and independent quantitie
   let saved = "[]";
   const context = {
     localStorage: { getItem: () => saved, setItem: (key, value) => { saved = value; } },
-    window: { location: {} },
+    window: { location: {}, SpicebloomsPricing: pricing },
     updateCartBadge: () => {},
     getCatalogImage: () => "wrong-family-image.png",
     getCatalogImageUri: value => value
@@ -88,8 +89,8 @@ test("adding variants preserves their exact SKU, photo and independent quantitie
   const end = products.indexOf("        function updateCartBadge()", start);
   vm.runInContext(products.slice(start, end), context);
   vm.runInContext(`catalogLoaded = true; catalogImageItems = [
-    { id: "peri-250", productGroupId: "edamame", flavor: "Peri Peri", quantity: "250 g", imageUri: "peri.png" },
-    { id: "cheese-250", productGroupId: "edamame", flavor: "Cheese", quantity: "250 g", imageUri: "cheese.png" }
+    { id: "peri-250", actualPrice: 250, productGroupId: "edamame", flavor: "Peri Peri", quantity: "250 g", imageUri: "peri.png" },
+    { id: "cheese-250", actualPrice: 250, productGroupId: "edamame", flavor: "Cheese", quantity: "250 g", imageUri: "cheese.png" }
   ];`, context);
   context.addToCart("Edamame - Peri Peri - 250 g", 250, "", { itemId: "peri-250", redirect: false });
   context.addToCart("Edamame - Cheese - 250 g", 250, "", { itemId: "cheese-250", redirect: false });
@@ -123,7 +124,7 @@ test("stock buttons show sold out and restore their original label after restock
 test("a successfully loaded catalog prevents adding a missing ABC fallback product", () => {
   const alerts = [];
   const context = {
-    window: { alert: (message) => alerts.push(message) },
+    window: { alert: (message) => alerts.push(message), SpicebloomsPricing: pricing },
     findCatalogItem: () => null
   };
   vm.createContext(context);
@@ -171,4 +172,113 @@ test("product and catalogue inline scripts compile", () => {
       if (script[1].trim()) new vm.Script(script[1]);
     }
   }
+});
+
+test("pending catalog blocks purchases and current API data replaces an existing stale cart price/name", () => {
+  let saved = JSON.stringify([{ name: "Old name", itemId: "curry", price: 199, quantity: 1 }]);
+  const alerts = [];
+  const context = {
+    localStorage: { getItem: () => saved, setItem: (key, value) => { saved = value; } },
+    window: { alert: value => alerts.push(value), SpicebloomsPricing: pricing, location: {} },
+    updateCartBadge: () => {}, getCatalogImageUri: value => value || "",
+    findComboCatalogItem: () => null
+  };
+  vm.createContext(context);
+  vm.runInContext(products.slice(products.indexOf("        function getCart()"),
+    products.indexOf("        function updateCartBadge()")), context);
+  context.addToCart("Old name", 199, "old.png", { itemId: "curry" });
+  context.addCombo([{ name: "Old name", price: 199 }]);
+  assert.equal(JSON.parse(saved)[0].quantity, 1);
+  assert.equal(alerts.length, 2);
+  assert.ok(alerts.every(message => /have not loaded/.test(message)));
+  vm.runInContext(`catalogLoaded = true; catalogImageItems = [
+    { id: "curry", brandName: "SpiceBlooms", itemName: "Curry Leaf Powder", actualPrice: 129, imageUri: "current.png" },
+    { id: "retired", brandName: "MADURI", itemName: "Royya Karam", actualPrice: 199 }
+  ]`, context);
+  context.addToCart("Old name", 199, "old.png", { itemId: "curry", redirect: false });
+  const cart = JSON.parse(saved);
+  assert.deepEqual(cart.map(item => [item.name, item.price, item.quantity, item.image]),
+    [["Curry Leaf Powder", 129, 2, "current.png"]]);
+  context.addToCart("Royya Karam", 199, "", { itemId: "retired" });
+  assert.equal(saved, JSON.stringify(cart));
+  assert.match(alerts.at(-1), /not available/);
+});
+
+function catalogLoader(getCatalogItems) {
+  const status = {};
+  const retry = {};
+  const state = {};
+  const context = {
+    document: { documentElement: { dataset: state },
+      getElementById: id => id === "catalog-retry" ? retry : status,
+      querySelector: () => null },
+    window: { SpicebloomsApi: { getCatalogItems }, SpicebloomsVariants: variants, SpicebloomsPricing: pricing },
+    PRODUCT_CATALOG: [], API_CATALOG_PRODUCTS: {},
+    catalogActualPrice: item => Number(item.actualPrice),
+    console: { error: () => {} }
+  };
+  for (const name of ["applyCatalogImages", "addMissingCatalogCards", "mountCardHearts",
+    "renderWishlist", "applyCatalogFilters", "syncProductFromHash", "refreshStockControls"]) context[name] = () => {};
+  vm.createContext(context);
+  vm.runInContext("let catalogRequestId = 0, catalogLoaded = false, catalogImageItems = [];\n" +
+    products.slice(products.indexOf("        async function loadCatalogProductImages()"),
+      products.indexOf("        function getProductById(")), context);
+  return { context, state, status, retry,
+    load: () => context.loadCatalogProductImages(),
+    items: () => JSON.parse(vm.runInContext("JSON.stringify(catalogImageItems)", context)),
+    ready: () => vm.runInContext("catalogLoaded", context) };
+}
+
+test("slow/failed catalog stays gated; retry restores current prices without retired brands", async () => {
+  let fail;
+  const pending = new Promise((resolve, reject) => { fail = reject; });
+  let result = pending;
+  const flow = catalogLoader(() => result);
+  const loading = flow.load();
+  assert.equal(flow.state.catalogState, "loading");
+  assert.equal(flow.ready(), false);
+  fail(new Error("offline"));
+  await loading;
+  assert.equal(flow.state.catalogState, "error");
+  assert.equal(flow.retry.hidden, false);
+  assert.match(flow.status.textContent, /Purchasing is paused/);
+  result = { itemList: [
+    { id: "current", itemName: "Royya Karam", brandName: "SpiceBlooms", actualPrice: 179 },
+    { id: "retired", itemName: "MADHURI Royya Karam", actualPrice: 199 },
+    { id: "retired-brand", brandName: "Maduri Spices", itemName: "Masala Karam", actualPrice: 199 }
+  ], totalListCount: 3 };
+  await flow.load();
+  assert.equal(flow.state.catalogState, "ready");
+  assert.equal(flow.ready(), true);
+  assert.deepEqual(flow.items().map(item => item.id), ["current"]);
+});
+
+test("an older catalog response cannot overwrite a newer refresh", async () => {
+  const releases = [];
+  const flow = catalogLoader(() => new Promise(resolve => releases.push(resolve)));
+  const older = flow.load();
+  const newer = flow.load();
+  releases[1]({ itemList: [{ id: "curry", actualPrice: 129 }], totalListCount: 1 });
+  await newer;
+  releases[0]({ itemList: [{ id: "curry", actualPrice: 199 }], totalListCount: 1 });
+  await older;
+  assert.equal(flow.items()[0].actualPrice, 129);
+  assert.equal(flow.state.catalogState, "ready");
+});
+
+test("a missing named combo component cannot fall back to another rice mix or replace an exact SKU", () => {
+  const context = {
+    catalogImageItems: [{ id: "moringa-current", itemName: "Moringa Instant Rice Mix", actualPrice: 149 }],
+    normalizeCatalogName: value => value.toLowerCase(),
+    getCatalogItemName: item => item.itemName,
+    findCatalogItem: () => { throw new Error("Known combo component must not use fuzzy matching"); }
+  };
+  vm.createContext(context);
+  vm.runInContext(products.slice(products.indexOf("        const API_CATALOG_PRODUCTS ="),
+    products.indexOf("        function getCatalogPriceElements(")), context);
+  vm.runInContext(products.slice(products.indexOf("        function findComboCatalogItem("),
+    products.indexOf("        function renderComboItemPrice(")), context);
+  assert.equal(context.findComboCatalogItem({ name: "Chicken Powder Instant Rice Mix" }), null);
+  assert.equal(context.findComboCatalogItem({ name: "Moringa Instant Rice Mix" }).id, "moringa-current");
+  assert.equal(context.findComboCatalogItem({ name: "Moringa Instant Rice Mix", itemId: "retired-sku" }), null);
 });
