@@ -264,7 +264,7 @@ test("address page inline scripts compile", () => {
 test("authenticated checkout creates and confirms the backend order", async () => {
   const flow = checkout();
   await flow.run();
-  assert.ok(flow.calls.every((call) => call.url.startsWith("https://localhost:7100/")));
+  assert.ok(flow.calls.every((call) => call.url.startsWith("https://spiceblooms-api-dev.azurewebsites.net/")));
   assert.ok(flow.calls.every((call) => call.request.headers.Authorization === "Bearer jwt-test"));
   const order = flow.calls.find((call) => call.url.endsWith("/api/Orders")).body;
   assert.equal(order.deliveryAddressId, "backend-address");

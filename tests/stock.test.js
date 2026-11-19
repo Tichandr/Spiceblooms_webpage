@@ -6,8 +6,21 @@ const vm = require("node:vm");
 
 const root = path.join(__dirname, "..");
 const products = fs.readFileSync(path.join(root, "products.html"), "utf8");
+const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const catalogue = fs.readFileSync(path.join(root, "catalouge.html"), "utf8");
 const variants = require("../catalog-variants.js");
 const pricing = require("../cart-pricing.js");
+
+test("home page loads the API and pricing helpers before requesting catalog prices", () => {
+  const apiScript = home.indexOf('<script src="api.js"></script>');
+  const pricingScript = home.indexOf('<script src="cart-pricing.js"></script>');
+  const loadPrices = home.indexOf("window.SpicebloomsPricing.loadPrices()");
+  assert.ok(apiScript >= 0 && apiScript < pricingScript);
+  assert.ok(pricingScript < loadPrices);
+  for (const script of home.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
+    if (!/\bsrc\s*=/.test(script[1]) && script[2].trim()) new vm.Script(script[2]);
+  }
+});
 
 test("variant groups select an exact flavour/size and reject ambiguous SKU metadata", () => {
   const items = ["Peri Peri", "Cheese", "Salty"].flatMap(flavor =>
@@ -174,6 +187,51 @@ test("product and catalogue inline scripts compile", () => {
   }
 });
 
+test("product descriptions collapse to three lines and expand from Read more", () => {
+  const start = products.indexOf("        function setProductDescriptionExpanded(");
+  const end = products.indexOf("        // Cart Management Functions", start);
+  const context = { document: { createElement: () => { throw new Error("Unexpected button creation"); } } };
+  vm.createContext(context);
+  vm.runInContext(products.slice(start, end), context);
+  const classes = new Set();
+  const description = {
+    classList: {
+      add: value => classes.add(value),
+      remove: value => classes.delete(value),
+      toggle: value => classes.has(value) ? (classes.delete(value), false) : (classes.add(value), true)
+    },
+    scrollHeight: 120,
+    clientHeight: 60,
+    nextElementSibling: null
+  };
+  const attributes = {};
+  const button = {
+    tagName: "BUTTON",
+    dataset: {},
+    matches: () => false,
+    setAttribute: (name, value) => { attributes[name] = value; }
+  };
+  description.nextElementSibling = button;
+  context.initializeProductReadMore({ querySelector: () => description });
+  assert.equal(classes.has("line-clamp-3"), true);
+  assert.equal(button.hidden, false);
+  button.onclick();
+  assert.equal(classes.has("line-clamp-3"), false);
+  assert.equal(button.textContent, "Read less");
+  assert.equal(attributes["aria-expanded"], "true");
+  button.onclick();
+  assert.equal(classes.has("line-clamp-3"), true);
+  assert.equal(button.textContent, "Read more");
+});
+
+test("catalogue descriptions include an expandable Read more control", () => {
+  assert.match(catalogue, /catalog-description-collapsed[\s\S]*?-webkit-line-clamp:\s*3/);
+  assert.match(catalogue, /data-catalog-description/);
+  assert.match(catalogue, /data-catalog-read-more aria-expanded="false">Read more/);
+  assert.match(catalogue, /button\.textContent = collapsed \? 'Read more' : 'Read less'/);
+  assert.match(catalogue, /initializeCatalogReadMore\(categoriesContainer\)/);
+});
+
 test("pending catalog blocks purchases and current API data replaces an existing stale cart price/name", () => {
   let saved = JSON.stringify([{ name: "Old name", itemId: "curry", price: 199, quantity: 1 }]);
   const alerts = [];
@@ -211,10 +269,12 @@ function catalogLoader(getCatalogItems) {
   const context = {
     document: { documentElement: { dataset: state },
       getElementById: id => id === "catalog-retry" ? retry : status,
-      querySelector: () => null },
+      querySelector: () => null,
+      querySelectorAll: () => [] },
     window: { SpicebloomsApi: { getCatalogItems }, SpicebloomsVariants: variants, SpicebloomsPricing: pricing },
     PRODUCT_CATALOG: [], API_CATALOG_PRODUCTS: {},
     catalogActualPrice: item => Number(item.actualPrice),
+    initializeProductReadMore: () => {},
     console: { error: () => {} }
   };
   for (const name of ["applyCatalogImages", "addMissingCatalogCards", "mountCardHearts",

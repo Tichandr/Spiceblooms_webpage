@@ -1156,11 +1156,11 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="index.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
-                    <a href="index.html#about"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
                     <a href="products.html" class="text-primary font-semibold">Products</a>
                     <a href="catalouge.html" class="text-primary font-semibold">Catalogue</a>
-                    <a href="index.html#contact"
+                    <a href="index.html#about"
+                        class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
+                    <a href="connect.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
                     <a href="cart.html"
                         class="relative text-gray-700 hover:text-primary transition-colors duration-200">
@@ -1189,11 +1189,11 @@
         <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
                 <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
-                <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
                 <a href="products.html" class="block px-3 py-2 text-primary font-semibold">Products</a>
                 <a href="catalouge.html" class="block px-3 py-2 text-primary font-semibold">Catalogue</a>
                 <a href="cart.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Cart</a>
-                <a href="index.html#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
+                <a href="connect.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
                 <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
@@ -2302,13 +2302,38 @@
 
         function toggleReadMore(descId, btn) {
             const desc = document.getElementById(descId);
-            desc.classList.toggle("line-clamp-3");
+            if (desc) setProductDescriptionExpanded(desc, btn);
+        }
 
-            if (desc.classList.contains("line-clamp-3")) {
-                btn.innerText = "Read more";
-            } else {
-                btn.innerText = "Read less";
+        function setProductDescriptionExpanded(description, button) {
+            const collapsed = description.classList.toggle("line-clamp-3");
+            button.textContent = collapsed ? "Read more" : "Read less";
+            button.setAttribute("aria-expanded", String(!collapsed));
+        }
+
+        function initializeProductReadMore(card) {
+            const description = card.querySelector("p.text-gray-600");
+            if (!description) return;
+
+            let button = description.nextElementSibling;
+            if (!button || button.tagName !== "BUTTON" || !button.matches('[data-read-more]')) {
+                if (!button || button.tagName !== "BUTTON") {
+                    button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "text-primary font-medium text-sm hover:underline self-start";
+                    description.insertAdjacentElement("afterend", button);
+                }
+                button.dataset.readMore = "";
             }
+
+            description.classList.add("line-clamp-3");
+            button.textContent = "Read more";
+            button.setAttribute("aria-expanded", "false");
+            button.onclick = function () {
+                setProductDescriptionExpanded(description, button);
+            };
+            button.hidden = description.scrollHeight <= description.clientHeight + 1;
+            if (button.hidden) description.classList.remove("line-clamp-3");
         }
 
         // Cart Management Functions
@@ -2646,6 +2671,9 @@
 
             if (cardName) cardName.textContent = name;
             if (cardDescription) cardDescription.textContent = product.desc;
+            if (cardDescription && document.documentElement.dataset.catalogState === 'ready') {
+                initializeProductReadMore(card);
+            }
             if (cardImage && !image) {
                 cardImage.removeAttribute('src');
                 cardImage.alt = name + '. Image unavailable';
@@ -3157,6 +3185,7 @@
                 syncProductFromHash();
                 refreshStockControls();
                 document.documentElement.dataset.catalogState = 'ready';
+                document.querySelectorAll('#all-products .product-card').forEach(initializeProductReadMore);
                 if (status) {
                     if (failedProducts.length) {
                         status.textContent = 'Some products are unavailable in the current catalog and cannot be purchased.';
