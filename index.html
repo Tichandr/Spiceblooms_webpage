@@ -486,6 +486,11 @@
         background: #e85d2b;
     }
 
+    .home-add:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
     .home-shop-more {
         display: flex;
         justify-content: center;
@@ -1043,13 +1048,12 @@
 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
-                    <a href="#about" class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
-                        <a href="products.html"
+                    <a href="products.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
                     <a href="exports.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Exports</a>
-                    <a href="#contact"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
+                    <a href="index.html#about" class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
+                    <a href="connect.html" class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
                     <a href="cart.html" class="relative text-gray-700 hover:text-primary transition-colors duration-200" aria-label="Cart">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1082,11 +1086,11 @@
         <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 bg-white/40 backdrop-blur-xl border-t border-white/30">
                 <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
-                <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
                 <a href="products.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Products</a>
                 <a href="exports.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Exports</a>
+                <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
+                <a href="connect.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
                 <a href="cart.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Cart</a>
-                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
                 <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
@@ -1114,7 +1118,6 @@
             </video>
         </div>
     </section>
-
 
     <!-- About Section -->
     <section id="about" class="py-20 bg-light">
@@ -1181,8 +1184,7 @@
             </div>
         </div>
     </section>
-
-    <section id="home-products" class="home-shop festive-campaign" aria-labelledby="home-products-title">
+<section id="home-products" class="home-shop festive-campaign" aria-labelledby="home-products-title">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="home-shop-head">
                 <h2 id="home-products-title">Shop our spices</h2>
@@ -1195,8 +1197,8 @@
                     <img src="assets/Naturals/21%20Garam%20Masala%20Powder.png" alt="21 Garam Masala" width="640" height="640">
                     <div class="home-product-body">
                         <h3>21 Garam Masala</h3>
-                        <p class="home-product-price">Rs 199/-</p>
-                        <button type="button" class="home-add" data-home-add='{"name":"Madhuri Spices 21 Garam Masala Tradition in Every Pinch","price":199,"image":"assets/Naturals/21%20Garam%20Masala%20Powder.png"}'>
+                        <p class="home-product-price" data-home-price>Loading current price...</p>
+                        <button type="button" class="home-add" data-home-add='{"productKey":"garam-21","name":"Madhuri Spices 21 Garam Masala Tradition in Every Pinch","image":"assets/Naturals/21%20Garam%20Masala%20Powder.png"}' disabled>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
@@ -1211,8 +1213,8 @@
                     <img src="assets/Naturals/Kandi%20Podi.png" alt="Kandi Podi" width="640" height="640">
                     <div class="home-product-body">
                         <h3>Kandi Podi</h3>
-                        <p class="home-product-price">Rs 199/-</p>
-                        <button type="button" class="home-add" data-home-add='{"name":"Kandi Podi","price":199,"image":"assets/Naturals/Kandi%20Podi.png"}'>
+                        <p class="home-product-price" data-home-price>Loading current price...</p>
+                        <button type="button" class="home-add" data-home-add='{"productKey":"kandi","name":"Kandi Podi","image":"assets/Naturals/Kandi%20Podi.png"}' disabled>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
@@ -1227,8 +1229,8 @@
                     <img src="assets/Naturals/Roya%20Karma.png" alt="Royya Karam" width="640" height="640">
                     <div class="home-product-body">
                         <h3>Royya Karam</h3>
-                        <p class="home-product-price">Rs 199/-</p>
-                        <button type="button" class="home-add" data-home-add='{"name":"Madhuri Spices Royya Karam","price":199,"image":"assets/Naturals/Roya%20Karma.png"}'>
+                        <p class="home-product-price" data-home-price>Loading current price...</p>
+                        <button type="button" class="home-add" data-home-add='{"productKey":"royya","name":"Madhuri Spices Royya Karam","image":"assets/Naturals/Roya%20Karma.png"}' disabled>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
@@ -1243,8 +1245,8 @@
                     <img src="assets/Naturals/Karivepaku%20podi.png" alt="Karivepaku Podi" width="640" height="640">
                     <div class="home-product-body">
                         <h3>Karivepaku Podi</h3>
-                        <p class="home-product-price">Rs 199/-</p>
-                        <button type="button" class="home-add" data-home-add='{"name":"Spiceblooms Naturals Karivepaku Podi","price":199,"image":"assets/Naturals/Karivepaku%20podi.png"}'>
+                        <p class="home-product-price" data-home-price>Loading current price...</p>
+                        <button type="button" class="home-add" data-home-add='{"productKey":"karivepaku","name":"Spiceblooms Naturals Karivepaku Podi","image":"assets/Naturals/Karivepaku%20podi.png"}' disabled>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
@@ -1596,115 +1598,7 @@
     </script>
 
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-light">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 lg:mb-16">
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">Get In Touch</h2>
-                <p class="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                    Ready to elevate your culinary experience? Let's discuss how SpiceBlooms can meet your needs.
-                </p>
-            </div>
 
-            <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
-                <div class="space-y-8">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold mb-2">Visit Our Office</h3>
-                            <p class="text-gray-600">Balaji gardens, RRV puram junction, Gopalapatnam, Visakhapatnam - 530029
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold mb-2">Call Us</h3>
-                            <p class="text-gray-600">+91 9030760943 <br>Mon-Fri 9AM-6PM IST</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold mb-2 required">Email Us</h3>
-                            <p class="text-gray-600 break-words">spicebloomsenterprise@gmail.com<br>We'll respond within 24 hours</p>
-                        </div>
-                    </div>
-                </div>
-
-                <form action="https://getform.io/f/bjjovrxb" method="POST" novalidate
-                    style="background-color:white;padding:2rem;border-radius:1.5rem;box-shadow:0 10px 25px rgba(0,0,0,0.1);"
-                    id="contactForm" onsubmit="return validateAndSubmit(event)">
-                    <div class="contact-name-grid">
-                        <div style="display:flex;flex-direction:column;">
-                            <input type="text" name="firstName" placeholder="First Name" required
-                                style="width:100%;padding:1rem;border:1px solid #e5e7eb;border-radius:0.75rem;outline:none;"
-                                onblur="validateField(this)" oninput="clearValidation(this)">
-                            <div style="color:#dc3545;font-size:0.875rem;margin-top:0.25rem;display:none;" class="error-message">First name is required.</div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;">
-                            <input type="text" name="lastName" placeholder="Last Name" required
-                                style="width:100%;padding:1rem;border:1px solid #e5e7eb;border-radius:0.75rem;outline:none;"
-                                onblur="validateField(this)" oninput="clearValidation(this)">
-                            <div style="color:#dc3545;font-size:0.875rem;margin-top:0.25rem;display:none;" class="error-message">Last name is required.</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top:1.5rem;display:flex;flex-direction:column;">
-                        <input type="email" name="email" placeholder="Email Address" required
-                            style="width:100%;padding:1rem;border:1px solid #e5e7eb;border-radius:0.75rem;outline:none;"
-                            onblur="validateField(this)" oninput="clearValidation(this)">
-                        <div style="color:#dc3545;font-size:0.875rem;margin-top:0.25rem;display:none;" class="error-message">Please enter a valid email address.</div>
-                    </div>
-
-                    <div style="margin-top:1.5rem;display:flex;flex-direction:column;">
-                        <input type="tel" name="phone" placeholder="Phone Number" required
-                            style="width:100%;padding:1rem;border:1px solid #e5e7eb;border-radius:0.75rem;outline:none;"
-                            onblur="validateField(this)" oninput="clearValidation(this)">
-                        <div style="color:#dc3545;font-size:0.875rem;margin-top:0.25rem;display:none;" class="error-message">Please enter a valid phone number.</div>
-                    </div>
-
-                    <div style="margin-top:1.5rem;display:flex;flex-direction:column;">
-                        <textarea name="message" placeholder="Tell us about your project..." rows="5" required
-                            style="width:100%;padding:1rem;border:1px solid #e5e7eb;border-radius:0.75rem;outline:none;resize:none;"
-                            onblur="validateField(this)" oninput="clearValidation(this)"></textarea>
-                        <div style="color:#dc3545;font-size:0.875rem;margin-top:0.25rem;display:none;" class="error-message">Please enter a message.</div>
-                    </div>
-
-                    <button type="submit" id="submitBtn"
-                        style="margin-top:1.5rem;width:100%;background-color:#ff7a00;color:#fff;padding:1rem 2rem;border-radius:0.75rem;font-weight:600;transition:all 0.3s;transform:none;cursor:pointer;"
-                        onmouseover="this.style.backgroundColor='#e46400';this.style.transform='scale(1.05)'"
-                        onmouseout="this.style.backgroundColor='#ff7a00';this.style.transform='scale(1)'">
-                        <span id="btnText">Send Message</span>
-                        <span id="btnLoading" style="display:none;">Sending...</span>
-                    </button>
-                </form>
-
-            </div>
-        </div>
-    </section>
 
 
 
@@ -1804,118 +1698,13 @@
             }, 3000);
         });
 
-        // Comprehensive form validation and submission
-        function validateAndSubmit(event) {
-            event.preventDefault();
-            
-            const form = document.getElementById("contactForm");
-            const inputs = form.querySelectorAll("input, textarea");
-            let isValid = true;
-            
-            // Validate all fields
-            inputs.forEach(input => {
-                if (!validateField(input)) {
-                    isValid = false;
-                }
-            });
-            
-            // If form is valid, submit it
-            if (isValid) {
-                const submitBtn = document.getElementById("submitBtn");
-                const btnText = document.getElementById("btnText");
-                const btnLoading = document.getElementById("btnLoading");
-                
-                // Show loading state
-                submitBtn.disabled = true;
-                btnText.style.display = "none";
-                btnLoading.style.display = "inline";
-                
-                // Submit the form
-                form.submit();
-            } else {
-                // Scroll to first error
-                const firstError = form.querySelector('.error-message[style*="block"]');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-            
-            return false;
-        }
-
-        // Validate individual field
-        function validateField(input) {
-            const value = input.value.trim();
-            const errorDiv = input.nextElementSibling;
-            let isValid = true;
-            
-            // Reset styling
-            input.style.borderColor = "#e5e7eb";
-            errorDiv.style.display = "none";
-            
-            // Check if field is empty
-            if (!value) {
-                isValid = false;
-                input.style.borderColor = "#dc3545";
-                errorDiv.style.display = "block";
-                return false;
-            }
-            
-            // Specific validation for each field type
-            switch(input.name) {
-                case 'firstName':
-                case 'lastName':
-                    if (value.length < 2) {
-                        isValid = false;
-                        errorDiv.textContent = `${input.name === 'firstName' ? 'First' : 'Last'} name must be at least 2 characters long.`;
-                    }
-                    break;
-                    
-                case 'email':
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(value)) {
-                        isValid = false;
-                        errorDiv.textContent = "Please enter a valid email address.";
-                    }
-                    break;
-                    
-                case 'phone':
-                    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-                    const cleanPhone = value.replace(/[\s\-\(\)]/g, '');
-                    if (!phoneRegex.test(cleanPhone) || cleanPhone.length < 10) {
-                        isValid = false;
-                        errorDiv.textContent = "Please enter a valid phone number (minimum 10 digits).";
-                    }
-                    break;
-                    
-                case 'message':
-                    if (value.length < 10) {
-                        isValid = false;
-                        errorDiv.textContent = "Message must be at least 10 characters long.";
-                    }
-                    break;
-            }
-            
-            // Apply error styling if invalid
-            if (!isValid) {
-                input.style.borderColor = "#dc3545";
-                errorDiv.style.display = "block";
-            }
-            
-            return isValid;
-        }
-
-        // Clear validation when user starts typing
-        function clearValidation(input) {
-            const errorDiv = input.nextElementSibling;
-            input.style.borderColor = "#e5e7eb";
-            errorDiv.style.display = "none";
-        }
     </script>
     <div id="home-cart-toast" class="home-cart-toast" hidden>
         <span>Added to cart.</span>
         <a href="cart.html">View cart</a>
     </div>
+    <script src="api.js"></script>
+    <script src="cart-pricing.js"></script>
     <script>
         (function () {
             const KEY = "cart";
@@ -1945,18 +1734,74 @@
                 clearTimeout(showToast._timer);
                 showToast._timer = setTimeout(() => { toast.hidden = true; }, 3200);
             };
-            document.querySelectorAll("[data-home-add]").forEach((btn) => {
-                btn.addEventListener("click", () => {
-                    let item = null;
-                    try { item = JSON.parse(btn.getAttribute("data-home-add") || "null"); } catch (error) { item = null; }
-                    if (!item || !item.name) return;
+            const homeProducts = Array.from(document.querySelectorAll("[data-home-add]")).map((btn) => {
+                let item = null;
+                try { item = JSON.parse(btn.getAttribute("data-home-add") || "null"); } catch (error) {
+                    console.error("Invalid home product data.", error);
+                }
+                return { button: btn, item: item, catalogItem: null };
+            });
+            const markUnavailable = (product, message) => {
+                const price = product.button.closest(".home-product").querySelector("[data-home-price]");
+                if (price && message !== "Sold out") price.textContent = message;
+                product.button.disabled = true;
+                product.button.textContent = message === "Sold out" ? "Sold out" : "Unavailable";
+            };
+            homeProducts.forEach((product) => {
+                if (!product.item || !product.item.productKey) {
+                    markUnavailable(product, "Price unavailable");
+                    return;
+                }
+                product.button.addEventListener("click", () => {
+                    if (!product.catalogItem || product.catalogItem.inStock === false) return;
                     const cart = getCart();
-                    const existing = cart.find((row) => row.name === item.name);
-                    if (existing) existing.quantity = Math.min(20, (parseInt(existing.quantity, 10) || 0) + 1);
-                    else cart.push({ name: item.name, price: item.price, image: item.image, quantity: 1 });
+                    const catalogItem = product.catalogItem;
+                    const name = catalogItem.itemName || product.item.name;
+                    const existing = cart.find((row) => row.itemId
+                        ? row.itemId === catalogItem.itemId
+                        : row.name === name || row.name === product.item.name);
+                    const cartItem = existing || { quantity: 0 };
+                    Object.assign(cartItem, {
+                        name: name,
+                        price: catalogItem.price,
+                        image: catalogItem.imageUri || product.item.image,
+                        itemId: catalogItem.itemId,
+                        quantity: Math.min(20, (parseInt(cartItem.quantity, 10) || 0) + 1),
+                        brandName: catalogItem.brandName,
+                        itemName: catalogItem.itemName,
+                        itemQuantity: catalogItem.itemQuantity,
+                        imageUri: catalogItem.imageUri,
+                        inStock: true,
+                        catalogUnavailable: false,
+                        productGroupId: catalogItem.productGroupId,
+                        flavor: catalogItem.flavor
+                    });
+                    if (!existing) cart.push(cartItem);
                     saveCart(cart);
                     showToast();
                 });
+            });
+            window.SpicebloomsPricing.loadPrices().then((prices) => {
+                homeProducts.forEach((product) => {
+                    if (!product.item || !product.item.productKey) return;
+                    const entry = prices[product.item.productKey];
+                    if (!entry || !Number.isFinite(entry.price) || entry.price <= 0) {
+                        markUnavailable(product, "Price unavailable");
+                        return;
+                    }
+                    product.catalogItem = entry;
+                    const price = product.button.closest(".home-product").querySelector("[data-home-price]");
+                    if (price) price.textContent = "Rs " + entry.price + "/-";
+                    if (entry.inStock === false) {
+                        markUnavailable(product, "Sold out");
+                        product.catalogItem = entry;
+                        return;
+                    }
+                    product.button.disabled = false;
+                });
+            }).catch((error) => {
+                console.error("Unable to load current home product prices.", error);
+                homeProducts.forEach((product) => markUnavailable(product, "Price unavailable"));
             });
             updateBadges();
         })();

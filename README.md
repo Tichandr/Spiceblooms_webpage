@@ -2,11 +2,9 @@
 
 ## Run locally
 
-1. Start the SpiceBlooms API from `C:\Personal\spiceblooms-app\Service\src\SpiceBlooms.Api` with its HTTPS profile on `https://localhost:7100`.
-2. Open `https://localhost:7100/health` and confirm it returns `Healthy`. If the development certificate is not trusted, run `dotnet dev-certs https --trust` yourself and accept the operating system prompt.
-3. Run `npm start` in this repository and open `http://localhost:3000/login.html`.
+1. Run `npm start` in this repository and open `http://localhost:3000/login.html`.
 
-No frontend build step is required. On `localhost`, `127.0.0.1`, or IPv6 loopback, the API client uses `https://localhost:7100`. Deployed sites continue to use the Azure API.
+No frontend build step is required. Local and deployed sites use `https://spiceblooms-api-dev.azurewebsites.net` for API requests.
 
 ## Authentication
 
@@ -33,7 +31,7 @@ Catalog items with the same `productGroupId` appear as one product with flavour 
 
 The backend's `docs/catalog-variants.md` and `docs/edamame-items.json` describe the nine Edamame Cosmos documents, confirmed selling prices (Rs 50 / 250 / 900), original prices (Rs 80 / 300 / 1100), image setup, and safe activation. No live catalog records are inserted by this change.
 
-The Bag refreshes catalog availability on every page load and browser-history return, and keeps checkout disabled until that check succeeds. Products missing from a successful catalog response are labelled unavailable instead of retaining purchasable fallback data. This is distinct from an explicit sold-out flag. Local development uses `https://localhost:7100`; changing a deployed Cosmos record affects the local site only when the local API reads that same database and returns the item.
+The Bag refreshes catalog availability on every page load and browser-history return, and keeps checkout disabled until that check succeeds. Products missing from a successful catalog response are labelled unavailable instead of retaining purchasable fallback data. This is distinct from an explicit sold-out flag. Local development uses the dev API at `https://spiceblooms-api-dev.azurewebsites.net`.
 
 The backend now writes new delivery addresses inside user documents while retaining its existing address endpoint DTOs and legacy address records. The checkout's backend address registration and matching use the same IDs/fields, so no storefront address migration is required. Deploy the stock UI with the backend `Add-Address-to-Users-Document` update.
 

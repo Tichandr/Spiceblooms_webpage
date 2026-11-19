@@ -74,6 +74,13 @@
             transform: scale(1.04);
         }
 
+        .catalog-description-collapsed {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+        }
+
         .feature-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -128,14 +135,14 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="index.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Home</a>
-                    <a href="index.html#about"
-                        class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
                     <a href="products.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Products</a>
                     <a href="catalouge.html" class="text-primary font-semibold">Catalogue</a>
                     <a href="exports.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Exports</a>
-                    <a href="index.html#contact"
+                    <a href="index.html#about"
+                        class="text-gray-700 hover:text-primary transition-colors duration-200">About</a>
+                    <a href="connect.html"
                         class="text-gray-700 hover:text-primary transition-colors duration-200">Contact</a>
                     <button type="button" data-sign-out class="hidden px-4 py-2 rounded-full text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors duration-200">Sign out</button>
                 </div>
@@ -153,11 +160,11 @@
         <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 bg-white/55 backdrop-blur-xl border-t border-white/40">
                 <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Home</a>
-                <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
                 <a href="products.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Products</a>
                 <a href="catalouge.html" class="block px-3 py-2 text-primary font-semibold">Catalogue</a>
                 <a href="exports.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Exports</a>
-                <a href="index.html#contact" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
+                <a href="index.html#about" class="block px-3 py-2 text-gray-700 hover:text-primary">About</a>
+                <a href="connect.html" class="block px-3 py-2 text-gray-700 hover:text-primary">Contact</a>
                 <button type="button" data-sign-out class="hidden w-full text-left px-3 py-2 font-semibold text-primary">Sign out</button>
             </div>
         </div>
@@ -669,7 +676,7 @@
                     </svg>
                     Shop the Collection
                 </a>
-                <a href="index.html#contact"
+                <a href="connect.html"
                     class="inline-flex items-center gap-2 border-2 border-white text-white px-7 py-3.5 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300">
                     Contact Us
                 </a>
@@ -833,6 +840,27 @@
                 }
             };
 
+            const initializeCatalogReadMore = (container) => {
+                container.querySelectorAll('[data-catalog-description]').forEach((description) => {
+                    const button = description.nextElementSibling;
+                    if (!button || button.hasAttribute('data-read-more-initialized')) return;
+
+                    button.setAttribute('data-read-more-initialized', '');
+                    description.classList.add('catalog-description-collapsed');
+                    button.hidden = description.scrollHeight <= description.clientHeight + 1;
+                    if (button.hidden) {
+                        description.classList.remove('catalog-description-collapsed');
+                        return;
+                    }
+
+                    button.addEventListener('click', () => {
+                        const collapsed = description.classList.toggle('catalog-description-collapsed');
+                        button.textContent = collapsed ? 'Read more' : 'Read less';
+                        button.setAttribute('aria-expanded', String(!collapsed));
+                    });
+                });
+            };
+
             const renderItem = (item) => {
                 if (!window.SpicebloomsPricing.isCatalogItemAllowed(item)) return '';
                 const name = item.itemName || 'Untitled item';
@@ -855,7 +883,7 @@
                             <h4 class="text-xl font-bold text-dark">${escapeHtml(name)}</h4>
                             ${(item.inStock !== undefined ? item.inStock : item.InStock) === false ? '<p class="mt-2 font-semibold text-gray-600">Sold out</p>' : ''}
                             ${item.quantity ? `<p class="mt-1 text-sm text-gray-500">${escapeHtml(item.quantity)}</p>` : ''}
-                            ${item.description ? `<p class="mt-3 text-sm leading-relaxed text-gray-600">${escapeHtml(item.description)}</p>` : ''}
+                            ${item.description ? `<p class="catalog-description-collapsed mt-3 text-sm leading-relaxed text-gray-600" data-catalog-description>${escapeHtml(item.description)}</p><button type="button" class="mt-2 text-sm font-medium text-primary hover:underline" data-catalog-read-more aria-expanded="false">Read more</button>` : ''}
                             ${oldPrice || actualPrice ? `<p class="mt-4">${oldPrice}${actualPrice}</p>` : ''}
                             ${item.canSubscribe && item.subscribeAt ? `<p class="mt-2 text-sm text-brand">Subscribe from ${escapeHtml(item.subscribeAt)}</p>` : ''}
                         </div>
@@ -896,6 +924,7 @@
                             }
                             page = nextPage;
                             list.insertAdjacentHTML('beforeend', next.itemList.map(renderItem).join(''));
+                            initializeCatalogReadMore(list);
                             const loaded = list.children.length;
                             if (loaded >= Number(next.totalListCount)) {
                                 loadMore.remove();
@@ -1024,6 +1053,7 @@
                     }
                     const sections = await Promise.all(categories.map(buildCategorySection));
                     sections.forEach((section) => categoriesContainer.appendChild(section));
+                    initializeCatalogReadMore(categoriesContainer);
                     status.hidden = true;
                 } catch (error) {
                     showError(error);

@@ -4,10 +4,7 @@
  * React/Angular service with minimal changes.
  */
 (function () {
-  const isLocal = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
-  const API_BASE_URL = isLocal
-    ? "https://localhost:7100"
-    : "https://spiceblooms-api-dev.azurewebsites.net";
+  const API_BASE_URL = "https://spiceblooms-api-dev.azurewebsites.net";
   const PHONE_PREFIX = "91";
 
   class ApiError extends Error {
