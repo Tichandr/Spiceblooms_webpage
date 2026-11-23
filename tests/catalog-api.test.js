@@ -5,6 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const source = fs.readFileSync(path.join(__dirname, "..", "api.js"), "utf8");
+const catalogue = fs.readFileSync(path.join(__dirname, "..", "catalouge.html"), "utf8");
 const response = (status = 200, text = async () => JSON.stringify({ itemList: [], totalListCount: 0 })) =>
   ({ ok: status >= 200 && status < 300, status, text });
 
@@ -31,7 +32,7 @@ function client(fetch) {
   vm.runInNewContext(source, context);
   const flush = () => new Promise(resolve => setImmediate(resolve));
   return {
-    api: context.window.SpicebloomsApi, calls, warnings, timers, flush,
+    api: context.window.SpicebloomsApi, context, calls, warnings, timers, flush,
     tick: async () => {
       await flush();
       const next = [...timers.entries()].sort((a, b) => a[1].at - b[1].at)[0];
@@ -45,31 +46,80 @@ function client(fetch) {
   };
 }
 
-test("hung catalog requests abort and fail within 33 seconds, then allow manual retry", async () => {
-  let recover = false;
-  const flow = client(() => recover ? response() : new Promise(() => {}));
-  const pending = flow.api.getCatalogItems();
-  const rejected = assert.rejects(pending, error => error.status === 408 && /timed out/.test(error.message));
-  for (let step = 0; step < 5; step += 1) await flow.tick();
-  await rejected;
-  assert.equal(flow.elapsed(), 33000);
-  assert.deepEqual(flow.calls.map(call => call.at), [0, 11000, 23000]);
-  assert.ok(flow.calls.every(call => call.options.signal.aborted));
-  assert.equal(flow.timers.size, 0);
-  recover = true;
-  await flow.api.getCatalogItems();
-  assert.equal(flow.calls.length, 4);
-  assert.equal(flow.timers.size, 0);
-});
+for (const [name, load] of [
+  ["items", api => api.getCatalogItems()],
+  ["categories", api => api.getCatalogCategories()],
+  ["subcategories", api => api.getCatalogSubCategories("category / one")]
+]) {
+  test(`hung catalog ${name} requests abort and fail within 33 seconds, then allow manual retry`, async () => {
+    let recover = false;
+    const flow = client(() => recover ? response() : new Promise(() => {}));
+    const pending = load(flow.api);
+    const rejected = assert.rejects(pending, error => error.status === 408 && /timed out/.test(error.message));
+    for (let step = 0; step < 5; step += 1) await flow.tick();
+    await rejected;
+    assert.equal(flow.elapsed(), 33000);
+    assert.deepEqual(flow.calls.map(call => call.at), [0, 11000, 23000]);
+    assert.ok(flow.calls.every(call => call.options.signal.aborted));
+    assert.equal(flow.timers.size, 0);
+    recover = true;
+    await load(flow.api);
+    assert.equal(flow.calls.length, 4);
+    assert.equal(flow.timers.size, 0);
+  });
 
-test("catalog deadline also covers a stalled response body", async () => {
-  const flow = client(() => response(200, () => new Promise(() => {})));
-  const rejected = assert.rejects(flow.api.getCatalogItems(), error => error.status === 408);
-  for (let step = 0; step < 5; step += 1) await flow.tick();
-  await rejected;
-  assert.equal(flow.elapsed(), 33000);
-  assert.ok(flow.calls.every(call => call.options.signal.aborted));
-});
+  test(`catalog ${name} deadline also covers a stalled response body`, async () => {
+    const flow = client(() => response(200, () => new Promise(() => {})));
+    const rejected = assert.rejects(load(flow.api), error => error.status === 408);
+    for (let step = 0; step < 5; step += 1) await flow.tick();
+    await rejected;
+    assert.equal(flow.elapsed(), 33000);
+    assert.ok(flow.calls.every(call => call.options.signal.aborted));
+  });
+}
+
+for (const prerequisite of ["categories", "subcategories"]) {
+  test(`stalled ${prerequisite} reaches the catalogue Retry UI and can recover`, async () => {
+    let recover = false;
+    const flow = client(url => {
+      const stalled = prerequisite === "categories" ? url.endsWith("/categories") : url.endsWith("/subcategories");
+      if (stalled && !recover) return response(200, () => new Promise(() => {}));
+      const data = url.endsWith("/categories") ? [{ id: "category-one", itemName: "Spices" }]
+        : url.endsWith("/subcategories") ? [] : { itemList: [], totalListCount: 0 };
+      return response(200, async () => JSON.stringify(data));
+    });
+    const element = () => ({
+      children: [], hidden: false,
+      replaceChildren(...children) { this.children = children; },
+      append(...children) { this.children.push(...children); },
+      appendChild(child) { this.children.push(child); },
+      addEventListener(name, callback) { this[name] = callback; }
+    });
+    Object.assign(flow.context, {
+      status: element(), content: element(), categoriesContainer: element(),
+      document: { createElement: element },
+      safeImageUrl: () => "",
+      initializeCatalogReadMore: () => {}
+    });
+    vm.runInNewContext(catalogue.slice(catalogue.indexOf("            const showError ="),
+      catalogue.indexOf("            loadCategories();")), flow.context);
+    const loading = flow.context.loadCategories();
+    for (let step = 0; step < 5; step += 1) await flow.tick();
+    await loading;
+    const status = flow.context.status;
+    assert.equal(flow.elapsed(), 33000);
+    assert.equal(status.hidden, false);
+    assert.match(status.children[0].textContent, /timed out/);
+    const retry = status.children[1];
+    assert.equal(retry.textContent, "Try again");
+    assert.equal(flow.calls.filter(call => call.url.endsWith("/" + prerequisite)).length, 3);
+    recover = true;
+    await retry.click();
+    assert.equal(status.hidden, true);
+    assert.equal(flow.context.categoriesContainer.children.length, 1);
+    assert.equal(flow.timers.size, 0);
+  });
+}
 
 test("catalog retries network and transient server failures, then returns fresh prices", async () => {
   const flow = client((url, options, attempt) => {

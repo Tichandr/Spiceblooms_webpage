@@ -231,12 +231,12 @@
 
     /** GET /api/Catalog/categories -> category list */
     getCatalogCategories() {
-      return request("/api/Catalog/categories");
+      return requestCatalog("/api/Catalog/categories");
     },
 
     /** GET /api/Catalog/categories/{categoryId}/subcategories -> subcategory list */
     getCatalogSubCategories(categoryId) {
-      return request("/api/Catalog/categories/" + encodeURIComponent(categoryId) + "/subcategories");
+      return requestCatalog("/api/Catalog/categories/" + encodeURIComponent(categoryId) + "/subcategories");
     },
 
     /** GET /api/Catalog/items with optional category/subcategory filters */
