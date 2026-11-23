@@ -88,7 +88,8 @@
     token,
     attachSessionToken = true,
     retryUnauthorized = true,
-    cache = "default"
+    cache = "default",
+    timeoutMs = 0
   } = {}) {
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
@@ -97,18 +98,37 @@
     if (accessToken) headers.Authorization = "Bearer " + accessToken;
 
     let response;
+    let text;
+    let timeout;
+    const controller = timeoutMs > 0 ? new AbortController() : null;
     try {
-      response = await fetch(API_BASE_URL + path, {
-        method,
-        headers,
-        cache,
-        body: body !== undefined ? JSON.stringify(body) : undefined
-      });
+      const pending = (async () => {
+        response = await fetch(API_BASE_URL + path, {
+          method,
+          headers,
+          cache,
+          ...(controller ? { signal: controller.signal } : {}),
+          body: body !== undefined ? JSON.stringify(body) : undefined
+        });
+        text = await response.text();
+      })();
+      if (controller) {
+        await Promise.race([pending, new Promise((resolve, reject) => {
+          timeout = setTimeout(() => {
+            reject(new ApiError("Loading current prices timed out. Please try again.", 408));
+            controller.abort();
+          }, timeoutMs);
+        })]);
+      } else {
+        await pending;
+      }
     } catch (error) {
+      if (error instanceof ApiError) throw error;
       throw new ApiError("Network error. Please check your connection and try again.", 0, error);
+    } finally {
+      if (timeout !== undefined) clearTimeout(timeout);
     }
 
-    const text = await response.text();
     let data = null;
     if (text) {
       try { data = JSON.parse(text); } catch (error) { data = text; }
@@ -123,7 +143,8 @@
           token: refreshedSession.token,
           attachSessionToken: false,
           retryUnauthorized: false,
-          cache
+          cache,
+          timeoutMs
         });
       }
       throw new ApiError(
@@ -145,6 +166,26 @@
   }
 
   const toApiPhone = (tenDigitNumber) => PHONE_PREFIX + tenDigitNumber;
+  const catalogRequests = new Map();
+
+  async function requestCatalog(path) {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        return await request(path, {
+          cache: "no-store",
+          attachSessionToken: false,
+          retryUnauthorized: false,
+          timeoutMs: 10000
+        });
+      } catch (error) {
+        if (!(error instanceof ApiError) || ![0, 408, 500, 502, 503, 504].includes(error.status) || attempt >= 2) {
+          throw error;
+        }
+        console.warn("Catalog request failed; retrying.", { status: error.status, attempt: attempt + 1 });
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+      }
+    }
+  }
 
   window.SpicebloomsApi = {
     ApiError,
@@ -203,11 +244,11 @@
       const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
       if (categoryId) params.set("categoryId", categoryId);
       if (subCategoryId) params.set("subCategoryId", subCategoryId);
-      return request("/api/Catalog/items?" + params.toString(), {
-        cache: "no-store",
-        attachSessionToken: false,
-        retryUnauthorized: false
-      });
+      const path = "/api/Catalog/items?" + params.toString();
+      if (!catalogRequests.has(path)) {
+        catalogRequests.set(path, requestCatalog(path).finally(() => catalogRequests.delete(path)));
+      }
+      return catalogRequests.get(path);
     },
 
     /** GET/POST /api/Users/me/addresses (requires bearer token) */

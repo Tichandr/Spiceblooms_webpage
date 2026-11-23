@@ -406,6 +406,7 @@ test("catalog prices are public, uncached and independent of the signed-in custo
     const requests = [];
     const context = {
       URLSearchParams,
+      AbortController, setTimeout, clearTimeout,
       window: { location: { hostname: "spiceblooms.in" },
         SpicebloomsAuth: { get: () => token && { token } } },
       fetch: async (url, options) => {
